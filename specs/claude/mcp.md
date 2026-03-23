@@ -1,6 +1,6 @@
 # Claude Code MCP 仕様書
 
-最終更新: 2026-03-23
+最終更新: 2026-03-23（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/mcp
 
@@ -274,14 +274,64 @@ mcpServers:
 ---
 ```
 
+### 8.7 Claude Code を MCP サーバーとして使用
+
+`claude mcp serve` コマンドで Claude Code 自体を MCP サーバーとして起動可能。他のエージェントやツールから Claude Code の機能を利用できる。
+
+### 8.8 MCP Tool Search
+
+多数の MCP ツールがある環境で、Claude が最も関連性の高いツールを自動的に見つける機能。
+
+- **仕組み**: 全ツールのメタデータをインデックス化し、タスクに応じて関連ツールを検索
+- **設定**: `ENABLE_TOOL_SEARCH` 環境変数で有効化
+
+### 8.9 MCP リソース
+
+MCP サーバーが公開するリソース（ドキュメント、データ等）を `@` メンションで参照可能。
+
+### 8.10 MCP Elicitation（ユーザー入力要求）
+
+MCP サーバーがセッション中にユーザー入力を要求する仕組み:
+
+- **Form モード**: フォームフィールドで構造化入力を要求
+- **URL モード**: URLを開いて認証等を完了させる
+
+### 8.11 OAuth 認証の詳細
+
+- **固定コールバックポート**: `--oauth-port` で OAuth コールバックポートを固定
+- **事前設定 OAuth 認証情報**: `.mcp.json` にクライアントID/シークレットを記載可能
+- **OAuth メタデータディスカバリのオーバーライド**: カスタムメタデータURLの指定
+
 ---
 
-## 9. 環境変数
+## 9. Managed MCP の Policy-based Control
+
+サーバー名だけでなく、コマンドやURLでのマッチングも可能:
+
+```json
+{
+  "allowedMcpServers": [
+    { "serverName": "github" },
+    { "serverCommand": "npx @company/*" },
+    { "serverUrl": "https://*.company.com/*" }
+  ],
+  "deniedMcpServers": [
+    { "serverName": "filesystem" }
+  ]
+}
+```
+
+マッチングフィールド: `serverName`, `serverCommand`, `serverUrl`
+
+---
+
+## 10. 環境変数
 
 | 変数 | 説明 |
 |:--|:--|
 | `MCP_TIMEOUT` | MCPサーバー起動タイムアウト（ms）。例: `MCP_TIMEOUT=10000` |
 | `MAX_MCP_OUTPUT_TOKENS` | MCPツール出力の警告閾値。デフォルト10,000トークン |
+| `ENABLE_TOOL_SEARCH` | MCP Tool Search 機能の有効化 |
 
 ---
 

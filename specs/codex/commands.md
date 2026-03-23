@@ -1,6 +1,6 @@
 # OpenAI Codex CLI コマンド仕様
 
-最終更新: 2026-03-23
+最終更新: 2026-03-23（巡回更新）
 
 ---
 
@@ -62,6 +62,7 @@
 | `/apps` | `/apps` | アプリ（コネクタ）を閲覧しプロンプトに挿入 |
 | `/init` | `/init` | カレントディレクトリに AGENTS.md の雛形を生成 |
 | `/feedback` | `/feedback` | ログと診断情報をメンテナーに送信 |
+| `/send-feedback` | `/send-feedback` | `/feedback` の別名 |
 | `/logout` | `/logout` | 現在のセッションの認証情報をクリア |
 | `/exit` / `/quit` | `/exit` | CLI セッションを終了 |
 
