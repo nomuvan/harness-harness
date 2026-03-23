@@ -7,34 +7,49 @@ SKIP_FORCE_MERGE="${PATROL_SKIP_FORCE_MERGE:-false}"
 REPO_URL="https://github.com/nomuvan/harness-harness.git"
 MAX_BUDGET="${PATROL_MAX_BUDGET_USD:-5}"
 LOG_DIR="/patrol-logs"
-LOG_FILE="${LOG_DIR}/patrol-$(date +%Y%m%d-%H%M%S).log"
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+LOG_FILE="${LOG_DIR}/patrol-${TIMESTAMP}.log"
 CACHE_DIR="/patrol-cache"
+START_EPOCH=$(date +%s)
 
 mkdir -p "$LOG_DIR" "$CACHE_DIR/pages"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
-echo "=== Patrol Start: $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
-echo "Branch: $BRANCH | SkipForceMerge: $SKIP_FORCE_MERGE | MaxBudget: \$$MAX_BUDGET"
+# ログユーティリティ
+log() { echo "[$(date -u +%H:%M:%S)] $*"; }
+log_phase() { echo ""; echo "========== $* =========="; }
+elapsed() { echo "$(( $(date +%s) - START_EPOCH ))s elapsed"; }
 
-# 1. ソース取得
+log_phase "Patrol Start"
+log "Branch: $BRANCH | SkipForceMerge: $SKIP_FORCE_MERGE | MaxBudget: \$$MAX_BUDGET"
+log "Log file: $LOG_FILE"
+
+# ──────────────────────────────────────
+# Phase 0: ソース取得
+# ──────────────────────────────────────
+log_phase "Phase 0: Source Fetch"
 if [ -d /workspace/harness-harness ]; then
   cd /workspace/harness-harness
+  log "Fetching origin..."
   git fetch origin
   git checkout "$BRANCH"
   git reset --hard "origin/$BRANCH"
+  log "Updated to: $(git log --oneline -1)"
 else
+  log "Cloning $REPO_URL ..."
   git clone -b "$BRANCH" "$REPO_URL" /workspace/harness-harness
   cd /workspace/harness-harness
+  log "Cloned: $(git log --oneline -1)"
 fi
+log "Phase 0 done. ($(elapsed))"
 
-echo "HEAD: $(git log --oneline -1)"
-
-# 2. Phase 1: 軽量ヘッダチェック（Claude CLIを使わない）
-echo "--- Phase 1: Header check ---"
+# ──────────────────────────────────────
+# Phase 1: 軽量ヘッダチェック
+# ──────────────────────────────────────
+log_phase "Phase 1: HTTP Header Check (no Claude CLI cost)"
 METADATA_FILE="$CACHE_DIR/url-metadata.json"
 [ -f "$METADATA_FILE" ] || echo '{}' > "$METADATA_FILE"
 
-# 巡回対象URLリスト
 URLS=(
   "https://code.claude.com/docs/en/settings"
   "https://code.claude.com/docs/en/skills"
@@ -51,37 +66,33 @@ URLS=(
 )
 
 CHANGED_URLS=()
+checked=0
 for url in "${URLS[@]}"; do
-  # URLをキーに変換（/と:を_に）
+  checked=$((checked + 1))
   url_key=$(echo "$url" | sed 's/[/:.]/_/g')
 
-  # HTTPヘッダ取得
   headers=$(curl -sI -L --max-time 10 "$url" 2>/dev/null || echo "")
   last_modified=$(echo "$headers" | grep -i "^last-modified:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r')
   etag=$(echo "$headers" | grep -i "^etag:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r')
   content_length=$(echo "$headers" | grep -i "^content-length:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r')
 
-  # 前回の値と比較
   prev_modified=$(jq -r ".\"$url_key\".last_modified // \"\"" "$METADATA_FILE" 2>/dev/null)
   prev_etag=$(jq -r ".\"$url_key\".etag // \"\"" "$METADATA_FILE" 2>/dev/null)
-  prev_length=$(jq -r ".\"$url_key\".content_length // \"\"" "$METADATA_FILE" 2>/dev/null)
 
   changed=false
+  reason=""
   if [ -z "$prev_modified" ] && [ -z "$prev_etag" ]; then
-    # 初回（キャッシュなし）→ 変更扱い
     changed=true
-    echo "  NEW: $url"
+    reason="NEW (first check)"
   elif [ -n "$etag" ] && [ "$etag" != "$prev_etag" ]; then
     changed=true
-    echo "  CHANGED (etag): $url"
+    reason="ETag changed"
   elif [ -n "$last_modified" ] && [ "$last_modified" != "$prev_modified" ]; then
     changed=true
-    echo "  CHANGED (modified): $url"
-  elif [ -n "$content_length" ] && [ "$content_length" != "$prev_length" ]; then
+    reason="Last-Modified changed"
+  elif [ -n "$content_length" ] && [ "$content_length" != "$(jq -r ".\"$url_key\".content_length // \"\"" "$METADATA_FILE" 2>/dev/null)" ]; then
     changed=true
-    echo "  CHANGED (size): $url"
-  else
-    echo "  UNCHANGED: $url"
+    reason="Content-Length changed"
   fi
 
   # メタデータ更新
@@ -96,22 +107,28 @@ for url in "${URLS[@]}"; do
 
   if [ "$changed" = true ]; then
     CHANGED_URLS+=("$url")
+    log "  [$checked/${#URLS[@]}] CHANGED ($reason): $url"
+  else
+    log "  [$checked/${#URLS[@]}] unchanged: $url"
   fi
 done
 
-echo "Phase 1 result: ${#CHANGED_URLS[@]}/${#URLS[@]} URLs changed"
+log ""
+log "Phase 1 summary: ${#CHANGED_URLS[@]} changed / ${#URLS[@]} checked. ($(elapsed))"
 
-# 変更なし → 終了
+# 変更なし → Phase 2スキップ
 if [ ${#CHANGED_URLS[@]} -eq 0 ]; then
-  echo "No URL changes detected. Skipping Claude CLI. Patrol complete."
-  echo "=== Patrol End: $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+  log "No URL changes detected. Skipping Claude CLI entirely."
+  log_phase "Patrol Complete ($(elapsed))"
   exit 0
 fi
 
-# 3. Phase 2: 変更URLのみClaude CLIで詳細比較
-echo "--- Phase 2: Claude CLI patrol (${#CHANGED_URLS[@]} URLs) ---"
+# ──────────────────────────────────────
+# Phase 2: Claude CLIで詳細比較
+# ──────────────────────────────────────
+log_phase "Phase 2: Claude CLI Patrol (${#CHANGED_URLS[@]} URLs)"
+PHASE2_START=$(date +%s)
 
-# 変更URLリストをプロンプトに組み込み
 CHANGED_LIST=$(printf "- %s\n" "${CHANGED_URLS[@]}")
 PROMPT=$(cat /patrol/patrol-prompt.md)
 PROMPT="${PROMPT}
@@ -122,29 +139,56 @@ ${CHANGED_LIST}
 
 上記以外のURLは変更なしのためスキップしてください。"
 
+log "Starting Claude CLI with --max-budget-usd $MAX_BUDGET ..."
+log "Prompt length: $(echo "$PROMPT" | wc -c) chars"
+log "Waiting for Claude CLI response (this may take several minutes)..."
+
+# stream-jsonで進捗が見えるように
 RESULT=$(claude -p "$PROMPT" \
   --allowedTools "Bash,Read,Edit,Write,Glob,Grep,WebFetch,WebSearch" \
   --max-budget-usd "$MAX_BUDGET" \
-  --output-format json 2>&1) || true
+  --output-format stream-json 2>&1) || true
 
-echo "$RESULT" | jq -r '.result // "No result"' 2>/dev/null || echo "$RESULT"
-echo "--- Claude CLI patrol end ---"
+# stream-jsonの最後のresultメッセージを抽出
+FINAL_RESULT=$(echo "$RESULT" | grep '"type":"result"' | tail -1 | jq -r '.result // "No result"' 2>/dev/null || echo "")
+COST=$(echo "$RESULT" | grep '"type":"result"' | tail -1 | jq -r '.cost_usd // "unknown"' 2>/dev/null || echo "unknown")
+DURATION_MS=$(echo "$RESULT" | grep '"type":"result"' | tail -1 | jq -r '.duration_ms // "unknown"' 2>/dev/null || echo "unknown")
 
-# 4. 変更チェック
-if [ -z "$(git status --porcelain)" ]; then
-  echo "Claude CLI found no spec updates needed. Patrol complete."
-  echo "=== Patrol End: $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+log "Claude CLI finished. Cost: \$$COST | Duration: ${DURATION_MS}ms"
+log "Phase 2 time: $(( $(date +%s) - PHASE2_START ))s"
+
+if [ -n "$FINAL_RESULT" ]; then
+  log ""
+  log "--- Claude Result Summary ---"
+  echo "$FINAL_RESULT" | head -50
+  log "--- End Summary ---"
+fi
+
+# ──────────────────────────────────────
+# Phase 3: 変更チェック & PR
+# ──────────────────────────────────────
+log_phase "Phase 3: Git Status & PR"
+
+CHANGES=$(git status --porcelain)
+if [ -z "$CHANGES" ]; then
+  log "No file changes. Claude CLI found specs are up-to-date."
+  log_phase "Patrol Complete ($(elapsed))"
   exit 0
 fi
 
-# 5. PR作成
+log "Changed files:"
+echo "$CHANGES" | while read -r line; do log "  $line"; done
+
 BRANCH_NAME="patrol/auto-$(date +%Y%m%d)"
 git checkout -b "$BRANCH_NAME" 2>/dev/null || git checkout "$BRANCH_NAME"
 git add -A
 git commit -m "patrol: 公式ドキュメント巡回による自動更新 ($(date +%Y-%m-%d))
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"
+log "Committed on $BRANCH_NAME"
+
 git push origin "$BRANCH_NAME"
+log "Pushed to origin/$BRANCH_NAME"
 
 PR_URL=$(gh pr create \
   --title "patrol: 公式ドキュメント自動更新 $(date +%Y-%m-%d)" \
@@ -157,23 +201,32 @@ ${CHANGED_LIST}
 
 ## 巡回統計
 - チェック対象: ${#URLS[@]} URLs
-- 変更検出: ${#CHANGED_URLS[@]} URLs
-- 未変更（スキップ）: $((${#URLS[@]} - ${#CHANGED_URLS[@]})) URLs
+- 変更検出: ${#CHANGED_URLS[@]} URLs (Phase 1 header check)
+- 未変更スキップ: $((${#URLS[@]} - ${#CHANGED_URLS[@]})) URLs
+- Claude CLI cost: \$$COST
 
 🤖 Generated by harness-harness patrol system" \
   --base "$BRANCH" 2>&1)
 
-echo "PR created: $PR_URL"
+log "PR created: $PR_URL"
 
-# 6. マージ判断
+# ──────────────────────────────────────
+# Phase 4: マージ判断
+# ──────────────────────────────────────
+log_phase "Phase 4: Merge Decision"
+
 if [ "$SKIP_FORCE_MERGE" = "false" ]; then
-  echo "Auto-merging PR..."
+  log "Auto-merging PR..."
   sleep 5
-  gh pr merge "$PR_URL" --merge --admin 2>&1 || \
-    gh pr merge "$PR_URL" --merge 2>&1 || \
-    echo "WARN: Auto-merge failed. PR remains open for manual review."
+  if gh pr merge "$PR_URL" --merge --admin 2>&1; then
+    log "PR merged successfully."
+  elif gh pr merge "$PR_URL" --merge 2>&1; then
+    log "PR merged successfully (without admin)."
+  else
+    log "WARN: Auto-merge failed. PR remains open for manual review."
+  fi
 else
-  echo "SkipForceMerge=true: PR作成のみ。手動マージ待ち。"
+  log "SkipForceMerge=true: PR作成のみ。手動マージ待ち。"
 fi
 
-echo "=== Patrol End: $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+log_phase "Patrol Complete ($(elapsed))"
