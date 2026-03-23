@@ -40,6 +40,11 @@ specs/      Claude Code, Codex CLIの仕様書
 kb/         外部プロジェクト調査、戦術的知見
 templates/  ハーネステンプレート
 mapping/    Claude⇔Codex変換ルール
-registry/   管理対象プロジェクト一覧
+registry/   管理対象プロジェクト一覧（テンプレート）
 scripts/    ユーティリティスクリプト
+private/    git submodule（プロジェクト固有データ）
 ```
+
+## ReadOnlyモード
+
+push権限やprivate submoduleへのアクセスがなくてもReadOnlyで利用可能。specs/, kb/, mapping/, templates/ を参照してハーネスを手動作成できる。MITライセンスなので自由にforkして独自に育ててOK。詳細は [docs/readonly-mode.md](docs/readonly-mode.md) 参照。
