@@ -1,7 +1,7 @@
 # project-alpha改善からのフィードバック
 
 日付: 2026-03-23
-対象PR: https://github.com/nomuvan/project-alpha/pull/248
+対象PR: <private-pr-url>
 
 ## 学んだこと
 

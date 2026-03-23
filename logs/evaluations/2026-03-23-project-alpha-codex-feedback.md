@@ -1,7 +1,7 @@
 # project-alpha Codexハーネス作成フィードバック
 
 日付: 2026-03-23
-対象PR: https://github.com/nomuvan/project-alpha/pull/249
+対象PR: <private-pr-url>
 
 ## mapping 4分類の実践結果
 

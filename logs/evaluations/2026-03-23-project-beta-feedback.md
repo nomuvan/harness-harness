@@ -1,7 +1,7 @@
 # project-beta ハーネス新規作成フィードバック
 
 日付: 2026-03-23
-対象PR: https://github.com/nomuvan/project-beta/pull/1
+対象PR: <private-pr-url>
 
 ## project-alphaとの比較
 

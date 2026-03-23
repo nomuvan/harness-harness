@@ -1,7 +1,7 @@
 # project-alpha Claudeハーネス診断レポート
 
 診断日: 2026-03-23
-対象: /Users/nomuvan/IdeaProjects/project-alpha
+対象: <project-alpha-path>
 ハーネスバージョン: 有機的に成長した自作ハーネス（テンプレート非使用）
 
 ## 診断サマリー
