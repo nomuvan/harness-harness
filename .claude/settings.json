@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(codex *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)"
+    ]
+  }
+}
