@@ -55,7 +55,7 @@ podman rmi harness-patrol  # イメージも削除する場合
 |---------|----------|------|
 | `PATROL_BRANCH` | `main` | 巡回対象ブランチ |
 | `PATROL_SKIP_FORCE_MERGE` | `false` | `true`: PR作成のみ。`false`: 自動マージまで実行 |
-| `PATROL_MAX_BUDGET_USD` | `5` | 1回の巡回あたりのClaude利用上限（USD） |
+| `PATROL_MAX_BUDGET_USD` | `5` | 1回の巡回あたりのサブスク内利用量上限。**追加課金は発生しない** |
 
 ## 効率化（2段階方式）
 
@@ -65,6 +65,14 @@ podman rmi harness-patrol  # イメージも削除する場合
 2. **Phase 2（Claude CLI詳細比較）**: Phase 1で変更検出されたURLのみをClaude CLIに渡す。変更なし日はClaude CLI呼び出し自体をスキップ（コスト0）
 
 キャッシュは`/patrol-cache` ボリュームに保存（`url-metadata.json`）。
+
+ETag/Last-Modifiedが空のURL（Next.js SSR等）はページ本体のMD5ハッシュで比較。
+
+## 巡回URL管理
+
+巡回対象URLは `patrol-urls.txt` で管理。公式サイトリニューアル時はこのファイルを編集。
+
+また、Claude公式の `llms.txt` を毎回チェックし、新ページが追加されていれば自動通知（ログに出力）。手動でpatrol-urls.txtに追加するかどうかはユーザー判断。
 
 ## 認証
 

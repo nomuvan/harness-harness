@@ -20,7 +20,7 @@ log() { echo "[$(date -u +%H:%M:%S)] $*"; }
 log_phase() { echo ""; echo "========== $* =========="; }
 elapsed() { echo "$(( $(date +%s) - START_EPOCH ))s elapsed"; }
 
-# git認証設定: GH_TOKENがあればそれを使用
+# git認証設定
 if [ -n "${GH_TOKEN:-}" ]; then
   git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
   log "Git auth: GH_TOKEN configured"
@@ -31,7 +31,7 @@ else
 fi
 
 log_phase "Patrol Start"
-log "Branch: $BRANCH | SkipForceMerge: $SKIP_FORCE_MERGE | MaxBudget: \$$MAX_BUDGET"
+log "Branch: $BRANCH | SkipForceMerge: $SKIP_FORCE_MERGE | MaxBudget: \$$MAX_BUDGET (サブスク内利用量制限。追加課金なし)"
 log "Log file: $LOG_FILE"
 
 # ──────────────────────────────────────
@@ -54,26 +54,44 @@ fi
 log "Phase 0 done. ($(elapsed))"
 
 # ──────────────────────────────────────
-# Phase 1: 軽量ヘッダチェック
+# Phase 1: 軽量変更チェック
 # ──────────────────────────────────────
-log_phase "Phase 1: HTTP Header Check (no Claude CLI cost)"
+log_phase "Phase 1: Change Detection (no Claude CLI cost)"
 METADATA_FILE="$CACHE_DIR/url-metadata.json"
 [ -f "$METADATA_FILE" ] || echo '{}' > "$METADATA_FILE"
 
-URLS=(
-  "https://code.claude.com/docs/en/settings"
-  "https://code.claude.com/docs/en/skills"
-  "https://code.claude.com/docs/en/hooks"
-  "https://code.claude.com/docs/en/mcp"
-  "https://code.claude.com/docs/en/agent-teams"
-  "https://code.claude.com/docs/en/best-practices"
-  "https://code.claude.com/docs/en/sub-agents"
-  "https://code.claude.com/docs/en/headless"
-  "https://developers.openai.com/codex/config-reference"
-  "https://developers.openai.com/codex/cli/slash-commands"
-  "https://developers.openai.com/codex/skills"
-  "https://developers.openai.com/codex/changelog"
-)
+# URLリストを外部ファイルから読み込み
+URL_FILE="scripts/patrol/patrol-urls.txt"
+if [ ! -f "$URL_FILE" ]; then
+  URL_FILE="/patrol/patrol-urls.txt"
+fi
+URLS=()
+while IFS= read -r line; do
+  line=$(echo "$line" | sed 's/#.*//' | tr -d '[:space:]')
+  [ -n "$line" ] && URLS+=("$line")
+done < "$URL_FILE"
+log "Loaded ${#URLS[@]} URLs from $URL_FILE"
+
+# llms.txt新ページ検出
+log "Checking llms.txt for new pages..."
+LLMS_TXT=$(curl -sL --max-time 15 "https://code.claude.com/docs/llms.txt" 2>/dev/null || true)
+if [ -n "$LLMS_TXT" ]; then
+  NEW_PAGES=$(echo "$LLMS_TXT" | grep -Eo 'https://code\.claude\.com/docs/en/[^)]+' | while read -r page_url; do
+    # .mdを除去してURLに変換
+    clean_url=$(echo "$page_url" | sed 's/\.md$//')
+    # patrol-urls.txtに含まれていなければ新ページ
+    if ! grep -qF "$clean_url" "$URL_FILE" 2>/dev/null; then
+      echo "$clean_url"
+    fi
+  done || true)
+  if [ -n "$NEW_PAGES" ]; then
+    NEW_COUNT=$(echo "$NEW_PAGES" | wc -l | tr -d ' ')
+    log "  ⚠ $NEW_COUNT new pages detected in llms.txt (not in patrol-urls.txt):"
+    echo "$NEW_PAGES" | head -10 | while read -r p; do log "    + $p"; done
+  else
+    log "  No new pages in llms.txt"
+  fi
+fi
 
 CHANGED_URLS=()
 checked=0
@@ -81,17 +99,22 @@ for url in "${URLS[@]}"; do
   checked=$((checked + 1))
   url_key=$(echo "$url" | sed 's/[/:.]/_/g')
 
+  # HTTPヘッダ取得
   headers=$(curl -sI -L --max-time 10 "$url" 2>/dev/null || true)
   last_modified=$(echo "$headers" | grep -i "^last-modified:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r' || true)
   etag=$(echo "$headers" | grep -i "^etag:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r' || true)
   content_length=$(echo "$headers" | grep -i "^content-length:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r' || true)
 
+  # 前回値取得
   prev_modified=$(jq -r ".\"$url_key\".last_modified // \"\"" "$METADATA_FILE" 2>/dev/null || true)
   prev_etag=$(jq -r ".\"$url_key\".etag // \"\"" "$METADATA_FILE" 2>/dev/null || true)
+  prev_hash=$(jq -r ".\"$url_key\".content_hash // \"\"" "$METADATA_FILE" 2>/dev/null || true)
 
   changed=false
   reason=""
-  if [ -z "$prev_modified" ] && [ -z "$prev_etag" ]; then
+
+  # ヘッダベースの変更検出
+  if [ -z "$prev_modified" ] && [ -z "$prev_etag" ] && [ -z "$prev_hash" ]; then
     changed=true
     reason="NEW (first check)"
   elif [ -n "$etag" ] && [ "$etag" != "$prev_etag" ]; then
@@ -100,19 +123,32 @@ for url in "${URLS[@]}"; do
   elif [ -n "$last_modified" ] && [ "$last_modified" != "$prev_modified" ]; then
     changed=true
     reason="Last-Modified changed"
-  elif [ -n "$content_length" ] && [ "$content_length" != "$(jq -r ".\"$url_key\".content_length // \"\"" "$METADATA_FILE" 2>/dev/null)" ]; then
-    changed=true
-    reason="Content-Length changed"
+  fi
+
+  # ヘッダで判定できない場合（Next.js SSR等）: ページ本体のハッシュ比較
+  if [ "$changed" = false ] && [ -z "$etag" ] && [ -z "$last_modified" ]; then
+    current_hash=$(curl -sL --max-time 15 "$url" 2>/dev/null | md5sum | cut -d' ' -f1 || true)
+    if [ -n "$current_hash" ] && [ "$current_hash" != "$prev_hash" ]; then
+      changed=true
+      reason="Content hash changed"
+    fi
+    # ハッシュをメタデータに保存
+    content_length="$current_hash"  # content_lengthフィールドを流用（後でcontent_hashに保存）
   fi
 
   # メタデータ更新
+  hash_val=""
+  if [ -z "$etag" ] && [ -z "$last_modified" ]; then
+    hash_val="${content_length:-}"
+  fi
   tmp=$(mktemp)
   jq --arg key "$url_key" \
      --arg lm "$last_modified" \
      --arg et "$etag" \
      --arg cl "$content_length" \
+     --arg ch "$hash_val" \
      --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-     '.[$key] = {"last_modified": $lm, "etag": $et, "content_length": $cl, "checked_at": $ts}' \
+     '.[$key] = {"last_modified": $lm, "etag": $et, "content_length": $cl, "content_hash": $ch, "checked_at": $ts}' \
      "$METADATA_FILE" > "$tmp" && mv "$tmp" "$METADATA_FILE"
 
   if [ "$changed" = true ]; then
@@ -149,8 +185,8 @@ ${CHANGED_LIST}
 
 上記以外のURLは変更なしのためスキップしてください。"
 
-log "Starting Claude CLI with --max-budget-usd $MAX_BUDGET ..."
-log "Prompt length: $(echo "$PROMPT" | wc -c) chars"
+log "Starting Claude CLI (サブスク内利用。追加課金なし) ..."
+log "Prompt length: $(echo "$PROMPT" | wc -c | tr -d ' ') chars | URLs: ${#CHANGED_URLS[@]}"
 log "Waiting for Claude CLI response (this may take several minutes)..."
 
 RESULT=$(claude -p "$PROMPT" \
@@ -159,11 +195,11 @@ RESULT=$(claude -p "$PROMPT" \
   --output-format json 2>&1) || true
 
 FINAL_RESULT=$(echo "$RESULT" | jq -r '.result // "No result"' 2>/dev/null || echo "$RESULT")
-COST=$(echo "$RESULT" | jq -r '.cost_usd // "unknown"' 2>/dev/null || echo "unknown")
+COST=$(echo "$RESULT" | jq -r '.total_cost_usd // .cost_usd // "unknown"' 2>/dev/null || echo "unknown")
 DURATION_MS=$(echo "$RESULT" | jq -r '.duration_ms // "unknown"' 2>/dev/null || echo "unknown")
 SESSION_ID=$(echo "$RESULT" | jq -r '.session_id // "unknown"' 2>/dev/null || echo "unknown")
 
-log "Claude CLI finished. Cost: \$$COST | Duration: ${DURATION_MS}ms | Session: $SESSION_ID"
+log "Claude CLI finished. Cost: \$$COST (サブスク内) | Duration: ${DURATION_MS}ms | Session: $SESSION_ID"
 log "Phase 2 time: $(( $(date +%s) - PHASE2_START ))s"
 
 if [ -n "$FINAL_RESULT" ]; then
@@ -210,9 +246,9 @@ ${CHANGED_LIST}
 
 ## 巡回統計
 - チェック対象: ${#URLS[@]} URLs
-- 変更検出: ${#CHANGED_URLS[@]} URLs (Phase 1 header check)
+- 変更検出: ${#CHANGED_URLS[@]} URLs (Phase 1)
 - 未変更スキップ: $((${#URLS[@]} - ${#CHANGED_URLS[@]})) URLs
-- Claude CLI cost: \$$COST
+- Claude CLI利用: サブスク内（追加課金なし）
 
 🤖 Generated by harness-harness patrol system" \
   --base "$BRANCH" 2>&1)
