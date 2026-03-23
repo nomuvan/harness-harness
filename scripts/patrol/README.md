@@ -21,10 +21,11 @@ podman build -t harness-patrol scripts/patrol/
 podman run -d --name harness-patrol \
   -e PATROL_BRANCH=main \
   -e PATROL_SKIP_FORCE_MERGE=false \
-  -v ~/.claude.json:/root/.claude.json:ro \
-  -v ~/.claude:/root/.claude:ro \
+  -v ~/.claude.json:/root/.claude.json:rw \
+  -v ~/.claude:/root/.claude:rw \
   -v ~/.config/gh:/root/.config/gh:ro \
   -v harness-patrol-logs:/patrol-logs \
+  -v harness-patrol-cache:/patrol-cache \
   harness-patrol
 ```
 
@@ -55,6 +56,15 @@ podman rmi harness-patrol  # イメージも削除する場合
 | `PATROL_BRANCH` | `main` | 巡回対象ブランチ |
 | `PATROL_SKIP_FORCE_MERGE` | `false` | `true`: PR作成のみ。`false`: 自動マージまで実行 |
 | `PATROL_MAX_BUDGET_USD` | `5` | 1回の巡回あたりのClaude利用上限（USD） |
+
+## 効率化（2段階方式）
+
+巡回は2段階で実行される:
+
+1. **Phase 1（軽量ヘッダチェック）**: 各URLにHTTP HEADリクエストを送り、Last-Modified/ETag/Content-Lengthを前回値と比較。変更なしのURLはスキップ。Claude CLIのトークンを消費しない
+2. **Phase 2（Claude CLI詳細比較）**: Phase 1で変更検出されたURLのみをClaude CLIに渡す。変更なし日はClaude CLI呼び出し自体をスキップ（コスト0）
+
+キャッシュは`/patrol-cache` ボリュームに保存（`url-metadata.json`）。
 
 ## 認証
 

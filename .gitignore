@@ -16,3 +16,6 @@ credentials.*
 
 # Business domain (excluded from git)
 domain/
+
+# Patrol cache (page content, metadata)
+.patrol-cache/
