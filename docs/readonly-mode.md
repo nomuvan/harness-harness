@@ -25,5 +25,4 @@ git clone https://github.com/nomuvan/harness-harness.git
 
 - MITライセンスなので自由にforkして独自に育ててOK
 - 本家の更新をupstreamから取り込むことも可能
-- 本家への貢献（PR）も歓迎
 - forkした場合、自分のprivate submoduleを接続して完全なharness-harnessとして運用可能
