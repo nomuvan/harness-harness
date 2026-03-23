@@ -20,8 +20,15 @@ log() { echo "[$(date -u +%H:%M:%S)] $*"; }
 log_phase() { echo ""; echo "========== $* =========="; }
 elapsed() { echo "$(( $(date +%s) - START_EPOCH ))s elapsed"; }
 
-# gh CLIをgit credential helperとして設定
-gh auth setup-git 2>/dev/null || true
+# git認証設定: GH_TOKENがあればそれを使用
+if [ -n "${GH_TOKEN:-}" ]; then
+  git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+  log "Git auth: GH_TOKEN configured"
+else
+  gh auth setup-git 2>/dev/null || true
+  git config --global credential.helper '!gh auth git-credential' 2>/dev/null || true
+  log "Git auth: gh credential helper configured"
+fi
 
 log_phase "Patrol Start"
 log "Branch: $BRANCH | SkipForceMerge: $SKIP_FORCE_MERGE | MaxBudget: \$$MAX_BUDGET"
