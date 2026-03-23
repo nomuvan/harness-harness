@@ -15,9 +15,10 @@
 - `kb/` — 外部プロジェクト調査、戦術的知見
 - `templates/` — ハーネステンプレート（Claude/Codex × 目的別）
 - `mapping/` — Claude⇔Codex変換ルール
-- `registry/` — 管理対象プロジェクト一覧
+- `registry/` — 管理対象プロジェクト一覧（テンプレート。実データはprivate/）
 - `scripts/` — クロスプラットフォームユーティリティ
-- `logs/` — 巡回・評価・セッションログ
+- `logs/` — 巡回・評価ログ（匿名化済み。原本はprivate/）
+- `private/` — git submodule（harness-harness-private）。プロジェクト固有情報
 
 ## 重要方針
 
@@ -46,9 +47,27 @@
 - 機能ラインナップは省略せず網羅的に保持。コンテキスト過多は段階的開示で防ぐ
 - 対象プロジェクトに適切なものだけ選択と集中でいいとこ取りする
 
+## 開発プロセス
+
+### ブランチ戦略
+- `main`: 安定版。原則PR経由でマージ
+- `feature/*`: 新機能・改善
+- `plan/*`: 計画策定用（Claude/Codex計画等）
+- private submoduleは本体と独立してmainに直接push可
+
+### PR推奨
+- 変更はfeature/ブランチで作業し、PR経由でmainにマージする
+- 軽微な自己改善（typo修正、コメント追加等）のみmainに直接push可
+
+### プライベート情報の分離
+- プロジェクト固有の情報（プロジェクト名、パス、PR URL等）はprivate/ submoduleに格納
+- public側のログ・registryは匿名化（project-alpha, project-beta等）
+- private/ submoduleへのアクセス権がなくてもReadOnlyモードで利用可能（docs/readonly-mode.md参照）
+
 ## 作業時の注意
 
 - specs/ の仕様書を根拠にハーネスを生成すること
 - テンプレートの変更時は mapping/ の整合性も確認
 - kb/ の更新時は kb/changelog.md に記録
 - 自己改善時は docs/decisions/ にADRを残す
+- 実験的機能は積極利用（docs/philosophy.md参照）
