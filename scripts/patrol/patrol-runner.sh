@@ -13,12 +13,15 @@ CACHE_DIR="/patrol-cache"
 START_EPOCH=$(date +%s)
 
 mkdir -p "$LOG_DIR" "$CACHE_DIR/pages"
-exec > >(tee -a "$LOG_FILE") 2>&1
+exec > >(stdbuf -oL tee -a "$LOG_FILE") 2>&1
 
 # ログユーティリティ
 log() { echo "[$(date -u +%H:%M:%S)] $*"; }
 log_phase() { echo ""; echo "========== $* =========="; }
 elapsed() { echo "$(( $(date +%s) - START_EPOCH ))s elapsed"; }
+
+# gh CLIをgit credential helperとして設定
+gh auth setup-git 2>/dev/null || true
 
 log_phase "Patrol Start"
 log "Branch: $BRANCH | SkipForceMerge: $SKIP_FORCE_MERGE | MaxBudget: \$$MAX_BUDGET"
@@ -71,13 +74,13 @@ for url in "${URLS[@]}"; do
   checked=$((checked + 1))
   url_key=$(echo "$url" | sed 's/[/:.]/_/g')
 
-  headers=$(curl -sI -L --max-time 10 "$url" 2>/dev/null || echo "")
-  last_modified=$(echo "$headers" | grep -i "^last-modified:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r')
-  etag=$(echo "$headers" | grep -i "^etag:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r')
-  content_length=$(echo "$headers" | grep -i "^content-length:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r')
+  headers=$(curl -sI -L --max-time 10 "$url" 2>/dev/null || true)
+  last_modified=$(echo "$headers" | grep -i "^last-modified:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r' || true)
+  etag=$(echo "$headers" | grep -i "^etag:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r' || true)
+  content_length=$(echo "$headers" | grep -i "^content-length:" | head -1 | sed 's/^[^:]*: //' | tr -d '\r' || true)
 
-  prev_modified=$(jq -r ".\"$url_key\".last_modified // \"\"" "$METADATA_FILE" 2>/dev/null)
-  prev_etag=$(jq -r ".\"$url_key\".etag // \"\"" "$METADATA_FILE" 2>/dev/null)
+  prev_modified=$(jq -r ".\"$url_key\".last_modified // \"\"" "$METADATA_FILE" 2>/dev/null || true)
+  prev_etag=$(jq -r ".\"$url_key\".etag // \"\"" "$METADATA_FILE" 2>/dev/null || true)
 
   changed=false
   reason=""
@@ -129,7 +132,7 @@ fi
 log_phase "Phase 2: Claude CLI Patrol (${#CHANGED_URLS[@]} URLs)"
 PHASE2_START=$(date +%s)
 
-CHANGED_LIST=$(printf "- %s\n" "${CHANGED_URLS[@]}")
+CHANGED_LIST=$(printf -- "- %s\n" "${CHANGED_URLS[@]}")
 PROMPT=$(cat /patrol/patrol-prompt.md)
 PROMPT="${PROMPT}
 
@@ -143,18 +146,17 @@ log "Starting Claude CLI with --max-budget-usd $MAX_BUDGET ..."
 log "Prompt length: $(echo "$PROMPT" | wc -c) chars"
 log "Waiting for Claude CLI response (this may take several minutes)..."
 
-# stream-jsonで進捗が見えるように
 RESULT=$(claude -p "$PROMPT" \
   --allowedTools "Bash,Read,Edit,Write,Glob,Grep,WebFetch,WebSearch" \
   --max-budget-usd "$MAX_BUDGET" \
-  --output-format stream-json 2>&1) || true
+  --output-format json 2>&1) || true
 
-# stream-jsonの最後のresultメッセージを抽出
-FINAL_RESULT=$(echo "$RESULT" | grep '"type":"result"' | tail -1 | jq -r '.result // "No result"' 2>/dev/null || echo "")
-COST=$(echo "$RESULT" | grep '"type":"result"' | tail -1 | jq -r '.cost_usd // "unknown"' 2>/dev/null || echo "unknown")
-DURATION_MS=$(echo "$RESULT" | grep '"type":"result"' | tail -1 | jq -r '.duration_ms // "unknown"' 2>/dev/null || echo "unknown")
+FINAL_RESULT=$(echo "$RESULT" | jq -r '.result // "No result"' 2>/dev/null || echo "$RESULT")
+COST=$(echo "$RESULT" | jq -r '.cost_usd // "unknown"' 2>/dev/null || echo "unknown")
+DURATION_MS=$(echo "$RESULT" | jq -r '.duration_ms // "unknown"' 2>/dev/null || echo "unknown")
+SESSION_ID=$(echo "$RESULT" | jq -r '.session_id // "unknown"' 2>/dev/null || echo "unknown")
 
-log "Claude CLI finished. Cost: \$$COST | Duration: ${DURATION_MS}ms"
+log "Claude CLI finished. Cost: \$$COST | Duration: ${DURATION_MS}ms | Session: $SESSION_ID"
 log "Phase 2 time: $(( $(date +%s) - PHASE2_START ))s"
 
 if [ -n "$FINAL_RESULT" ]; then

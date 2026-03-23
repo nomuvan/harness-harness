@@ -38,6 +38,7 @@ COPY crontab /etc/cron.d/patrol
 RUN chmod +x /patrol/patrol-runner.sh \
     && chmod 0644 /etc/cron.d/patrol \
     && crontab /etc/cron.d/patrol \
-    && mkdir -p /patrol-logs
+    && mkdir -p /patrol-logs /patrol-cache/pages \
+    && chmod 777 /patrol-cache /patrol-cache/pages
 
 CMD ["cron", "-f"]
