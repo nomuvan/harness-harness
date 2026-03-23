@@ -34,3 +34,18 @@
 | 採用（中優先度） | 3層スキル優先順位、ゲーティング機構、CSO、2層テスティング、クロスモデル対応 |
 | 検討 | シンボリックリンク戦略、ロールベース設計、ワークフロー選択肢、Git Worktree、自己修正型エージェント |
 | 不採用 | マルチチャネル統合（範囲外）、常駐デーモンモデル（過剰） |
+
+## 2026-03-23 — project-alpha初回dogfoodingフィードバック
+
+### 追加ファイル
+- `logs/evaluations/2026-03-23-project-alpha-diagnosis.md` — project-alphaハーネス診断レポート
+- `logs/evaluations/2026-03-23-project-alpha-improvement-proposal.md` — 改善提案書
+- `logs/evaluations/2026-03-23-project-alpha-feedback.md` — 改善実施後のフィードバック
+- `docs/decisions/ADR-001-harness-improvement-process.md` — 作業プロセス標準化
+
+### 主な学び
+- セキュリティhookに `|| true` は禁物（テンプレートに反映要）
+- hookのJSONパースはjq必須（テンプレートの前提条件に追加要）
+- 診断は推測ではなくファイル内容を実際にパースして判定すべき
+- gitignored設定の改善はPR対応不可（手動推奨として別セクション化要）
+- claude-pr-reviewの指摘品質が高い（ワークフローテンプレート化候補）
