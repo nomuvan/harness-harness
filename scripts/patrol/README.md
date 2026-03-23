@@ -21,9 +21,9 @@ podman build -t harness-patrol scripts/patrol/
 podman run -d --name harness-patrol \
   -e PATROL_BRANCH=main \
   -e PATROL_SKIP_FORCE_MERGE=false \
+  -e GH_TOKEN="$(gh auth token)" \
   -v ~/.claude.json:/root/.claude.json:rw \
   -v ~/.claude:/root/.claude:rw \
-  -v ~/.config/gh:/root/.config/gh:ro \
   -v harness-patrol-logs:/patrol-logs \
   -v harness-patrol-cache:/patrol-cache \
   harness-patrol
