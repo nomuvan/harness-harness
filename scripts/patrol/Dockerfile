@@ -6,8 +6,13 @@ RUN apt-get update && apt-get install -y \
     curl git jq cron ca-certificates gnupg \
     && rm -rf /var/lib/apt/lists/*
 
-# Claude CLI
-RUN curl -fsSL https://code.claude.com/install.sh | bash
+# Node.js (Claude CLI依存)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Claude CLI (npm経由)
+RUN npm install -g @anthropic-ai/claude-code
 
 # GitHub CLI
 RUN mkdir -p -m 755 /etc/apt/keyrings \
