@@ -1,0 +1,18 @@
+# Local settings
+.claude/settings.local.json
+*.local.*
+
+# Logs (sessions are potentially large)
+logs/sessions/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.key
+credentials.*
+
+# Business domain (excluded from git)
+domain/

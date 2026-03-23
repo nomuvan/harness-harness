@@ -1,0 +1,7 @@
+# harness-harness Codex CLI configuration
+
+# Model settings
+# model = "gpt-4.1"
+
+# Approval policy: "auto" | "read-only" | "full-access"
+# approval_policy = "read-only"
