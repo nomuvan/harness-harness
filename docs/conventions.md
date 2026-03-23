@@ -48,6 +48,22 @@
 何が変わるか
 ```
 
+## git worktree
+
+並列ブランチ作業にはgit worktreeを活用する。
+
+- 独立したブランチ作業（Claude計画/Codex計画の並列策定等）ではworktreeで分離
+- worktreeのパスは `../<リポジトリ名>-wt-<ブランチ短縮名>/` とする
+  - 例: `../harnesss-harness-wt-codex-plan/`
+- worktree内の作業完了後、mainへマージしてworktreeを削除
+- Claude Codeのエージェントも `isolation: "worktree"` で独立worktreeを活用可能
+
+### 利点
+
+- ブランチ切り替え不要で並列作業可能
+- エージェント同士のファイル競合を防止
+- Claude計画とCodex計画を同時進行できる
+
 ## コミットメッセージ
 
 - 日本語OK
