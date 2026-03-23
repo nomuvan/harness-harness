@@ -1,6 +1,6 @@
 # Claude Code → Codex CLI 変換ルール
 
-最終更新: 2026-03-23
+最終更新: 2026-03-24
 
 本ドキュメントは Claude Code の各機能が Codex CLI でどのように対応するかを定義する。対応なしの場合は代替策を記載する。
 
@@ -93,12 +93,16 @@ model_reasoning_effort = "high"
 
 | Claude Code | Codex CLI | 備考 |
 |:--|:--|:--|
-| Skills (`SKILL.md`) | **対応なし** | 代替: AGENTS.md 内にワークフロー指示を記述。または MCP ツールとして実装 |
-| `.claude/skills/<name>/SKILL.md` | **対応なし** | Codex にはスキルシステムがない |
+| Skills (`SKILL.md`) | Skills (`SKILL.md`) | **直接対応**。SKILL.md フロントマター形式は同一 |
+| `.claude/skills/<name>/SKILL.md` | `.codex/skills/<name>/SKILL.md` | ディレクトリ構造が同一（`.claude/` → `.codex/`） |
+| `~/.claude/skills/` | `~/.codex/skills/` | グローバルスキルも同一構造 |
+| `/skills` コマンド | `/skills` コマンド | 同等。スキル一覧表示と選択 |
+| `$` メンションでスキル参照 | `$` メンションでスキル参照 | 同等 |
 | `$ARGUMENTS` 変数展開 | **対応なし** | 代替: プロンプトで直接指示を渡す |
 | `context: fork` サブエージェント実行 | サブエージェント機能（実験的） | `[features] multi_agent = true` で有効化 |
 | `allowed-tools` フロントマター | **対応なし** | 代替: `approval_policy` で全体制御 |
 | 動的コンテキスト注入 (`` !`command` ``) | **対応なし** | 代替: シェルスクリプトで事前にコンテキストを生成し、プロンプトに含める |
+| バンドルスキル多数 | バンドル3種（`skill-creator`, `skill-installer`, `openai-docs`） | Claude の方がバンドルスキルは豊富 |
 
 ---
 
@@ -128,7 +132,7 @@ model_reasoning_effort = "high"
 | `/sandbox` | **対応なし** | 代替: `--sandbox` CLI フラグ |
 | `/add-dir` | `--add-dir` CLI フラグ | Claude はコマンド、Codex はフラグのみ |
 | `/agents` | `/agent` | 同等（名称が微妙に異なる） |
-| `/skills` | **対応なし** | Codex にスキル概念なし |
+| `/skills` | `/skills` | 同等。両方ともスキル一覧を表示 |
 | `/batch` | **対応なし** | 代替: `codex exec` をシェルスクリプトで並列実行 |
 | `/btw` | **対応なし** | 代替: 通常のプロンプトで質問 |
 | `/rewind` | **対応なし** | Codex にチェックポイント機能なし |
@@ -138,25 +142,50 @@ model_reasoning_effort = "high"
 
 ## 6. Hooks
 
+> **2026-03-24 更新**: Codex CLI が Hooks を実験的にサポート開始。ただし対応イベントは 3 種、ハンドラは command のみと、Claude Code（17+ イベント、4 ハンドラ種別）に比べ限定的。
+
 | Claude Code | Codex CLI | 備考 |
 |:--|:--|:--|
-| Hooks システム全体 | **対応なし** | Codex にフックシステムは存在しない |
+| Hooks システム全体 | **部分対応**（実験的） | `codex_hooks` フラグで有効化。`config.toml` の `[[hooks]]` で設定 |
+| `SessionStart` | `SessionStart` | **直接対応**。command ハンドラのみ |
+| `Stop` フック | `Stop` | **直接対応**。command ハンドラのみ |
+| `UserPromptSubmit` | `UserPromptSubmit` | **直接対応**。終了コード 2 でブロック可能。command ハンドラのみ |
 | `PreToolUse` | **対応なし** | 代替: `approval_policy` と AGENTS.md の指示で制御 |
 | `PostToolUse` | **対応なし** | 代替: AGENTS.md に「編集後は lint を実行」と記述 |
-| `SessionStart` | **対応なし** | 代替: シェルラッパースクリプトで `codex` 起動前に処理を実行 |
-| `SessionEnd` | **対応なし** | 代替: シェルラッパースクリプトで終了後に処理を実行 |
-| `Stop` フック | **対応なし** | 代替: `codex exec` の終了後にシェルスクリプトで後処理 |
+| `SessionEnd` | **対応なし** | `Stop` で部分的に代替可能 |
+| `Notification` 他 14+ イベント | **対応なし** | Codex は 3 イベントのみ |
 | HTTP ハンドラ | **対応なし** | 代替: MCP サーバーとして Webhook 連携を実装 |
 | Prompt ハンドラ | **対応なし** | 代替: AGENTS.md に判断基準を記述 |
 | Agent ハンドラ | **対応なし** | 代替: サブエージェント機能（実験的）で部分的に代替 |
 
-### 6.1 Hooks の代替パターン
+### 6.1 設定形式の違い
 
-Claude の Hooks は決定論的な制御を提供するが、Codex にはこの概念がない。以下のパターンで代替する:
+```
+# Claude Code (settings.json)
+{
+  "hooks": {
+    "SessionStart": [
+      { "type": "command", "command": "echo 'start'" }
+    ]
+  }
+}
+
+# Codex CLI (config.toml)
+[features]
+codex_hooks = true
+
+[[hooks]]
+event = "SessionStart"
+command = "echo 'start'"
+```
+
+### 6.2 Hooks の代替パターン（対応なしイベント向け）
+
+Codex の Hooks では賄えない Claude イベント（`PreToolUse`, `PostToolUse` 等）には、引き続き以下のパターンで代替する:
 
 1. **ツール実行前バリデーション** → `approval_policy = "on-request"` + AGENTS.md に制約を記述
 2. **ファイル編集後の自動処理** → AGENTS.md に「ファイル編集後は必ず lint/format を実行」と記述
-3. **セッション制御** → シェルラッパースクリプトで `codex` コマンドをラップ
+3. **セッション制御** → `SessionStart` / `Stop` フックを活用（ラッパースクリプトとの併用も可能）
 4. **外部通知** → MCP サーバーで Webhook 送信機能を提供
 
 ---

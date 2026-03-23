@@ -1,6 +1,6 @@
 # 共通概念対照表
 
-最終更新: 2026-03-23
+最終更新: 2026-03-24
 
 Claude Code と Codex CLI が共有する概念の対照表。harness-harness による抽象化レイヤー設計の基盤とする。
 
@@ -178,27 +178,84 @@ servers:
 
 ---
 
-## 9. Hooks / ライフサイクル制御
+## 9. Skills
+
+> **2026-03-24 追加**: Codex CLI が Skills を正式サポート（stable）。両プラットフォームで SKILL.md フォーマットが共通となり、Skills は完全な共通概念となった。
 
 | 概念 | Claude Code | Codex CLI | 抽象化の方針 |
 |:--|:--|:--|:--|
-| **フックシステム** | 包括的なイベント駆動フック | なし | Claude 固有。Codex では AGENTS.md + シェルスクリプトで代替 |
-| **ハンドラ種別** | Command, HTTP, Prompt, Agent | なし | - |
-| **ブロッキング制御** | 終了コード 2 でブロック | なし | - |
-| **ツール実行前バリデーション** | `PreToolUse` | なし | Codex は `approval_policy` で代替 |
-| **ツール実行後処理** | `PostToolUse` | なし | Codex は AGENTS.md で「実行後に必ず〇〇する」と記述 |
+| **スキルシステム** | 正式機能 | 正式機能（stable） | **共通** |
+| **フォーマット** | SKILL.md（YAML フロントマター） | SKILL.md（YAML フロントマター） | 同一フォーマット。変換不要 |
+| **プロジェクトスコープ** | `.claude/skills/` | `.codex/skills/` | ディレクトリ名のみ異なる |
+| **ユーザースコープ** | `~/.claude/skills/` | `~/.codex/skills/` | ディレクトリ名のみ異なる |
+| **起動: コマンド** | `/skills` | `/skills` | 同等 |
+| **起動: メンション** | `$` メンション | `$` メンション | 同等 |
+| **起動: 暗黙マッチング** | サポート | サポート | 同等 |
+| **`$ARGUMENTS` 変数** | サポート | **未確認** | Claude では確実にサポート |
+| **`allowed-tools` フロントマター** | サポート | **未確認** | Claude 固有の可能性 |
+| **`context: fork` フロントマター** | サポート | **未確認** | Claude 固有の可能性 |
+| **動的コンテキスト** | `` !`command` `` | **未確認** | Claude 固有の可能性 |
+| **MCP 依存自動インストール** | デフォルト有効 | `skill_mcp_dependency_install = true`（stable） | 同等 |
 
-### 9.1 Hooks の抽象化方針
+### 9.1 Skills の抽象化方針
 
-Hooks は Claude 固有の強力な機能であり、Codex には直接対応がない。harness-harness の抽象化では:
+Skills は両プラットフォームで最も互換性の高い概念の一つ:
 
-1. **ラッパースクリプトパターン**: `codex` コマンドをシェルスクリプトでラップし、前処理・後処理を実行
-2. **AGENTS.md 指示パターン**: 決定論的制御が不要な場合は AGENTS.md に指示として記述
-3. **MCP 連携パターン**: 外部通知やバリデーションは MCP サーバーとして実装し、両プラットフォームから利用
+1. **SKILL.md の共有**: 同一の SKILL.md ファイルを `.claude/skills/` と `.codex/skills/` の両方に配置可能
+2. **ディレクトリ名変換のみ**: 唯一の違いは親ディレクトリ名（`.claude/` vs `.codex/`）
+3. **共通テンプレート**: `templates/shared/skills/` にスキルテンプレートを配置し、両プラットフォーム向けにコピーするだけで利用可能
 
 ---
 
-## 10. 非対話実行（CI/CD 統合）
+## 10. Hooks / ライフサイクル制御
+
+> **2026-03-24 更新**: Codex CLI が Hooks を実験的サポート開始。3 イベント・command ハンドラのみだが、共通概念として扱えるようになった。
+
+| 概念 | Claude Code | Codex CLI | 抽象化の方針 |
+|:--|:--|:--|:--|
+| **フックシステム** | 包括的なイベント駆動フック（17+ イベント） | 実験的サポート（3 イベント） | 共通の 3 イベントを抽象化。残りは Claude 固有として扱う |
+| **設定形式** | JSON (`"hooks"` オブジェクト) | TOML (`[[hooks]]` テーブル配列) | 抽象スキーマから各形式に変換 |
+| **有効化** | デフォルト有効 | `codex_hooks` フラグで有効化（デフォルト無効） | Codex では明示的に有効化が必要 |
+| **SessionStart** | サポート | サポート | **共通** |
+| **Stop** | サポート | サポート | **共通** |
+| **UserPromptSubmit** | サポート | サポート | **共通**。終了コード 2 でブロック |
+| **PreToolUse** | サポート | なし | Claude 固有。Codex は `approval_policy` で代替 |
+| **PostToolUse** | サポート | なし | Claude 固有。Codex は AGENTS.md で記述 |
+| **その他 12+ イベント** | サポート | なし | Claude 固有 |
+| **ハンドラ: Command** | サポート | サポート | **共通** |
+| **ハンドラ: HTTP** | サポート | なし | Claude 固有 |
+| **ハンドラ: Prompt** | サポート | なし | Claude 固有 |
+| **ハンドラ: Agent** | サポート | なし | Claude 固有 |
+| **ブロッキング制御** | 終了コード 2 でブロック | 終了コード 2 でブロック（`UserPromptSubmit`） | **共通** |
+
+### 9.1 Hooks の抽象化方針
+
+Hooks は Claude が先行し Codex が部分的に追随した領域。harness-harness の抽象化では:
+
+1. **共通イベント活用**: `SessionStart`, `Stop`, `UserPromptSubmit` の 3 イベントは両プラットフォームで利用可能。抽象スキーマから各形式（JSON / TOML）に変換する
+2. **ラッパースクリプト併用**: Codex で対応していないイベント（`PreToolUse` 等）が必要な場合は、引き続きラッパースクリプトで補完する
+3. **MCP 連携パターン**: 外部通知やバリデーションは MCP サーバーとして実装し、両プラットフォームから利用
+4. **段階的移行**: Codex の Hooks が成熟するにつれ、ラッパースクリプトから Hooks ネイティブに移行する計画を持つ
+
+### 9.2 Hooks 共通スキーマ例
+
+```yaml
+# harness-harness 抽象スキーマ
+hooks:
+  - event: SessionStart
+    handler: command
+    command: "python3 scripts/preflight.py"
+  - event: UserPromptSubmit
+    handler: command
+    command: "python3 scripts/validate-prompt.py"
+  - event: Stop
+    handler: command
+    command: "python3 scripts/postflight.py"
+```
+
+---
+
+## 11. 非対話実行（CI/CD 統合）
 
 | 概念 | Claude Code | Codex CLI | 抽象化の方針 |
 |:--|:--|:--|:--|
@@ -227,7 +284,7 @@ fi
 
 ---
 
-## 11. 機能対応サマリー
+## 12. 機能対応サマリー
 
 各概念の対応状況を一覧する。
 
@@ -239,9 +296,9 @@ fi
 | 権限管理 | 細粒度 | ポリシーベース | 低（抽象レベルでの統一が必要） |
 | サンドボックス | サポート | サポート | 高（3段階モデルで統一可能） |
 | セッション管理 | 包括的 | 包括的 | 高（コマンド名は異なるが機能は同等） |
-| Hooks | 包括的 | なし | なし（Claude 固有、Codex は代替策で対処） |
+| Hooks | 包括的（17+ イベント） | 実験的（3 イベント） | 低（共通 3 イベントのみ。Claude が大幅にリード） |
 | サブエージェント | 正式機能 | 実験的 | 低（機能差が大きい） |
-| Skills | 包括的 | なし | なし（Claude 固有） |
+| Skills | 包括的 | 正式サポート（stable） | 高（SKILL.md フォーマット共通、ディレクトリ名変換のみ） |
 | プロファイル | なし | サポート | なし（Codex 固有、Claude はエイリアスで代替） |
 | 非対話実行 | サポート | 包括的 | 高（フラグ名変換で対応可能） |
 | Web 検索 | なし | サポート | なし（Codex 固有） |
