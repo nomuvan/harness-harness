@@ -94,8 +94,8 @@ model_reasoning_effort = "high"
 | Claude Code | Codex CLI | 備考 |
 |:--|:--|:--|
 | Skills (`SKILL.md`) | Skills (`SKILL.md`) | **直接対応**。SKILL.md フロントマター形式は同一 |
-| `.claude/skills/<name>/SKILL.md` | `.codex/skills/<name>/SKILL.md` | ディレクトリ構造が同一（`.claude/` → `.codex/`） |
-| `~/.claude/skills/` | `~/.codex/skills/` | グローバルスキルも同一構造 |
+| `.claude/skills/<name>/SKILL.md` | `.agents/skills/<name>/SKILL.md` | ディレクトリ名が異なる（`.claude/skills/` → `.agents/skills/`）。**2026-03更新**: Codex は `.codex/skills/` から `.agents/skills/` に移行 |
+| `~/.claude/skills/` | `$HOME/.agents/skills/` | グローバルスキルのパスも変更 |
 | `/skills` コマンド | `/skills` コマンド | 同等。スキル一覧表示と選択 |
 | `$` メンションでスキル参照 | `$` メンションでスキル参照 | 同等 |
 | `$ARGUMENTS` 変数展開 | **対応なし** | 代替: プロンプトで直接指示を渡す |

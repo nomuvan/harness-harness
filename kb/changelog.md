@@ -1,5 +1,71 @@
 # kb/ 変更履歴
 
+## 2026-03-23 — 公式ドキュメント巡回（自律巡回）
+
+### 巡回対象URL
+- Claude Code: settings, skills, hooks, mcp, agent-teams, best-practices, sub-agents, headless（全8ページ）
+- Codex CLI: config-reference, slash-commands, skills, changelog（全4ページ）
+
+### 検出された変更と更新内容
+
+#### Claude Code
+
+1. **specs/claude/configuration.md** — 新設定キー15件追加
+   - `respectGitignore`, `includeGitInstructions`, `channelsEnabled`, `allowManagedPermissionRulesOnly`
+   - `strictKnownMarketplaces`, `blockedMarketplaces`, `pluginTrustMessage`
+   - `awsAuthRefresh`, `awsCredentialExport`, `voiceEnabled`
+   - `spinnerTipsEnabled`, `spinnerTipsOverride`, `prefersReducedMotion`
+   - `fastModePerSessionOptIn`, `teammateMode`, `feedbackSurveyRate`, `showClearContextOnPlanAccept`
+   - `includeCoAuthoredBy` の非推奨化を記録
+
+2. **specs/claude/mcp.md** — 新機能5件追加
+   - MCP Tool Search（`ENABLE_TOOL_SEARCH`）
+   - MCP Resources（`@` メンション参照）
+   - MCP Elicitation（Form/URL モード）
+   - `claude mcp serve`（Claude Code を MCP サーバーとして使用）
+   - OAuth 詳細（固定コールバックポート、事前設定認証情報、メタデータディスカバリ）
+   - Managed MCP の Policy-based Control（`serverName`/`serverCommand`/`serverUrl` マッチング）
+
+3. **specs/claude/skills-and-commands.md** — 3件更新
+   - ビルトインサブエージェント追加: `statusline-setup`, `Claude Code Guide`
+   - ヘッドレスモード（非対話モード）セクション新規追加: `--bare`, `--output-format`, `--json-schema`, `--allowedTools`, `--continue`/`--resume`
+
+#### Codex CLI
+
+4. **specs/codex/configuration.md** — 大規模更新
+   - 新設定キー9件追加: `model_context_window`, `forced_login_method`, `forced_chatgpt_workspace_id`, `cli_auth_credentials_store`, `default_permissions`, `file_opener`, `check_for_update_on_startup`, `allow_login_shell`
+   - 新機能フラグ2件: `unified_exec`（stable）, `undo`
+   - Agent管理セクション新規追加: `agents.max_threads`, `agents.max_depth`, `agents.<name>.description`
+   - UI設定セクション新規追加: `tui.theme`, `tui.animations`, `tui.notifications`, `tui.status_line`
+   - 承認粒度セクション新規追加: `approval_policy.granular.*`
+   - **Skills パス変更**: `.codex/skills/` → `.agents/skills/`（CWD/親/ルート/ユーザー/管理者/システムの6レベル）
+   - `agents/openai.yaml` メタデータ追加: UI設定、`allow_implicit_invocation`ポリシー、ツール依存定義
+   - スキルインストーラー（`$skill-installer`）の追加
+   - スキル有効化/無効化設定の追加
+
+5. **specs/codex/commands.md** — `/send-feedback` コマンド追加
+
+6. **Codex Changelog 主要項目**:
+   - CLI 0.116.0（2026-03-19）: `userpromptsubmit` フック、Realtime セッション改善
+   - GPT-5.4 mini（2026-03-17）: 新モデル追加
+   - CLI 0.115.0（2026-03-16）: `view_image`, Smart Approvals, Python SDK
+   - CLI 0.114.0（2026-03-11）: 実験的Hooks（SessionStart, Stop）、Code Mode
+
+#### Mapping 更新
+
+7. **mapping/claude-to-codex.md** — Skills パスを `.codex/skills/` → `.agents/skills/` に更新
+8. **mapping/codex-to-claude.md** — 同上 + 移行ガイド更新
+9. **mapping/shared-concepts.md** — Skills パス更新 + `agents/openai.yaml` メタデータ拡張を追記
+
+### 変更なし（差分なし確認済み）
+- specs/claude/hooks.md — 既存仕様書が最新の公式ドキュメントと一致
+- specs/claude/agent-teams.md — 既存仕様書が最新の公式ドキュメントと一致
+- specs/claude/best-practices.md — 軽微な追加（Chrome拡張、プラグイン言及）のみ。仕様影響なし
+
+### 要確認事項
+- Codex Skills の `.codex/skills/` → `.agents/skills/` パス変更が正式な移行なのか、並行サポートなのかは公式アナウンスで確認が必要
+- Codex CLI 0.116.0 の `userpromptsubmit` フックが Hooks 仕様の正式イベント追加なのか要確認
+
 ## 2026-03-23 — 外部プロジェクト初期調査
 
 ### 追加ファイル

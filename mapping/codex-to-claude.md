@@ -118,8 +118,8 @@ echo "プロファイル '$1' を有効化しました"
 | Codex CLI | Claude Code | 備考 |
 |:--|:--|:--|
 | Skills (`SKILL.md`) | Skills (`SKILL.md`) | **直接対応**。フロントマター形式は同一 |
-| `.codex/skills/<name>/SKILL.md` | `.claude/skills/<name>/SKILL.md` | ディレクトリ構造が同一（`.codex/` → `.claude/`） |
-| `~/.codex/skills/` | `~/.claude/skills/` | グローバルスキルも同一構造 |
+| `.agents/skills/<name>/SKILL.md`（**2026-03更新**: 旧 `.codex/skills/`） | `.claude/skills/<name>/SKILL.md` | ディレクトリ名が異なる |
+| `$HOME/.agents/skills/`（**2026-03更新**: 旧 `~/.codex/skills/`） | `~/.claude/skills/` | グローバルスキルのパスも異なる |
 | `/skills` コマンド | `/skills` コマンド | 同等 |
 | `$` メンションでスキル参照 | `$` メンションでスキル参照 | 同等 |
 | 暗黙マッチング | 暗黙マッチング | 同等 |
@@ -132,7 +132,7 @@ echo "プロファイル '$1' を有効化しました"
 
 Codex と Claude の Skills は SKILL.md フォーマットが共通のため、移行は容易:
 
-1. `.codex/skills/` を `.claude/skills/` にコピー
+1. `.agents/skills/`（旧 `.codex/skills/`）を `.claude/skills/` にコピー
 2. `$ARGUMENTS` 変数展開は Claude でもサポート
 3. Claude は `allowed-tools`, `context: fork`, 動的コンテキスト注入 (`` !`command` ``) など追加機能あり
 

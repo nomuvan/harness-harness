@@ -1,6 +1,6 @@
 # Claude Code 設定仕様書
 
-最終更新: 2026-03-23
+最終更新: 2026-03-23（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/settings / https://code.claude.com/docs/en/memory
 
@@ -138,6 +138,25 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `plansDirectory` | プランファイル保存先 |
 | `spinnerVerbs` | スピナー動詞カスタマイズ |
 | `autoUpdatesChannel` | 更新チャンネル (`stable` / `latest`) |
+| `respectGitignore` | `@` ファイルピッカーで `.gitignore` を尊重（デフォルト: `true`） |
+| `includeGitInstructions` | 組み込みcommit/PRワークフロー指示の有効化（デフォルト: `true`） |
+| `attribution` | git commit/PR 帰属表記設定（`commit`, `pr` キー） |
+| `includeCoAuthoredBy` | **非推奨**: `attribution` を使用 |
+| `channelsEnabled` | （Managed のみ）Team/Enterprise ユーザーのチャンネル機能 |
+| `allowManagedPermissionRulesOnly` | （Managed のみ）ユーザー/プロジェクトの権限ルール定義を禁止 |
+| `strictKnownMarketplaces` | プラグインマーケットプレース許可リスト |
+| `blockedMarketplaces` | （Managed のみ）マーケットプレースブロックリスト |
+| `pluginTrustMessage` | （Managed のみ）プラグイン信頼警告のカスタムメッセージ |
+| `awsAuthRefresh` | AWS認証リフレッシュカスタムスクリプト |
+| `awsCredentialExport` | AWS認証情報JSON出力カスタムスクリプト |
+| `voiceEnabled` | プッシュトゥトーク音声入力の有効化 |
+| `spinnerTipsEnabled` | スピナーヒント表示（デフォルト: `true`） |
+| `spinnerTipsOverride` | カスタムスピナーヒント（`excludeDefault`, `tips` キー） |
+| `prefersReducedMotion` | UIアニメーション削減 |
+| `fastModePerSessionOptIn` | セッションごとのFastモードオプトイン要求 |
+| `teammateMode` | Agent Teams表示モード（`auto` / `in-process` / `tmux`） |
+| `feedbackSurveyRate` | セッション品質アンケート確率（0-1） |
+| `showClearContextOnPlanAccept` | プラン承認画面で「コンテキストクリア」オプション表示 |
 | `worktree.symlinkDirectories` | ワークツリーシンボリックリンク対象 |
 | `worktree.sparsePaths` | ワークツリースパースチェックアウト対象 |
 
