@@ -8,12 +8,14 @@ harness-harnessはpush権限がなくてもReadOnlyで利用可能。
 git clone https://github.com/nomuvan/harness-harness.git
 ```
 
-以下を参照してハーネスを手動作成:
+AIがspecs/, templates/, mapping/等を参照して対象プロジェクトのハーネスを自動生成できる:
 - `specs/` — Claude Code, Codex CLIの仕様書
 - `kb/` — 外部プロジェクト調査、戦術的知見
 - `mapping/` — Claude⇔Codex変換ルール
 - `templates/` — ハーネステンプレート（準備中）
 - `docs/philosophy.md` — 設計思想・方針
+
+harness-harness自体はReadOnly（書き込み不可）だが、対象プロジェクトへのハーネス生成は通常通り動作する。
 
 ## 制限事項
 
