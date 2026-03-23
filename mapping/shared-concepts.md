@@ -186,8 +186,8 @@ servers:
 |:--|:--|:--|:--|
 | **スキルシステム** | 正式機能 | 正式機能（stable） | **共通** |
 | **フォーマット** | SKILL.md（YAML フロントマター） | SKILL.md（YAML フロントマター） | 同一フォーマット。変換不要 |
-| **プロジェクトスコープ** | `.claude/skills/` | `.codex/skills/` | ディレクトリ名のみ異なる |
-| **ユーザースコープ** | `~/.claude/skills/` | `~/.codex/skills/` | ディレクトリ名のみ異なる |
+| **プロジェクトスコープ** | `.claude/skills/` | `.agents/skills/`（**2026-03更新**: `.codex/skills/` から移行） | ディレクトリ名が異なる |
+| **ユーザースコープ** | `~/.claude/skills/` | `$HOME/.agents/skills/`（**2026-03更新**: `~/.codex/skills/` から移行） | ディレクトリ名が異なる |
 | **起動: コマンド** | `/skills` | `/skills` | 同等 |
 | **起動: メンション** | `$` メンション | `$` メンション | 同等 |
 | **起動: 暗黙マッチング** | サポート | サポート | 同等 |
@@ -201,9 +201,10 @@ servers:
 
 Skills は両プラットフォームで最も互換性の高い概念の一つ:
 
-1. **SKILL.md の共有**: 同一の SKILL.md ファイルを `.claude/skills/` と `.codex/skills/` の両方に配置可能
-2. **ディレクトリ名変換のみ**: 唯一の違いは親ディレクトリ名（`.claude/` vs `.codex/`）
+1. **SKILL.md の共有**: 同一の SKILL.md ファイルを `.claude/skills/` と `.agents/skills/` の両方に配置可能
+2. **ディレクトリ名変換のみ**: 唯一の違いは親ディレクトリ名（`.claude/skills/` vs `.agents/skills/`）
 3. **共通テンプレート**: `templates/shared/skills/` にスキルテンプレートを配置し、両プラットフォーム向けにコピーするだけで利用可能
+4. **Codex のメタデータ拡張**: Codex は `agents/openai.yaml` で UI 表示設定・暗黙呼び出しポリシー・ツール依存を追加定義可能（Claude 側には対応なし）
 
 ---
 
