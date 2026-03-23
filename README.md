@@ -47,4 +47,4 @@ private/    git submodule（プロジェクト固有データ）
 
 ## ReadOnlyモード
 
-push権限やprivate submoduleへのアクセスがなくてもReadOnlyで利用可能。specs/, kb/, mapping/, templates/ を参照してハーネスを手動作成できる。MITライセンスなので自由にforkして独自に育ててOK。詳細は [docs/readonly-mode.md](docs/readonly-mode.md) 参照。
+push権限やprivate submoduleへのアクセスがなくてもReadOnlyで利用可能。AIがspecs/, kb/, mapping/, templates/ を参照して対象プロジェクトのハーネスを自動生成できる。harness-harness自体への書き込み（ログ記録等）のみ制限される。MITライセンスなので自由にforkして独自に育ててOK。詳細は [docs/readonly-mode.md](docs/readonly-mode.md) 参照。
