@@ -33,6 +33,7 @@ WORKDIR /workspace
 # パトロールスクリプトをコピー
 COPY patrol-runner.sh /patrol/patrol-runner.sh
 COPY patrol-prompt.md /patrol/patrol-prompt.md
+COPY patrol-urls.txt /patrol/patrol-urls.txt
 COPY crontab /etc/cron.d/patrol
 
 RUN chmod +x /patrol/patrol-runner.sh \
