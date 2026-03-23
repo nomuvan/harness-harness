@@ -89,3 +89,14 @@ AIが何をしているか、何ができて何ができないか、どれくら
 | 1 (現在) | 協業 | AIが提案、ユーザーが承認 |
 | 2 | 半自律 | 非破壊的変更はAI自動実行。構造変更は提案 |
 | 3 | 自律 | 全自律改善サイクル。ユーザーは定期サマリーレビュー |
+
+### 実験的機能の積極利用
+
+Claude Code、Codex CLIの実験的機能（experimental/under development）は積極的に利用する。
+
+- Agent Teams（CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS）
+- Codex Hooks（codex_hooks）
+- その他、各プラットフォームの新機能・実験機能
+- 実験的機能で得た知見はspecs/やkb/に即座にフィードバック
+- 安定化したら「実験的」の注釈を削除
+- リスクは理解した上で、得られる知見・先行優位を重視する
