@@ -1,0 +1,239 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# manage-schedule.sh — launchdスケジュールの登録・一覧・変更・削除
+#
+# Usage:
+#   manage-schedule.sh create <name> <cron-expr> <session> <workdir> <claude-cmd> <prompt>
+#   manage-schedule.sh list
+#   manage-schedule.sh update <name> <cron-expr>
+#   manage-schedule.sh delete <name>
+
+PLIST_DIR="$HOME/Library/LaunchAgents"
+LABEL_PREFIX="com.harness-schedule"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+RUNNER="$SCRIPT_DIR/run-scheduled-prompt.sh"
+
+# cron式(m h dom mon dow)をlaunchdのStartCalendarIntervalに変換
+cron_to_plist_interval() {
+  local cron_expr="$1"
+  local minute hour day month weekday
+  read -r minute hour day month weekday <<< "$cron_expr"
+
+  echo "    <key>StartCalendarInterval</key>"
+
+  # 複数エントリが必要な場合(カンマ区切り)は配列にする
+  if [[ "$minute" == *","* ]] || [[ "$hour" == *","* ]]; then
+    echo "    <array>"
+    # 簡易実装: 単一値のみ対応
+    echo "    <dict>"
+    [ "$minute" != "*" ] && echo "        <key>Minute</key><integer>$minute</integer>"
+    [ "$hour" != "*" ] && echo "        <key>Hour</key><integer>$hour</integer>"
+    [ "$day" != "*" ] && echo "        <key>Day</key><integer>$day</integer>"
+    [ "$month" != "*" ] && echo "        <key>Month</key><integer>$month</integer>"
+    [ "$weekday" != "*" ] && echo "        <key>Weekday</key><integer>$weekday</integer>"
+    echo "    </dict>"
+    echo "    </array>"
+  else
+    echo "    <dict>"
+    [ "$minute" != "*" ] && echo "        <key>Minute</key><integer>$minute</integer>"
+    [ "$hour" != "*" ] && echo "        <key>Hour</key><integer>$hour</integer>"
+    [ "$day" != "*" ] && echo "        <key>Day</key><integer>$day</integer>"
+    [ "$month" != "*" ] && echo "        <key>Month</key><integer>$month</integer>"
+    [ "$weekday" != "*" ] && echo "        <key>Weekday</key><integer>$weekday</integer>"
+    echo "    </dict>"
+  fi
+}
+
+create_schedule() {
+  local name="$1"
+  local cron_expr="$2"
+  local session="$3"
+  local workdir="$4"
+  local claude_cmd="$5"
+  local prompt="$6"
+
+  local label="${LABEL_PREFIX}.${name}"
+  local plist_file="${PLIST_DIR}/${label}.plist"
+  local log_dir="$HOME/.local/share/harness-schedule/logs"
+
+  mkdir -p "$log_dir"
+
+  if [ -f "$plist_file" ]; then
+    echo "ERROR: Schedule '$name' already exists. Use 'update' or 'delete' first."
+    return 1
+  fi
+
+  # プロンプトをファイルに保存（plistのエスケープ問題回避）
+  local prompt_dir="$HOME/.local/share/harness-schedule/prompts"
+  mkdir -p "$prompt_dir"
+  echo "$prompt" > "$prompt_dir/${name}.txt"
+
+  local interval
+  interval=$(cron_to_plist_interval "$cron_expr")
+
+  cat > "$plist_file" << PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>${label}</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>${RUNNER}</string>
+        <string>${session}</string>
+        <string>${workdir}</string>
+        <string>${claude_cmd}</string>
+        <string>${prompt}</string>
+    </array>
+${interval}
+    <key>StandardOutPath</key>
+    <string>${log_dir}/${name}-stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>${log_dir}/${name}-stderr.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:$HOME/.local/bin:$HOME/.nodenv/shims</string>
+        <key>HOME</key>
+        <string>$HOME</string>
+    </dict>
+</dict>
+</plist>
+PLIST
+
+  launchctl load "$plist_file"
+  echo "Created schedule '$name' ($cron_expr)"
+  echo "  Label: $label"
+  echo "  Plist: $plist_file"
+  echo "  Session: $session | Workdir: $workdir"
+}
+
+list_schedules() {
+  echo "=== harness-schedule 一覧 ==="
+  local found=false
+  for plist in "$PLIST_DIR"/${LABEL_PREFIX}.*.plist; do
+    [ -f "$plist" ] || continue
+    found=true
+    local label
+    label=$(defaults read "$plist" Label 2>/dev/null)
+    local name="${label#${LABEL_PREFIX}.}"
+
+    # スケジュール情報を抽出
+    local status
+    if launchctl list "$label" >/dev/null 2>&1; then
+      status="active"
+    else
+      status="inactive"
+    fi
+
+    # plistからセッション名とプロンプトを取得
+    local args
+    args=$(defaults read "$plist" ProgramArguments 2>/dev/null | tr -d '()",' | tr '\n' ' ')
+
+    echo ""
+    echo "  Name: $name"
+    echo "  Status: $status"
+    echo "  Label: $label"
+    echo "  Plist: $plist"
+    echo "  Args: $args"
+  done
+
+  if [ "$found" = false ]; then
+    echo "  (スケジュールなし)"
+  fi
+}
+
+update_schedule() {
+  local name="$1"
+  local cron_expr="$2"
+
+  local label="${LABEL_PREFIX}.${name}"
+  local plist_file="${PLIST_DIR}/${label}.plist"
+
+  if [ ! -f "$plist_file" ]; then
+    echo "ERROR: Schedule '$name' not found."
+    return 1
+  fi
+
+  # unload → plist書き換え → reload
+  launchctl unload "$plist_file" 2>/dev/null || true
+
+  # StartCalendarIntervalを置換
+  local interval
+  interval=$(cron_to_plist_interval "$cron_expr")
+
+  # pythonでplist編集（sedでXML編集は危険）
+  python3 << PYEOF
+import plistlib, sys
+
+with open("$plist_file", "rb") as f:
+    plist = plistlib.load(f)
+
+parts = "$cron_expr".split()
+cal = {}
+if parts[0] != "*": cal["Minute"] = int(parts[0])
+if parts[1] != "*": cal["Hour"] = int(parts[1])
+if parts[2] != "*": cal["Day"] = int(parts[2])
+if parts[3] != "*": cal["Month"] = int(parts[3])
+if parts[4] != "*": cal["Weekday"] = int(parts[4])
+
+plist["StartCalendarInterval"] = cal
+
+with open("$plist_file", "wb") as f:
+    plistlib.dump(plist, f)
+PYEOF
+
+  launchctl load "$plist_file"
+  echo "Updated schedule '$name' to: $cron_expr"
+}
+
+delete_schedule() {
+  local name="$1"
+  local label="${LABEL_PREFIX}.${name}"
+  local plist_file="${PLIST_DIR}/${label}.plist"
+
+  if [ ! -f "$plist_file" ]; then
+    echo "ERROR: Schedule '$name' not found."
+    return 1
+  fi
+
+  launchctl unload "$plist_file" 2>/dev/null || true
+  rm -f "$plist_file"
+
+  # プロンプトファイルも削除
+  rm -f "$HOME/.local/share/harness-schedule/prompts/${name}.txt"
+
+  echo "Deleted schedule '$name'"
+}
+
+# メインディスパッチ
+case "${1:-help}" in
+  create)
+    shift
+    create_schedule "$@"
+    ;;
+  list)
+    list_schedules
+    ;;
+  update)
+    shift
+    update_schedule "$@"
+    ;;
+  delete)
+    shift
+    delete_schedule "$@"
+    ;;
+  *)
+    echo "Usage:"
+    echo "  $0 create <name> <cron-expr> <session> <workdir> <claude-cmd> <prompt>"
+    echo "  $0 list"
+    echo "  $0 update <name> <cron-expr>"
+    echo "  $0 delete <name>"
+    echo ""
+    echo "Example:"
+    echo "  $0 create daily-patrol '0 3 * * *' harness-patrol /path/to/harness 'claude --dangerously-skip-permissions' '巡回して'"
+    ;;
+esac
