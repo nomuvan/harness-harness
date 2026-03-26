@@ -1,5 +1,57 @@
 # kb/ 変更履歴
 
+## 2026-03-26 — 公式ドキュメント巡回（自律巡回）
+
+### 巡回対象URL
+- Claude Code: llms.txt（67ページ一覧取得）、settings, hooks, skills, mcp, agent-teams, best-practices, changelog
+- Codex CLI: changelog
+
+### 検出された変更と更新内容
+
+#### Claude Code (v2.1.83〜v2.1.84)
+
+1. **specs/claude/hooks.md** — 新hookイベント3件、フィールド追加
+   - `CwdChanged` イベント（v2.1.83）: ワーキングディレクトリ変更時に発火
+   - `FileChanged` イベント（v2.1.83）: 監視ファイルのディスク変更時に発火（matcher: ファイル名）
+   - `TaskCreated` イベント（v2.1.84）: TaskCreate でタスク作成時に発火
+   - Command ハンドラに `shell` フィールド追加（`"bash"` / `"powershell"`）
+   - WorktreeCreate の HTTP フック対応（`hookSpecificOutput.worktreePath`）
+   - SessionEnd matcher に `bypass_permissions_disabled` 追加
+   - StopFailure matcher に `invalid_request` 追加
+   - InstructionsLoaded 入力に `parent_file_path` 追加
+   - 共通入力に `worktree` フィールド追加
+
+2. **specs/claude/configuration.md** — 新設定キー・環境変数
+   - `managed-settings.d/` ドロップインディレクトリ（v2.1.83）
+   - `sandbox.failIfUnavailable`, `disableDeepLinkRegistration` 設定（v2.1.83）
+   - `allowedChannelPlugins` managed設定（v2.1.84）
+   - 環境変数4件: `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB`, `CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK`, `CLAUDE_STREAM_IDLE_TIMEOUT_MS`, `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_SUPPORTS`
+
+3. **specs/claude/skills-and-commands.md** — フロントマター・コマンド追加
+   - スキル `shell` フロントマター（`powershell` 対応）
+   - エージェント `initialPrompt` フロントマター（v2.1.83）
+   - `/color`, `/copy [N]` コマンド追加
+
+4. **specs/claude/mcp.md** — 上限・重複排除
+   - MCPツール説明・サーバー指示の2KB上限（v2.1.84）
+   - ローカル/claude.aiコネクタ間のMCPサーバー重複排除（v2.1.84）
+
+5. **specs/claude/changelog.md** — 不足バージョン追記
+   - v2.1.84, v2.1.83 の詳細追記
+   - v2.1.79, v2.1.74, v2.1.73 を新規追加
+
+#### Codex CLI
+
+6. **specs/codex/changelog.md** — 不足エントリ追記
+   - アプリ 26.318, 26.317拡充, 26.316, 26.311 を追加
+
+### 変更なし（差分なし確認済み）
+- specs/claude/agent-teams.md — 公式ドキュメントとの大きな差分なし
+- specs/claude/best-practices.md — 公式ドキュメントとの大きな差分なし
+- specs/codex/configuration.md — 新規公式変更なし
+
+---
+
 ## 2026-03-23 — 公式ドキュメント巡回（自律巡回）
 
 ### 巡回対象URL
