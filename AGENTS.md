@@ -32,7 +32,7 @@
 
 - specs/ の仕様書を根拠にハーネスを生成すること
 - テンプレートの変更時は mapping/ の整合性も確認
-- kb/ の更新時は kb/changelog.md に記録
+- kb/ の更新時は kb/update-history.md に記録
 - 自己改善時は docs/decisions/ にADRを残す
 
 ## Codex固有の注意
