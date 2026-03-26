@@ -1,6 +1,6 @@
 # Claude Code Skills & コマンド仕様書
 
-最終更新: 2026-03-23（巡回更新）
+最終更新: 2026-03-26（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/skills / https://code.claude.com/docs/en/commands / https://code.claude.com/docs/en/sub-agents
 
@@ -62,6 +62,7 @@ my-skill/
 | `context` | No | `fork` でフォークサブエージェントコンテキストで実行 |
 | `agent` | No | `context: fork` 時のサブエージェントタイプ指定 |
 | `hooks` | No | スキルライフサイクルにスコープされたフック |
+| `shell` | No | インライン `` !`command` `` のシェル。`bash`（デフォルト）または `powershell`（Windows、`CLAUDE_CODE_USE_POWERSHELL_TOOL=1` 必要） |
 
 ### 1.4 呼び出し制御
 
@@ -202,6 +203,8 @@ Claude Code に同梱されるスキル:
 | `/ide` | IDE連携管理 |
 | `/chrome` | Chrome設定 |
 | `/voice` | 音声入力トグル |
+| `/color` | プロンプトバー色変更 |
+| `/copy [N]` | レスポンスのコピー（インタラクティブピッカー。Nで直接指定。`w`キーでファイル書き出し） |
 | `/login` / `/logout` | 認証 |
 
 ### 2.5 MCP プロンプト
@@ -269,6 +272,7 @@ model: sonnet
 | `background` | No | `true` でバックグラウンドタスクとして実行 |
 | `effort` | No | エフォートレベル |
 | `isolation` | No | `worktree` で一時ワークツリーでの隔離実行 |
+| `initialPrompt` | No | 最初のターンで自動送信するプロンプト（v2.1.83） |
 
 ### 3.6 呼び出し方法
 

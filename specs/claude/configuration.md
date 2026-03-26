@@ -1,6 +1,6 @@
 # Claude Code 設定仕様書
 
-最終更新: 2026-03-23（巡回更新）
+最終更新: 2026-03-26（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/settings / https://code.claude.com/docs/en/memory
 
@@ -79,7 +79,7 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 
 | スコープ | ファイルパス | 対象 | チーム共有 |
 |:--|:--|:--|:--|
-| **Managed** | サーバー管理 / plist / レジストリ / `managed-settings.json` | マシン上の全ユーザー | Yes（IT配布） |
+| **Managed** | サーバー管理 / plist / レジストリ / `managed-settings.json` / `managed-settings.d/*.json` | マシン上の全ユーザー | Yes（IT配布） |
 | **User** | `~/.claude/settings.json` | 全プロジェクトの自分 | No |
 | **Project** | `.claude/settings.json` | リポジトリの全コラボレーター | Yes（gitコミット） |
 | **Local** | `.claude/settings.local.json` | このリポジトリの自分のみ | No（gitignored） |
@@ -93,6 +93,18 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 5. **User** -- 最低優先
 
 配列設定（`permissions.allow` 等）は各スコープから**マージ**（結合・重複排除）される。
+
+#### Managed ドロップインディレクトリ
+
+`managed-settings.d/` ディレクトリで複数チームが独立したポリシーフラグメントをデプロイ可能（v2.1.83）:
+
+```
+/Library/Application Support/ClaudeCode/     # macOS
+├── managed-settings.json                     # メインポリシー
+└── managed-settings.d/
+    ├── security-team.json                    # セキュリティチームのポリシー
+    └── platform-team.json                    # プラットフォームチームのポリシー
+```
 
 ### 2.3 主要設定キー一覧
 
@@ -159,6 +171,9 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `showClearContextOnPlanAccept` | プラン承認画面で「コンテキストクリア」オプション表示 |
 | `worktree.symlinkDirectories` | ワークツリーシンボリックリンク対象 |
 | `worktree.sparsePaths` | ワークツリースパースチェックアウト対象 |
+| `sandbox.failIfUnavailable` | サンドボックス起動不可時にエラー終了（v2.1.83） |
+| `disableDeepLinkRegistration` | `claude-cli://` プロトコルハンドラ登録の無効化（v2.1.83） |
+| `allowedChannelPlugins` | （Managed のみ）チャンネルプラグイン許可リスト（v2.1.84） |
 
 ### 2.4 `~/.claude.json` のグローバル設定
 
@@ -319,6 +334,10 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `MAX_MCP_OUTPUT_TOKENS` | MCPツール出力トークン上限 |
 | `SLASH_COMMAND_TOOL_CHAR_BUDGET` | スキル説明の文字数バジェット |
 | `CLAUDE_CODE_REMOTE` | Webリモート環境で `"true"` |
+| `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` | `1` でサブプロセス環境から認証情報を除去（v2.1.83） |
+| `CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK` | 非ストリーミングフォールバック無効化（v2.1.83） |
+| `CLAUDE_STREAM_IDLE_TIMEOUT_MS` | ストリーミングアイドルウォッチドッグ閾値（デフォルト90秒）（v2.1.84） |
+| `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_SUPPORTS` | ピンモデルのeffort/thinking検出オーバーライド（v2.1.84） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 

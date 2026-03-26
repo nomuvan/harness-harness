@@ -11,18 +11,31 @@
 
 - PowerShellツール（Windows、opt-inプレビュー）
 - `TaskCreated` hookイベント追加
+- `WorktreeCreate` hookが `type: "http"` 対応（`hookSpecificOutput.worktreePath`）
+- `allowedChannelPlugins` managed設定
+- `CLAUDE_STREAM_IDLE_TIMEOUT_MS` 環境変数
+- `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_SUPPORTS` 環境変数
 - `paths:` フロントマターがYAMLリスト形式のglobを受け付けるように
-- MCPツール説明文の上限2KB
+- MCPツール説明文・サーバー指示の上限2KB
+- ローカル/claude.aiコネクタ間のMCPサーバー重複排除
 - 75分以上アイドル後のプロンプト復帰機能
 - deep link (`claude-cli://`) が優先ターミナルで開くように
+- トークン表示 1M以上は「1.5m」形式に
 
 ## v2.1.83 (2026-03-25)
 
 - `managed-settings.d/` ドロップインディレクトリでポリシー分割管理
 - `CwdChanged`, `FileChanged` hookイベント追加
-- トランスクリプト検索（`/`キー）
+- `sandbox.failIfUnavailable` 設定
+- `disableDeepLinkRegistration` 設定
+- `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` 環境変数
+- `CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK` 環境変数
+- トランスクリプト検索（`/`キー、`Ctrl+O` でトランスクリプトモード内）
 - エージェントが `initialPrompt` フロントマターを宣言可能に
 - 画像ペースト時に `[Image #N]` チップ挿入
+- `chat:killAgents`, `chat:fastMode` キーバインド再設定可能
+- `TaskOutput` 非推奨化（`Read` でタスク出力ファイルを直接読む方式へ）
+- MEMORY.md インデックスが25KB/200行で切り詰め
 
 ## v2.1.81 (2026-03-20)
 
@@ -34,6 +47,12 @@
 - ステータスラインにレート制限情報（5時間/7日ウィンドウ）
 - skills/slashコマンドに `effort` フロントマター対応
 - `--channels` リサーチプレビュー
+
+## v2.1.79 (2026-03-18)
+
+- `claude auth login --console` でAnthropic Console認証
+- ターン所要時間表示トグル（`/config`）
+- `SessionEnd` フックが対話型 `/resume` で発火するように修正
 
 ## v2.1.78 (2026-03-17)
 
@@ -60,6 +79,17 @@
 - **Opus 4.6で1Mコンテキストウィンドウ**（Max/Team/Enterprise）
 - `/color` コマンド（プロンプトバーの色変更）
 - メモリファイルに最終更新タイムスタンプ
+
+## v2.1.74 (2026-03-12)
+
+- `autoMemoryDirectory` 設定（オートメモリ保存先変更）
+- `/context` コマンドに改善提案表示
+
+## v2.1.73 (2026-03-11)
+
+- `modelOverrides` 設定（カスタムモデルIDマッピング）
+- Bedrock/Vertex/Foundryのデフォルト Opus を 4.6 に変更
+- `/output-style` コマンド非推奨化
 
 ## v2.1.72 (2026-03-10)
 

@@ -1,6 +1,6 @@
 # Claude Code Hooks 仕様書
 
-最終更新: 2026-03-23
+最終更新: 2026-03-26（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/hooks
 
@@ -27,8 +27,8 @@ CLAUDE.md の指示は助言的だが、Hooks は**決定論的**であり確実
 | `PostToolUse` | ツール成功後 | No | ツール名 |
 | `PostToolUseFailure` | ツール失敗後 | No | ツール名 |
 | `Stop` | Claude の応答完了時 | Yes | - |
-| `StopFailure` | APIエラー発生時 | No | `rate_limit`, `authentication_failed`, `billing_error`, `server_error`, `max_output_tokens`, `unknown` |
-| `SessionEnd` | セッション終了時 | No | `clear`, `resume`, `logout`, `prompt_input_exit`, `other` |
+| `StopFailure` | APIエラー発生時 | No | `rate_limit`, `authentication_failed`, `billing_error`, `invalid_request`, `server_error`, `max_output_tokens`, `unknown` |
+| `SessionEnd` | セッション終了時 | No | `clear`, `resume`, `logout`, `prompt_input_exit`, `bypass_permissions_disabled`, `other` |
 
 ### 2.2 サブエージェントイベント
 
@@ -39,13 +39,16 @@ CLAUDE.md の指示は助言的だが、Hooks は**決定論的**であり確実
 | `TeammateIdle` | チームメイトがアイドル状態になる直前 | Yes | matcherなし |
 | `TaskCompleted` | タスク完了マーク時 | Yes | matcherなし |
 
-### 2.3 通知・設定イベント
+### 2.3 通知・設定・環境イベント
 
 | イベント | 発火タイミング | ブロック可能 | matcher対象 |
 |:--|:--|:--|:--|
 | `Notification` | 通知送信時 | No | `permission_prompt`, `idle_prompt`, `auth_success`, `elicitation_dialog` |
 | `ConfigChange` | 設定ファイル変更時 | Yes | `user_settings`, `project_settings`, `local_settings`, `policy_settings`, `skills` |
 | `InstructionsLoaded` | CLAUDE.md/rules読み込み時 | No | `session_start`, `nested_traversal`, `path_glob_match`, `include`, `compact` |
+| `CwdChanged` | ワーキングディレクトリ変更時 | No | matcher非サポート（全変更で発火） |
+| `FileChanged` | 監視対象ファイルのディスク変更時 | No | ファイル名（basename）例: `.envrc`, `.env` |
+| `TaskCreated` | `TaskCreate` ツールでタスク作成時 | No | matcherなし |
 
 ### 2.4 ワークツリー・コンパクションイベント
 
@@ -76,9 +79,12 @@ CLAUDE.md の指示は助言的だが、Hooks は**決定論的**であり確実
   "type": "command",
   "command": ".claude/hooks/script.sh",
   "async": false,
-  "timeout": 600
+  "timeout": 600,
+  "shell": "bash"
 }
 ```
+
+- `shell`: 使用シェル。`"bash"`（デフォルト）または `"powershell"`
 
 **終了コード**:
 - `0`: 成功（stdout の JSON をパース）
@@ -226,9 +232,12 @@ MCPツールは `mcp__<server>__<tool>` パターンに従う:
 ```json
 {
   "agent_id": "unique-id",
-  "agent_type": "AgentName"
+  "agent_type": "AgentName",
+  "worktree": "/path/to/worktree"
 }
 ```
+
+- `worktree`: ワークツリー内で実行中の場合、そのパス
 
 ### 6.2 イベント固有の入力フィールド
 
@@ -245,7 +254,10 @@ MCPツールは `mcp__<server>__<tool>` パターンに従う:
 | `Notification` | `message`, `title`, `notification_type` |
 | `SubagentStart` | `agent_id`, `agent_type` |
 | `SubagentStop` | `stop_hook_active`, `agent_id`, `agent_type`, `agent_transcript_path`, `last_assistant_message` |
-| `InstructionsLoaded` | `file_path`, `memory_type`, `load_reason`, `globs`(opt), `trigger_file_path`(opt) |
+| `InstructionsLoaded` | `file_path`, `memory_type`, `load_reason`, `globs`(opt), `trigger_file_path`(opt), `parent_file_path`(opt) |
+| `CwdChanged` | `old_cwd`, `new_cwd` |
+| `FileChanged` | `file_path`, `file_name` |
+| `TaskCreated` | `task_id`, `task_subject`, `task_description`(opt) |
 | `ConfigChange` | `source`, `file_path` |
 | `WorktreeCreate` | `name` |
 | `WorktreeRemove` | `worktree_path` |
@@ -321,7 +333,8 @@ exit 0
 
 #### WorktreeCreate
 
-標準JSON出力ではなく、stdout にワークツリーの絶対パスを出力:
+Command フック: stdout にワークツリーの絶対パスを出力。
+HTTP フック (`type: "http"`): レスポンスJSON の `hookSpecificOutput.worktreePath` でパスを返す。
 
 ```bash
 #!/bin/bash
