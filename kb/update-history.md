@@ -1,5 +1,23 @@
 # harness-harness 更新履歴
 
+## 2026-03-26 — AiToEarn 調査
+
+### 追加ファイル
+- `kb/external/aitoearn/analysis.md` — AiToEarn徹底調査レポート（基本情報、技術アーキテクチャ、MCP対応、収益化モデル、類似ツール比較、harness-harness適用評価）
+- `kb/external/aitoearn/takeaways.md` — 採用判断（MCP HTTP公開パターン、Nxモノレポ向けCLAUDE.md等）
+
+### 更新ファイル
+- `kb/external/_index.md` — AiToEarnをレジストリに追加（ステータス: reference）
+
+### 主な知見
+- AiToEarnはAI活用SNSコンテンツマーケティングの全自動化プラットフォーム（Monetize/Publish/Engage/Createの4Agent構成）
+- GitHub 12,431スター、MIT License、TypeScript 92.6%、NestJS+Nx+Electron構成
+- MCP HTTP公開パターン（`"type": "http"`でWeb APIをMCPサーバー化）がharness-harnessテンプレートとして有用
+- NxモノレポのCLAUDE.md配置パターンが参考になる
+- ツール自体の統合・定期監視は不要（ドメイン特化度が高いため）
+
+---
+
 ## 2026-03-26 — DeerFlow 2.0 調査（research-kbスキル実行）
 
 ### 追加ファイル
