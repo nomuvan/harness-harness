@@ -185,14 +185,19 @@ ${CHANGED_LIST}
 
 上記以外のURLは変更なしのためスキップしてください。"
 
+CLAUDE_TIMEOUT="${PATROL_CLAUDE_TIMEOUT:-1800}"  # デフォルト30分
 log "Starting Claude CLI (サブスク内利用。追加課金なし) ..."
-log "Prompt length: $(echo "$PROMPT" | wc -c | tr -d ' ') chars | URLs: ${#CHANGED_URLS[@]}"
-log "Waiting for Claude CLI response (this may take several minutes)..."
+log "Prompt length: $(echo "$PROMPT" | wc -c | tr -d ' ') chars | URLs: ${#CHANGED_URLS[@]} | Timeout: ${CLAUDE_TIMEOUT}s"
+log "Waiting for Claude CLI response..."
 
-RESULT=$(claude -p "$PROMPT" \
+RESULT=$(timeout "$CLAUDE_TIMEOUT" claude -p "$PROMPT" \
   --allowedTools "Bash,Read,Edit,Write,Glob,Grep,WebFetch,WebSearch" \
   --max-budget-usd "$MAX_BUDGET" \
   --output-format json 2>&1) || true
+
+if [ $? -eq 124 ]; then
+  log "WARN: Claude CLI timed out after ${CLAUDE_TIMEOUT}s. Proceeding with partial results."
+fi
 
 FINAL_RESULT=$(echo "$RESULT" | jq -r '.result // "No result"' 2>/dev/null || echo "$RESULT")
 COST=$(echo "$RESULT" | jq -r '.total_cost_usd // .cost_usd // "unknown"' 2>/dev/null || echo "unknown")
