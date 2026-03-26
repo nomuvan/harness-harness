@@ -56,6 +56,7 @@ podman rmi harness-patrol  # イメージも削除する場合
 | `PATROL_BRANCH` | `main` | 巡回対象ブランチ |
 | `PATROL_SKIP_FORCE_MERGE` | `false` | `true`: PR作成のみ。`false`: 自動マージまで実行 |
 | `PATROL_MAX_BUDGET_USD` | `5` | 1回の巡回あたりのサブスク内利用量上限。**追加課金は発生しない** |
+| `PATROL_CLAUDE_TIMEOUT` | `1800` | Claude CLI実行のタイムアウト（秒）。デフォルト30分 |
 
 ## 効率化（2段階方式）
 
