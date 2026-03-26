@@ -1,3 +1,0 @@
-# harness-harness patrol: 毎日AM3:00（JST = UTC 18:00）に巡回実行
-0 18 * * * root /patrol/patrol-runner.sh >> /patrol-logs/cron.log 2>&1
-# 空行が必要（cron要件）
