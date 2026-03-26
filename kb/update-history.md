@@ -1,5 +1,24 @@
 # harness-harness 更新履歴
 
+## 2026-03-26 — claude-peers-mcp 調査
+
+### 追加ファイル
+- `kb/external/claude-peers/analysis.md` — claude-peers-mcp徹底調査レポート（基本情報、アーキテクチャ、MCPツール4種、セキュリティ評価、公式Agent Teams比較、類似ツール5件比較）
+- `kb/external/claude-peers/takeaways.md` — 採用判断（Brokerデーモンパターン、スコープ付きピア発見、自動コンテキストサマリーの3パターン抽出）
+
+### 更新ファイル
+- `kb/external/_index.md` — claude-peers-mcpをレジストリに追加（ステータス: reference）
+- `kb/update-history.md` — 本エントリを追加
+
+### 主な知見
+- Louis Arge作のClaude Code P2Pメッセージング MCPサーバー。GitHub 1,249スター、TypeScript/Bun、ライセンス未明示
+- Broker (localhost:7899) + SQLite + MCPチャネルプロトコルによるリアルタイム配信アーキテクチャ
+- 公式Agent Teams（実験的）と補完関係にあるが、機能重複が大きい。ライセンス未明示・成熟度不足（Issue 16件中0件クローズ、メッセージロスト問題複数）により統合は不採用
+- 設計パターン3件を抽出: (1) Brokerデーモン自動起動パターン、(2) スコープ付きピア発見（machine/directory/repo）、(3) 自動コンテキストサマリー
+- マルチエージェント協調の3層分類を整理: ビルトイン層（Agent Teams）/ MCP拡張層（claude-peers等）/ 外部管理層（claude-squad等）。harness-harnessはビルトイン層基本+パターン抽出方針
+
+---
+
 ## 2026-03-26 — AiToEarn 調査
 
 ### 追加ファイル
