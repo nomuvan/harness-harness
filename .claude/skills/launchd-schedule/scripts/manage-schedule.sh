@@ -209,6 +209,44 @@ delete_schedule() {
   echo "Deleted schedule '$name'"
 }
 
+run_now() {
+  local name="$1"
+  local label="${LABEL_PREFIX}.${name}"
+  local plist_file="${PLIST_DIR}/${label}.plist"
+
+  if [ ! -f "$plist_file" ]; then
+    echo "ERROR: Schedule '$name' not found."
+    return 1
+  fi
+
+  # plistからProgramArgumentsを読み取って実行
+  echo "Running schedule '$name' immediately..."
+  local args
+  args=$(python3 << PYEOF
+import plistlib
+with open("$plist_file", "rb") as f:
+    plist = plistlib.load(f)
+args = plist["ProgramArguments"]
+# 最初の /bin/bash を除いたスクリプトと引数を出力
+for a in args[1:]:
+    print(a)
+PYEOF
+  )
+
+  # 引数を配列に読み込み
+  local script_args=()
+  while IFS= read -r line; do
+    script_args+=("$line")
+  done <<< "$args"
+
+  echo "  Script: ${script_args[0]}"
+  echo "  Session: ${script_args[1]:-}"
+  echo ""
+
+  # 実行（バックグラウンドではなくフォアグラウンドで結果を表示）
+  bash "${script_args[@]}"
+}
+
 # メインディスパッチ
 case "${1:-help}" in
   create)
@@ -226,14 +264,20 @@ case "${1:-help}" in
     shift
     delete_schedule "$@"
     ;;
+  run)
+    shift
+    run_now "$@"
+    ;;
   *)
     echo "Usage:"
     echo "  $0 create <name> <cron-expr> <session> <workdir> <claude-cmd> <prompt>"
     echo "  $0 list"
     echo "  $0 update <name> <cron-expr>"
     echo "  $0 delete <name>"
+    echo "  $0 run <name>"
     echo ""
     echo "Example:"
     echo "  $0 create daily-patrol '0 3 * * *' harness-patrol /path/to/harness 'claude --dangerously-skip-permissions' '巡回して'"
+    echo "  $0 run daily-patrol"
     ;;
 esac
