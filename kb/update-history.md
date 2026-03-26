@@ -1,5 +1,21 @@
 # harness-harness 更新履歴
 
+## 2026-03-26 — autoresearch調査（research-kbスキル初回実行）
+
+### 追加ファイル
+- `kb/external/autoresearch/analysis.md` — Karpathy autoresearchの深掘り分析
+- `kb/external/autoresearch/takeaways.md` — 採用判断（Claude/Codexクロスレビュー統合版）
+
+### 調査方法
+- Phase 1: Claude徹底調査（GitHub, Web, ソースコード）
+- Phase 2: Codex独自調査（codex exec, 325kトークン使用）
+- Phase 3: クロスレビュー統合
+
+### 主な知見
+- 「bounded autoresearch pattern」: 固定評価器+単一可変面+予算+台帳の6要素をテンプレート化候補
+- ML訓練基盤そのものは不採用（GPU依存）。設計パターンのみ取り込む
+- 派生プロジェクト`autoimprove-cc`がCLAUDE.md自動改善を既に実装
+
 ## 2026-03-26 — 公式ドキュメント巡回（自律巡回）
 
 ### 巡回対象URL
