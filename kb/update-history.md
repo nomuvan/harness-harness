@@ -1,5 +1,20 @@
 # harness-harness 更新履歴
 
+## 2026-03-26 — DeerFlow 2.0 調査（research-kbスキル実行）
+
+### 追加ファイル
+- `kb/external/deerflow/analysis.md` — ByteDance製SuperAgentハーネスの深掘り分析
+- `kb/external/deerflow/takeaways.md` — 採用判断（Harness/App分離、Progressive Skill Loading等）
+
+### 主な知見
+- Harness/App分離（`Harness must never import App`）がharness-harnessの設計原則と完全合致
+- Progressive Skill Loading = 段階的開示の具体実装
+- skills/public + skills/custom の二層構造 = templates/ + プロジェクト固有の対応
+- メモリの信頼度スコア+タイムスタンプはkb/知見管理に応用可能
+- LangGraph依存やServer-first構成は不採用（パターンのみ抽出）
+
+---
+
 ## 2026-03-26 — マルチハーネスベストプラクティス調査
 
 ### 追加ファイル
