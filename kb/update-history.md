@@ -1,5 +1,26 @@
 # harness-harness 更新履歴
 
+## 2026-03-26 — マルチハーネスベストプラクティス調査
+
+### 追加ファイル
+- `kb/research/2026-03-26-multi-harness-best-practices.md` — 1プロジェクト複数AIハーネスのベストプラクティス調査
+
+### 調査トピック（5分野）
+1. Claude Code の目的別ハーネス設計（CLAUDE.md スコープ、rules paths、agents、skills）
+2. Codex CLI のプロファイル活用（config.toml profiles、AGENTS.md 階層マージ）
+3. モノレポでの AI 設定パターン（Cursor .mdc、Copilot instructions、Windsurf rules）
+4. マルチエージェント協調パターン（サブエージェント、Agent Teams、ペルソナ設計）
+5. 非技術ドメインのハーネス設計（マーケティング、分析、自律学習）
+
+### 主な知見
+- Claude Code は rules(paths指定) + agents/ + skills(paths指定) の3層で目的別ハーネスを最も細かく制御可能
+- Codex CLI は profiles で設定セット切替、AGENTS.md 階層マージでディレクトリ別指示を実現
+- AGENTS.md がクロスツール標準化（Codex, Copilot, Cursor, Windsurf, Amp, Devin が読み取り）
+- Agent Teams（実験的）で複数エージェントが共有タスクリスト+メールボックスで協調可能
+- 非技術ドメインもエージェント定義 + 永続メモリで対応可能（data-scientist 公式例あり）
+
+---
+
 ## 2026-03-26 — autoresearch調査（research-kbスキル初回実行）
 
 ### 追加ファイル
