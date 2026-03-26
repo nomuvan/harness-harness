@@ -3,7 +3,7 @@ name: launchd-schedule
 description: |
   macOSのlaunchd + tmuxで定期的にClaudeプロンプトを実行するスケジューラ。
   tmuxセッション作成→Claude起動→準備完了検出→プロンプト送信を自動化。
-  「スケジュール登録して」「スケジュール一覧」「スケジュール変更」「スケジュール削除」で起動。
+  「スケジュール登録して」「スケジュール一覧」「スケジュール変更」「スケジュール削除」「今すぐ実行」で起動。
   「巡回スケジュール作って」「定期実行を設定して」でも起動。
 ---
 
@@ -62,6 +62,19 @@ bash "$SKILL_DIR/scripts/manage-schedule.sh" update "<name>" "<new-cron-expr>"
 例: 毎日3:00 → 毎日6:00に変更
 ```bash
 bash "$SKILL_DIR/scripts/manage-schedule.sh" update "daily-patrol" "0 6 * * *"
+```
+
+### run — 即時実行
+
+登録済みスケジュールをスケジュール時刻を待たずに今すぐ実行する。
+
+```bash
+bash "$SKILL_DIR/scripts/manage-schedule.sh" run "<name>"
+```
+
+例:
+```bash
+bash "$SKILL_DIR/scripts/manage-schedule.sh" run "daily-patrol"
 ```
 
 ### delete — スケジュール削除
