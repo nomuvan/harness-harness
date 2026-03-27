@@ -1,6 +1,6 @@
 # Claude Code Skills & コマンド仕様書
 
-最終更新: 2026-03-26（巡回更新）
+最終更新: 2026-03-28（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/skills / https://code.claude.com/docs/en/commands / https://code.claude.com/docs/en/sub-agents
 
@@ -62,6 +62,7 @@ my-skill/
 | `context` | No | `fork` でフォークサブエージェントコンテキストで実行 |
 | `agent` | No | `context: fork` 時のサブエージェントタイプ指定 |
 | `hooks` | No | スキルライフサイクルにスコープされたフック |
+| `paths` | No | スキル自動適用を限定するglobパターン。カンマ区切り文字列またはYAMLリスト。パスマッチ時のみ自動読み込み |
 | `shell` | No | インライン `` !`command` `` のシェル。`bash`（デフォルト）または `powershell`（Windows、`CLAUDE_CODE_USE_POWERSHELL_TOOL=1` 必要） |
 
 ### 1.4 呼び出し制御

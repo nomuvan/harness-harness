@@ -1,6 +1,6 @@
 # Claude Code Hooks 仕様書
 
-最終更新: 2026-03-26（巡回更新）
+最終更新: 2026-03-28（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/hooks
 
@@ -48,7 +48,7 @@ CLAUDE.md の指示は助言的だが、Hooks は**決定論的**であり確実
 | `InstructionsLoaded` | CLAUDE.md/rules読み込み時 | No | `session_start`, `nested_traversal`, `path_glob_match`, `include`, `compact` |
 | `CwdChanged` | ワーキングディレクトリ変更時 | No | matcher非サポート（全変更で発火） |
 | `FileChanged` | 監視対象ファイルのディスク変更時 | No | ファイル名（basename）例: `.envrc`, `.env` |
-| `TaskCreated` | `TaskCreate` ツールでタスク作成時 | No | matcherなし |
+| `TaskCreated` | `TaskCreate` ツールでタスク作成時 | Yes | matcherなし |
 
 ### 2.4 ワークツリー・コンパクションイベント
 
@@ -367,6 +367,47 @@ echo "$DIR"
 | `async` | バックグラウンド実行（command のみ） | `false` |
 | `once` | スキル内でセッション中1回のみ実行 | `false` |
 | `statusMessage` | スピナーメッセージ | - |
+| `if` | ツールイベント専用の条件フィルタ（permission rule構文） | - |
+
+### 8.1 `if` 条件フィールド（v2.1.85）
+
+`if` フィールドはツールイベント（`PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest`）でのみ評価される。他のイベントでは `if` を持つフックは実行されない。
+
+matcher と組み合わせた2段階フィルタリング:
+1. `matcher` でツール名をフィルタ
+2. `if` でツール引数をさらに絞り込み
+
+**構文**: permission rule構文を使用
+- `"Bash(rm *)"` — `rm` で始まるBashコマンド
+- `"Edit(*.ts)"` — TypeScriptファイルへの編集
+- `"Bash(git push *)"` — git push コマンド
+- `"Write(**/config.json)"` — config.json への書き込み
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(rm *)",
+            "command": ".claude/hooks/block-rm.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git push *)",
+            "command": ".claude/hooks/validate-push.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+プロセス起動のオーバーヘッドを削減するため、フック実行前にプリフィルタリングされる。
 
 ---
 
