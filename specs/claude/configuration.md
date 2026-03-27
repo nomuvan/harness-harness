@@ -1,6 +1,6 @@
 # Claude Code 設定仕様書
 
-最終更新: 2026-03-26（巡回更新）
+最終更新: 2026-03-28（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/settings / https://code.claude.com/docs/en/memory
 
@@ -338,6 +338,8 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK` | 非ストリーミングフォールバック無効化（v2.1.83） |
 | `CLAUDE_STREAM_IDLE_TIMEOUT_MS` | ストリーミングアイドルウォッチドッグ閾値（デフォルト90秒）（v2.1.84） |
 | `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_SUPPORTS` | ピンモデルのeffort/thinking検出オーバーライド（v2.1.84） |
+| `CLAUDE_CODE_MCP_SERVER_NAME` | MCP `headersHelper` スクリプトに渡されるサーバー名（v2.1.85） |
+| `CLAUDE_CODE_MCP_SERVER_URL` | MCP `headersHelper` スクリプトに渡されるサーバーURL（v2.1.85） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 
