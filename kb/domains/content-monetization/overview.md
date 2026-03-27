@@ -4,13 +4,17 @@ tags: [sns, youtube, blog, affiliate, cps, cpe, cpm, ai-content, monetization, m
 last_checked: "2026-03-27"
 summary: "AI活用によるマルチプラットフォームコンテンツ制作・配信・収益化の業務知見"
 key_concepts:
-  - "CPS/CPE/CPM収益モデル"
-  - "企画→生成→投稿→エンゲージメント→収益化パイプライン"
-  - "マルチプラットフォーム配信戦略"
+  - "CPS/CPE/CPM収益モデル（campaign単位で1つに固定）"
+  - "brief→proof→review→settlement ワークフローstate machine"
+  - "マルチプラットフォーム配信（platform-capabilities registryで管理）"
+  - "owned audience必須（SNSだけに閉じない）"
+  - "payout is product（出金信頼性はproduct-critical）"
 harness_implications:
-  - "コンテンツ生成パイプラインをスキル化"
-  - "プラットフォーム別の投稿最適化ルール"
-  - "収益KPIモニタリング用エージェント設計"
+  - "Compliance-first + Distribution-first をデフォルト構成に"
+  - "platform-capabilities.yaml でプラットフォーム対応をmachine-readable管理"
+  - "compliance-gateをpublish前に必須化（PR開示、AI開示、権利確認）"
+  - "settlement ledgerをcontent DBと分離"
+  - "コンテンツ生成パイプラインの各ステップをスキル化"
 ---
 
 # コンテンツ収益化 業務ドメイン深掘り
@@ -386,6 +390,45 @@ alerts:
 ```
 
 ---
+
+## Claude/Codexクロスレビュー統合知見
+
+### Codex独自調査からの追加（Claude側に不足していた観点）
+
+**ワークフローstate machine（Codex提案）:**
+```
+brief → content_generated → compliance_checked → platform_adapted → scheduled
+  → published → proof_collected → ai_reviewed → human_reviewed → settled → withdrawn
+
+failure branches:
+  → rejected → appealed → refunded → incident_open
+```
+多くのチームは`published`でworkflowが終わる前提で設計するが、収益化案件では`published`は中間地点でしかない。
+
+**Minimum Artifact Set（Codex提案）:**
+- `platform-capabilities.yaml` — プラットフォーム対応をmarketing copyではなくmachine-readableで管理
+- `campaign-schema.json` — キャンペーンメタデータのスキーマ
+- `workflow-state-machine.md` — 上記state machineの詳細定義
+- `compliance-checklist.md` — publish前の法規制チェックリスト
+- `proof-policy.md` — 証跡収集のポリシー（URL, screenshot, API metric, coupon）
+- `settlement-ledger-spec.md` — 精算台帳の仕様（content DBと分離）
+- `kpi-taxonomy.md` — 収益モデル別のKPI体系
+
+**3つのハーネス戦略オプション（Codex提案）:**
+
+| オプション | 強み | 弱み | 適用場面 |
+|-----------|------|------|---------|
+| Distribution-first | 立ち上がりが速い | 収益attributionが浅い | 新規メディア立ち上げ |
+| Compliance-first | 規制事故を減らせる | 初速が落ちる | 企業案件、越境配信 |
+| Commerce-first | 売上と直結する | 実装が重い | affiliate、EC、店舗送客 |
+
+**推奨:** Compliance-firstを常時オンにしたDistribution-firstを基本形。注文データが揃う案件のみCommerce-firstを追加。
+
+**デフォルト運用方針（Codex提案）:**
+- AIは「企画/下書き/媒体別変換/集計/一次審査」に使う
+- 「法規制判断/ブランド最終責任/支払い承認」は人間が持つ
+- Engage automationはhigh-risk featureとして隔離する
+- SNSの外にowned audience（newsletter, blog, CRM）を必ず逃がす
 
 ## Sources
 
