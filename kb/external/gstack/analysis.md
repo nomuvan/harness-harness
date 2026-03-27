@@ -1,3 +1,15 @@
+---
+name: "gstack"
+url: "https://github.com/garrytan/gstack"
+type: tool
+tags: [claude-code, sprint-process, role-based-skills, safety-guardrails, cross-model, evals]
+stars: 49400
+license: "MIT"
+last_checked: "2026-03-27"
+relevance: high
+summary: "Claude Codeを仮想開発チームに変換するロールベースのスラッシュコマンド群。構造化スプリントプロセスが核心"
+---
+
 # gstack 深掘り分析
 
 - URL: https://github.com/garrytan/gstack

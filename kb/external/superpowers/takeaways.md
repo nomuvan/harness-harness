@@ -1,3 +1,15 @@
+---
+name: "superpowers"
+type: takeaways
+tags: [multi-platform-directory, skill-md-standard, claude-search-optimization, hook-initialization, symlink-strategy, workflow-phases]
+last_checked: "2026-03-27"
+adoption_summary: "マルチプラットフォームディレクトリ構造・SKILL.md標準・CSO・Hookベース初期化を採用。シンボリックリンク・ワークフローは検討"
+top_patterns:
+  - "プラットフォーム別ディレクトリ構造（.claude-plugin/ .codex/ .cursor-plugin/）"
+  - "SKILL.md フロントマター標準 + Claude Search Optimization"
+  - "hooks/session-start によるPOSIX安全な自動初期化"
+---
+
 # superpowers からの知見と採用判断
 
 調査日: 2026-03-23

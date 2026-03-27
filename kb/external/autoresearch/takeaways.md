@@ -1,3 +1,15 @@
+---
+name: "autoresearch"
+type: takeaways
+tags: [bounded-autoresearch-pattern, immutable-judge, mutable-allowlist, keep-discard-ledger, git-branch-experiment, budget-control]
+last_checked: "2026-03-27"
+adoption_summary: "固定評価器・可変面分離・台帳記録・gitブランチ実験を採用。NEVER STOP・単一メトリクス・GPU依存は不採用"
+top_patterns:
+  - "不変の評価器 + 単一可変面の分離（bounded autoresearch pattern）"
+  - "keep/discard/crashの台帳記録による監査性確保"
+  - "program.md: Markdownで研究方向を指示する宣言的スキル"
+---
+
 # autoresearch からの知見と採用判断
 
 調査日: 2026-03-26

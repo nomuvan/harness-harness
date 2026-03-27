@@ -1,3 +1,15 @@
+---
+name: "claude-subconscious"
+type: takeaways
+tags: [structured-memory, stdout-injection, detached-worker, memory-blocks, self-improvement]
+last_checked: "2026-03-27"
+adoption_summary: "ツール統合は不採用、8ブロック構造化メモリ・stdout非侵襲注入・非同期detached workerパターンを採用"
+top_patterns:
+  - "8ブロック構造化メモリパターン"
+  - "stdout非侵襲コンテキスト注入"
+  - "非同期detached workerによるStop Hook活用"
+---
+
 # claude-subconscious — harness-harness への採用判断
 
 ## 総合判断: パターン採用（ツール統合は不採用）
