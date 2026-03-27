@@ -46,15 +46,19 @@ AiToEarnを調査して（コンテンツ収益化の業務ドメインも深掘
 
 ## 実行フロー（複数対象の場合）
 
+各対象ごとにworktreeで隔離して作業する。
+
 ```
 対象リスト: [A, B, C]
 
 ── A の調査開始 ──
+  EnterWorktree(name: "research-{name}")
   Phase 1: Claude徹底調査（A）
-  Phase 2: Codex独自調査（A）
-  Phase 3: クロスレビュー統合（A）
+  Phase 2: Codex独自調査（A）— Codex結果が揃うまで待つ
+  Phase 3: クロスレビュー統合（A）— 必ずClaude/Codex両方の結果を統合
   Phase 4: アウトプット作成（A）
-  Phase 5: commit → push → PR作成 → マージ（A）
+  Phase 5: commit → push → PR作成 → マージ
+  ExitWorktree(action: "remove")
 ── A 完了 ──
 
 ── B, C: 同上（シーケンシャル）──
@@ -63,6 +67,7 @@ AiToEarnを調査して（コンテンツ収益化の業務ドメインも深掘
 ```
 
 **各対象ごとに独立したPRを作成・マージする。** 1つの巨大PRにまとめない。
+**Codex結果なしにPR作成は禁止。** Codex exec失敗時のみClaude単独完遂が許される。
 
 ## 各対象の調査プロセス
 
