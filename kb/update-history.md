@@ -1,5 +1,29 @@
 # harness-harness 更新履歴
 
+## 2026-03-27 — AiToEarn 再調査（業務ドメイン深掘り込み）
+
+### 書き直しファイル
+- `kb/external/aitoearn/analysis.md` — AiToEarn徹底調査レポート（再調査版）。frontmatter追加、libs/16モジュール詳細分析、CLAUDE.md未成熟事例評価、Docker Compose構成分析、業界トレンド対比
+- `kb/external/aitoearn/takeaways.md` — 採用判断（再調査版）。frontmatter追加、法規制リスク（日本/EU/米国）追加、前回調査との差分表追加
+
+### 新規ファイル
+- `kb/domains/content-monetization/overview.md` — コンテンツ収益化業務ドメイン深掘り（新規ドメイン）。市場動向（$43.5億→$128.5億）、CPS/CPE/CPM収益モデル、8ステップパイプライン、プラットフォーム別戦略（YouTube/TikTok/Instagram/X/LinkedIn/Threads/ブログ/Substack）、法規制（日本ステマ規制/EU AI Act/米国各州法）、AIエージェント活用指針、ハーネス設計への示唆
+
+### 更新ファイル
+- `kb/external/_index.md` — AiToEarnの最終確認日を2026-03-27に更新、説明を拡充
+- `kb/domains/_index.md` — content-monetizationドメインを追加
+
+### 主な知見（前回からの追加分）
+- AiToEarnのCLAUDE.mdはNx公式テンプレートのまま（未成熟事例）→ 二層構造（公式テンプレート+カスタマイズ層）の推奨に変更
+- libs/nest-mcpモジュールが「既存Web APIのMCP化」の具体実装として最も有用なパターン
+- コンテンツ収益化市場は2025年$43.5億→2029年$128.5億（CAGR 31.4%）の急成長
+- 2026年のトレンド: ハイブリッド（AI+人間）がAI onlyより信頼度+33%、エンゲージメント+23%上回る
+- 法規制が急速に整備中: EU AI Act Article 50（2026年8月）、カリフォルニアAI透明性法（2026年1月）、日本ステマ規制（2023年10月施行済み）
+- Hub-and-Spokeモデル（1本のハブコンテンツ→10+バリエーション）でリーチ+35%
+- 総合評価をC+からB-に上方修正（業務ドメイン知見の価値を考慮）
+
+---
+
 ## 2026-03-26 — claude-peers-mcp 調査
 
 ### 追加ファイル
