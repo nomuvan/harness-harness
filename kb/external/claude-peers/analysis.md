@@ -1,3 +1,15 @@
+---
+name: "claude-peers-mcp"
+url: "https://github.com/louislva/claude-peers-mcp"
+type: tool
+tags: [mcp, multi-agent, peer-to-peer, messaging, broker]
+stars: 1100
+license: "未明示"
+last_checked: "2026-03-27"
+relevance: low
+summary: "Claude Code複数インスタンス間のアドホックP2Pメッセージング用MCPサーバー"
+---
+
 # claude-peers-mcp 深掘り分析
 
 最終更新: 2026-03-26

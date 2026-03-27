@@ -1,3 +1,15 @@
+---
+name: "OpenClaw"
+url: "https://github.com/openclaw/openclaw"
+type: tool
+tags: [personal-ai-assistant, local-first, multi-channel, skill-system, agent-runtime, community-ecosystem]
+stars: 247000
+license: "Open Source"
+last_checked: "2026-03-27"
+relevance: medium
+summary: "ローカルファーストのパーソナルAIアシスタント。20+メッセージングチャネル統合とスキルエコシステムが特徴"
+---
+
 # OpenClaw 深掘り分析
 
 - URL: https://github.com/openclaw/openclaw

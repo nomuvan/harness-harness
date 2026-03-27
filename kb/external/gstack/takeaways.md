@@ -1,3 +1,15 @@
+---
+name: "gstack"
+type: takeaways
+tags: [structured-sprint, safety-guardrails, two-tier-testing, cross-model-review, install-model, telemetry]
+last_checked: "2026-03-27"
+adoption_summary: "構造化スプリント・安全ガードレール・2層テスティング・インストールモデルを採用。ロールベース設計は検討"
+top_patterns:
+  - "Think→Plan→Build→Review→Test→Ship→Reflect構造化スプリント"
+  - "/careful・/freeze・/guard安全ガードレール"
+  - "構造的アサーション + LLM-as-Judgeの2層テスティング"
+---
+
 # gstack からの知見と採用判断
 
 調査日: 2026-03-23

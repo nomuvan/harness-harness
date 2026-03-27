@@ -1,3 +1,15 @@
+---
+name: "OpenClaw"
+type: takeaways
+tags: [skill-md-standard, skill-priority-layers, gating-mechanism, local-first, self-modifying-agent]
+last_checked: "2026-03-27"
+adoption_summary: "SKILL.mdフォーマット・3層優先順位・ゲーティング機構を採用。マルチチャネル・デーモンモデルは不採用"
+top_patterns:
+  - "SKILL.md YAML frontmatter + Markdown標準フォーマット"
+  - "3層スキル優先順位（ワークスペース > マネージド > バンドル）"
+  - "requires.bins/env/configによるゲーティング機構"
+---
+
 # OpenClaw からの知見と採用判断
 
 調査日: 2026-03-23
