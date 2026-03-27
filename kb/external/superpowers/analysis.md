@@ -1,3 +1,15 @@
+---
+name: "superpowers"
+url: "https://github.com/obra/superpowers"
+type: framework
+tags: [multi-platform, skill-md-standard, claude-code, codex, hook-initialization, tdd]
+stars: 115000
+license: "MIT"
+last_checked: "2026-03-27"
+relevance: high
+summary: "マルチプラットフォーム対応のエージェンティックスキルフレームワーク。SKILL.mdフロントマター標準を策定"
+---
+
 # superpowers 深掘り分析
 
 - URL: https://github.com/obra/superpowers

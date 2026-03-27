@@ -1,3 +1,15 @@
+---
+name: "autoresearch"
+url: "https://github.com/karpathy/autoresearch"
+type: tool
+tags: [autonomous-loop, ml-training, hill-climbing, experiment-management, program-md, minimalism]
+stars: 56900
+license: "MIT"
+last_checked: "2026-03-27"
+relevance: high
+summary: "AIエージェントにLLM訓練を自律的に実験させるミニマルなループツール。設計パターンの汎用性が高い"
+---
+
 # Karpathy autoresearch 深掘り分析
 
 - URL: https://github.com/karpathy/autoresearch

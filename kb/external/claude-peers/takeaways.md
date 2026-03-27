@@ -1,3 +1,15 @@
+---
+name: "claude-peers-mcp"
+type: takeaways
+tags: [broker-daemon, scoped-peer-discovery, auto-summary, agent-teams]
+last_checked: "2026-03-27"
+adoption_summary: "ツール統合は不採用、Brokerデーモン・スコープ付きピア発見・自動サマリーの3設計パターンを参考採用"
+top_patterns:
+  - "Brokerデーモン自動起動パターン"
+  - "スコープ付きピア発見（machine/directory/repo）"
+  - "自動コンテキストサマリー生成"
+---
+
 # claude-peers-mcp — harness-harnessへの採用判断
 
 最終更新: 2026-03-26

@@ -1,3 +1,15 @@
+---
+name: "claude-subconscious"
+url: "https://github.com/letta-ai/claude-subconscious"
+type: tool
+tags: [memory, hooks, letta, persistent-memory, session-management, context-injection]
+stars: 862
+license: "MIT"
+last_checked: "2026-03-27"
+relevance: medium
+summary: "Letta AI製のClaude Codeセッション間永続メモリプラグイン、8ブロック構造化メモリが特徴"
+---
+
 # claude-subconscious 深掘り分析
 
 ## 基本情報
