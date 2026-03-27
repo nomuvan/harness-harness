@@ -50,19 +50,49 @@
 
 ## git worktree
 
-並列ブランチ作業にはgit worktreeを活用する。
+mainは司令塔（統合・監視）。日常の編集作業はworktreeで行う。
 
-- 独立したブランチ作業（Claude計画/Codex計画の並列策定等）ではworktreeで分離
-- worktreeのパスは `../<リポジトリ名>-wt-<ブランチ短縮名>/` とする
-  - 例: `../harnesss-harness-wt-codex-plan/`
-- worktree内の作業完了後、mainへマージしてworktreeを削除
-- Claude Codeのエージェントも `isolation: "worktree"` で独立worktreeを活用可能
+### 2つのworktree方式
+
+| 方式 | 作成方法 | パス | 用途 |
+|------|---------|------|------|
+| Claude Code内 | `EnterWorktree` ツール | `.claude/worktrees/<name>/` | harness-harness自身の作業 |
+| 手動/Codex | `git worktree add` | `../<リポジトリ名>-wt-<ブランチ短縮名>/` | 対象プロジェクト変更、Codex実行 |
+
+### Claude Code方式（EnterWorktree）
+
+- harness-harness自身のfeature作業、research-kb調査、patrol-docs更新に使用
+- `EnterWorktree(name: "research-deerflow")` → 作業 → `ExitWorktree(action: "remove")`
+- サブエージェントは `isolation: "worktree"` で独立worktree実行可能
+
+### Codex CLI方式（外側で作って--cdで対象化）
+
+- Codexにworktreeを「作らせる」のではなく「外側で作ったworktreeを作業場にする」
+- Git操作は外側、編集はCodex（`workspace-write`では`.git`が読取専用のため）
+
+```bash
+git worktree add ../harnesss-harness-wt-research-xxx -b research/xxx origin/main
+git -C ../harnesss-harness-wt-research-xxx submodule update --init --recursive
+codex exec --cd ../harnesss-harness-wt-research-xxx --profile author "タスク"
+# 完了後
+git worktree remove ../harnesss-harness-wt-research-xxx
+```
+
+### 運用ルール
+
+- 1タスク1worktreeを原則にする
+- `research/*` は1調査テーマ=1worktree
+- Claude/Codexクロスレビューは実装worktreeとレビューworktreeを分ける
+- mainでは編集しない。worktree管理・比較・最終マージのみ
+- worktree作成後、`private/` が必要なら `git submodule update --init --recursive`
+- 作業完了後はmainへマージしてworktreeを削除
 
 ### 利点
 
 - ブランチ切り替え不要で並列作業可能
 - エージェント同士のファイル競合を防止
-- Claude計画とCodex計画を同時進行できる
+- Claude/Codex並行作業が自然にできる
+- 中断してもmainが常にクリーン
 
 ## コミットメッセージ
 

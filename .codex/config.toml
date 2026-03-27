@@ -1,7 +1,29 @@
 # harness-harness Codex CLI configuration
 
-# Model settings
-# model = "gpt-4.1"
+model = "gpt-5.4"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+personality = "pragmatic"
 
-# Approval policy: "auto" | "read-only" | "full-access"
-# approval_policy = "read-only"
+[shell_environment_policy]
+inherit = "core"
+exclude = ["*_SECRET", "*_TOKEN", "*_KEY"]
+
+# --- Profiles ---
+
+[profiles.safe]
+approval_policy = "on-request"
+sandbox_mode = "read-only"
+
+[profiles.author]
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[profiles.review]
+approval_policy = "untrusted"
+sandbox_mode = "workspace-write"
+model_reasoning_effort = "high"
+
+[profiles.ci]
+approval_policy = "never"
+sandbox_mode = "workspace-write"
