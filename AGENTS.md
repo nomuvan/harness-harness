@@ -26,7 +26,16 @@
 - 段階的開示：必要なときに必要なだけ情報を提示
 - AIの優れた提案を優先：指示追従より良いアイデアの提示を重視
 - Mac/Windows両対応を前提とする
-- 業務ドメインはgit管理対象外
+- 業務ドメイン知見はユーザー指示に基づきkb/domains/に蓄積（段階的開示で管理）
+
+## git worktree 運用
+
+- 並列作業、クロスレビュー、複数調査では `git worktree` を優先する
+- mainは司令塔（統合・監視のみ）。日常の編集作業はworktreeで行う
+- worktreeパスは `../harnesss-harness-wt-<branch-short>/` 形式にする
+- Codexは現在のworktreeだけを編集し、兄弟worktreeやmain checkoutを変更しない
+- `git worktree add/remove`、branch作成、merge、submodule bootstrapは外側のshellが担当
+- Codex実行: `codex exec --cd <worktree> --profile <author|review|ci>`
 
 ## 作業時の注意
 
