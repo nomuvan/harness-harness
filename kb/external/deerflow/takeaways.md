@@ -1,3 +1,15 @@
+---
+name: "DeerFlow"
+type: takeaways
+tags: [harness-app-separation, progressive-skill-loading, middleware-pipeline, boundary-test]
+last_checked: "2026-03-27"
+adoption_summary: "Harness/App分離・Progressive Skill Loading・境界テストを最優先採用、LangGraph依存は不採用"
+top_patterns:
+  - "Harness/App分離とCI境界テスト"
+  - "Progressive Skill Loading（段階的スキル注入）"
+  - "skills/public + skills/custom 二層構造"
+---
+
 # DeerFlow 2.0 からの知見と採用判断
 
 調査日: 2026-03-26

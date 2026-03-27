@@ -1,3 +1,15 @@
+---
+name: "Everything Claude Code"
+url: "https://github.com/affaan-m/everything-claude-code"
+type: knowledge-collection
+tags: [harness, skills, hooks, agents, security, cross-platform]
+stars: 108000
+license: "MIT"
+last_checked: "2026-03-27"
+relevance: high
+summary: "AIコーディングエージェント向け全方位パフォーマンス最適化ハーネスシステム、125+スキル・28エージェント"
+---
+
 # Everything Claude Code (ECC) — 深掘り分析
 
 ## 基本情報

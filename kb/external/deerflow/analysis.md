@@ -1,3 +1,15 @@
+---
+name: "DeerFlow"
+url: "https://github.com/bytedance/deer-flow"
+type: framework
+tags: [multi-agent, orchestration, langgraph, sandbox, skills, bytedance]
+stars: 46800
+license: "MIT"
+last_checked: "2026-03-27"
+relevance: high
+summary: "ByteDance製マルチエージェントSuperAgentフレームワーク、Harness/App分離とスキルシステムが特徴"
+---
+
 # DeerFlow 2.0 深掘り分析
 
 - URL: https://github.com/bytedance/deer-flow

@@ -1,3 +1,15 @@
+---
+name: "Everything Claude Code"
+type: takeaways
+tags: [4-layer-architecture, selective-install, security-guardrails, agents-md, rules-separation]
+last_checked: "2026-03-27"
+adoption_summary: "4層アーキテクチャ・AGENTS.md標準・フック安全3点セット・選択的インストールを高優先度で採用"
+top_patterns:
+  - "CLAUDE.md簡潔化＋rules/分離"
+  - "フックベースのセキュリティガードレール3点セット"
+  - "AGENTS.mdクロスツール標準化"
+---
+
 # Everything Claude Code — harness-harnessへの採用判断
 
 ## 採用判断テーブル
