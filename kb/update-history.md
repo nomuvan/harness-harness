@@ -1,5 +1,50 @@
 # harness-harness 更新履歴
 
+## 2026-03-28 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（75ページ一覧取得、前回67→8ページ増）、settings, hooks, skills, mcp, plugins, channels, changelog
+- Codex CLI: changelog
+
+### 検出された変更と更新内容
+
+#### Claude Code (v2.1.85)
+
+1. **specs/claude/changelog.md** — v2.1.85 追加
+   - Hooks `if` 条件フィールド（permission rule構文）
+   - MCP OAuth RFC 9728 対応
+   - `CLAUDE_CODE_MCP_SERVER_NAME`, `CLAUDE_CODE_MCP_SERVER_URL` 環境変数
+   - deep link 5,000文字対応
+   - スケジュールタスクのタイムスタンプマーカー
+
+2. **specs/claude/hooks.md** — 2件更新
+   - `if` 条件フィールドの仕様追加（v2.1.85）: ツールイベント専用、permission rule構文
+   - `TaskCreated` がブロック可能（Yes）に修正
+
+3. **specs/claude/configuration.md** — 環境変数2件追加
+   - `CLAUDE_CODE_MCP_SERVER_NAME`, `CLAUDE_CODE_MCP_SERVER_URL`
+
+4. **specs/claude/skills-and-commands.md** — フロントマター1件追加
+   - `paths` フィールド: glob パターンでスキル自動適用を限定
+
+5. **specs/claude/mcp.md** — OAuth 1件追加
+   - RFC 9728 Protected Resource Metadata ディスカバリ対応
+
+#### Codex CLI
+
+6. **specs/codex/changelog.md** — 2エントリ追加
+   - CLI 0.117.0（2026-03-26）: プラグインのファーストクラスワークフロー化、サブエージェントパスベースアドレス等
+   - Plugin Support Released（2026-03-25）: プラグインバンドル導入
+
+### llms.txt ページ数変化（67→75）
+新規ドキュメントページ検出: channels, channels-reference, checkpointing, chrome, claude-code-on-the-web, discover-plugins, fast-mode, features-overview, keybindings, microsoft-foundry, output-styles, plugin-marketplaces, plugins, plugins-reference, remote-control, scheduled-tasks, server-managed-settings, statusline, voice-dictation, web-scheduled-tasks 等（一部は既存ページのリネーム/リオーガナイズの可能性あり）
+
+### 変更なし（差分なし確認済み）
+- specs/claude/agent-teams.md — 公式ドキュメントとの大きな差分なし
+- specs/claude/best-practices.md — 公式ドキュメントとの大きな差分なし
+
+---
+
 ## 2026-03-27 — AiToEarn 再調査（業務ドメイン深掘り込み）
 
 ### 書き直しファイル

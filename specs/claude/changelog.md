@@ -3,9 +3,21 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-03-26
+最終更新: 2026-03-28
 
 ---
+
+## v2.1.85 (2026-03-26)
+
+- Hooks に `if` 条件フィールド追加（permission rule構文でツールイベントをフィルタリング）
+- `CLAUDE_CODE_MCP_SERVER_NAME`, `CLAUDE_CODE_MCP_SERVER_URL` 環境変数（MCP `headersHelper` スクリプト用）
+- MCP OAuth が RFC 9728 Protected Resource Metadata ディスカバリに対応
+- `PreToolUse` フックで `AskUserQuestion` の `updatedInput` 返却が可能に
+- スケジュールタスク（`/loop`, `CronCreate`）のトランスクリプトにタイムスタンプマーカー
+- deep link クエリが5,000文字まで対応
+- 組織ポリシーでブロックされたプラグインがマーケットプレースから非表示に
+- `@` メンションファイル補完のパフォーマンス改善
+- WASM yoga-layout を Pure TypeScript に置換（スクロールパフォーマンス改善）
 
 ## v2.1.84 (2026-03-26)
 
