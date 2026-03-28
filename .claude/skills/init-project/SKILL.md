@@ -82,6 +82,39 @@ kb/skills/recommended.mdを読み、プロジェクト種別に応じて選定:
 - 並列調査: dispatching-parallel-agents
 - プロジェクト種別に応じたTier B候補も条件付きで提案
 
+#### Step 5: Web徹底調査（複数Agent並列）
+
+Phase 0で得たプロジェクトの目的・業務ドメイン・技術スタックを元に、**複数のAgentを並列で走らせてWeb調査**を行う。harness-harness内部の蓄積知見だけでなく、最新の外部情報を骨格計画の判断材料にする。
+
+**並列Agent構成**:
+
+| Agent | 調査対象 | 出力 |
+|-------|---------|------|
+| Agent A: 業務ドメイン調査 | 業界最新動向、市場規模、トレンド、成功事例・失敗事例 | ドメイン知見レポート |
+| Agent B: 競合・類似プロジェクト調査 | 類似サービス/OSSの分析、差別化ポイント | 競合分析レポート |
+| Agent C: 技術スタック調査 | 最新ベストプラクティス、落とし穴、推奨ライブラリ・ツール | 技術推奨レポート |
+| Agent D: 法規制・コンプライアンス調査 | 業務ドメイン固有の法規制、プラットフォーム利用規約 | コンプライアンスレポート |
+
+各AgentはWebSearch/WebFetchを積極活用。`context: fork`で隔離実行し、メインコンテキストを保全する。
+
+**調査結果の活用**:
+- プロジェクトの骨格計画（ディレクトリ構成、スキル/ルール/Hooks設計）の判断材料に
+- Phase 3でcreate-harnessに渡す情報として統合
+- 対象プロジェクトのdocs/に初期知見として配置
+
+**harness-harnessへのフィードバック**:
+- 新たな業務ドメイン知見 → kb/domains/ or private/kb/（Phase 0振り分け基準に従う）
+- 新たな技術知見 → kb/external/（汎用性がある場合）
+- フィードバック先の判断はresearch-kbスキルのPhase 0基準を準用
+
+**Codex並行調査**:
+```bash
+codex exec --full-auto "プロジェクト目的: {purpose}、業務ドメイン: {domain}、技術スタック: {stack}。
+このプロジェクトの骨格計画に必要な情報を調査して。
+競合分析、技術推奨、法規制要件を /tmp/codex-research/{project-name}/ に出力して。"
+```
+Codex結果も統合する。**Codex結果なしにPhase 1に進まない**（Codex exec失敗時のみClaude単独続行）。
+
 ### Phase 1: GitHubリポジトリ作成
 
 `gh repo create` で作成。.gitignoreは技術スタックに応じたテンプレート。
