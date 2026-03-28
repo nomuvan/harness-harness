@@ -1,5 +1,23 @@
 # harness-harness 更新履歴
 
+## 2026-03-28 — スキルエコシステム巡回（初回動作確認）
+
+### 巡回結果
+- skills.shトレンド上位10件を確認（find-skills 750K, frontend-design 211K等）
+- anthropics/skills: 104,564 stars（安定）
+- openai/skills: 15,530 stars（安定）
+- agentskills.io: 32プラットフォーム確認（Claude Code, Codex, Gemini CLI, Cursor, VS Code, GitHub Copilot, Kiro, Roo Code, JetBrains Junie, Databricks, Snowflake等）
+
+### 更新ファイル
+- kb/skills/_index.md: プラットフォーム数を修正（33→32）
+
+### 知見
+- skills.shトレンドはVercel系（find-skills, react-best-practices）とMicrosoft Azure系が上位を占める
+- anthropics/skillsの公式スキルは安定。新規追加なし
+- Tier A推薦スキル（obra/superpowers系）は引き続き有効
+
+---
+
 ## 2026-03-28 — 公式ドキュメント巡回
 
 ### 巡回対象URL

@@ -1,7 +1,7 @@
 ---
 title: Agent Skills エコシステム
 last_patrol: "2026-03-28"
-standard: agentskills.io (33+ platforms)
+standard: agentskills.io (32 platforms confirmed)
 tracked_skills: 10
 patrol_schedule: weekly (月曜)
 ---
