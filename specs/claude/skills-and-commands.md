@@ -1,6 +1,6 @@
 # Claude Code Skills & コマンド仕様書
 
-最終更新: 2026-03-28（巡回更新）
+最終更新: 2026-03-29（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/skills / https://code.claude.com/docs/en/commands / https://code.claude.com/docs/en/sub-agents
 
@@ -52,7 +52,7 @@ my-skill/
 | フィールド | 必須 | 説明 |
 |:--|:--|:--|
 | `name` | No | スキル表示名。省略時はディレクトリ名。小文字英数字とハイフンのみ（最大64文字） |
-| `description` | 推奨 | スキルの用途と使用タイミング。Claude が自動適用の判断に使用 |
+| `description` | 推奨 | スキルの用途と使用タイミング。Claude が自動適用の判断に使用。**250文字上限**（v2.1.86） |
 | `argument-hint` | No | 引数ヒント。例: `[issue-number]` |
 | `disable-model-invocation` | No | `true` で Claude の自動呼び出しを禁止。手動 `/name` のみ |
 | `user-invocable` | No | `false` で `/` メニューから非表示。バックグラウンド知識用 |
