@@ -1,5 +1,36 @@
 # harness-harness 更新履歴
 
+## 2026-03-29 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（79ページ、前回75→4ページ増）、changelog
+- Codex CLI: changelog（変更なし）
+
+### 検出された変更と更新内容
+
+#### Claude Code (v2.1.86)
+
+1. **specs/claude/changelog.md** — v2.1.86 追加
+   - `X-Claude-Code-Session-Id` APIヘッダー
+   - `.jj`/`.sl` VCS除外
+   - `@` メンションのトークンオーバーヘッド削減
+   - スキル説明文250文字上限
+   - Read ツールのコンパクト行番号形式
+
+2. **specs/claude/skills-and-commands.md** — 1件更新
+   - `description` フロントマターに250文字上限の注記追加
+
+#### Codex CLI
+- 変更なし（CLI 0.117.0、App 26.323 が最新のまま）
+
+### スキルエコシステム巡回
+- スキップ（last_patrol: 2026-03-28、7日以内）
+
+### llms.txt ページ数変化（75→79）
+- 新規ページ: extended-thinking 等（4ページ追加確認）
+
+---
+
 ## 2026-03-28 — スキルエコシステム巡回（初回動作確認）
 
 ### 巡回結果
