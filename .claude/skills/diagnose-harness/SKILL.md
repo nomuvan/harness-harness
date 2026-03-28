@@ -61,7 +61,7 @@ description: |
 
 #### 1.3 kb/のベストプラクティスとの照合
 
-kb/external/ の調査済みプロジェクトから採用されたパターンとの差分:
+kb/external/ および private/kb/ の調査済みプロジェクトから採用されたパターンとの差分:
 - OpenClaw: 3層スキル優先順位、ゲーティング機構
 - gstack: 構造化スプリント、安全ガードレール
 - superpowers: マルチプラットフォーム構造、CSO最適化

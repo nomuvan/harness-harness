@@ -44,6 +44,35 @@ autoresearchを調査して
 AiToEarnを調査して（コンテンツ収益化の業務ドメインも深掘り）
 ```
 
+## Phase 0: public/private 振り分け判定
+
+調査対象ごとに出力先を判定する。**各対象の調査開始前に必ず実施。**
+
+### 判定基準（優先順位順）
+
+1. **ユーザー明示指示**: 「privateに」「publicに」と指示があればそれに従う
+2. **Anthropic/OpenAI/Claude/Codex公式** → public (kb/)
+3. **汎用ハーネスパターン** → public (kb/)
+4. **業務ドメイン全般（ベンダーロックインなし）** → public (kb/)
+5. **特定ベンダーのコンテンツ**（X, YouTube, TikTok, Amazon, Instagram, LINE等）→ private (private/kb/)
+6. **技術的な分析・研究** → public (kb/)
+7. **判断不能** → `private/kb/intake/pending-user-hearing.md` に記録してユーザーにヒアリング
+
+### 出力先マッピング
+
+| 振り分け | external | domains | vendors | _index.md | update-history |
+|---------|----------|---------|---------|-----------|---------------|
+| public | kb/external/ | kb/domains/ | — | kb/の各_index.md | kb/update-history.md |
+| private | private/kb/external/ | private/kb/domains/ | private/kb/vendors/ | private/kb/の各_index.md | private/kb/update-history.md |
+
+### private出力時のfrontmatter追加フィールド
+
+```yaml
+visibility: private
+classification_reason: "vendor-specific"  # or "user-specified", "confidential"
+public_twin: "kb/domains/xxx/overview.md"  # 対応するpublic文書があれば
+```
+
 ## 実行フロー（複数対象の場合）
 
 各対象ごとにworktreeで隔離して作業する。
@@ -189,9 +218,10 @@ harness_implications:
 
 ### Phase 5: レジストリ更新 & PR & マージ
 
-1. `kb/external/_index.md` に新エントリ追加（ツール調査時）
-2. `kb/domains/_index.md` に新エントリ追加（業務ドメイン調査時）
-3. `kb/update-history.md` に調査記録追加
+Phase 0の振り分け結果に応じた出力先に記録:
+
+1. 対応する `_index.md` に新エントリ追加（public: kb/, private: private/kb/）
+2. 対応する `update-history.md` に調査記録追加
 4. featureブランチ `research/{name}` でcommit → push → PR作成
 5. **自動マージ**（デフォルト）
 6. mainに戻って次の対象へ
@@ -208,4 +238,7 @@ harness_implications:
 - **業務ドメイン調査はユーザー指示がある場合のみ実施**（勝手にドメイン深掘りしない）
 - 業務ドメイン知見はkb/domains/に格納し、kb/external/（ツール調査）と分離する
 - **「前回調査からの差分」セクションは不要**。差分はgit履歴で確認できる。再調査時は常に最新版として上書き
-- kb/domains/には汎用的な業務知見のみ。プロジェクト固有の機密情報はprivate/に
+- **public/private振り分けはPhase 0で確定し、Phase 5まで一貫させる**
+- public kb/には汎用的な知見のみ。ベンダー固有・機密情報はprivate/kb/に
+- private/kb/にアクセスできない場合（ReadOnlyモード）はpublic側のみ操作する
+- private側の_index.mdにはプロジェクト固有情報を含めてよい（匿名化不要）

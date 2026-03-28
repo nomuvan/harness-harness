@@ -19,6 +19,7 @@
 - `scripts/` — クロスプラットフォームユーティリティ
 - `logs/` — 巡回・評価ログ（匿名化済み。原本はprivate/）
 - `private/` — git submodule（harness-harness-private）。プロジェクト固有情報
+  - `private/kb/` — ベンダー固有・機密ナレッジ（vendors/, external/, domains/, intake/）
 
 ## 重要方針
 
@@ -78,6 +79,6 @@
 
 - specs/ の仕様書を根拠にハーネスを生成すること
 - テンプレートの変更時は mapping/ の整合性も確認
-- kb/ の更新時は kb/update-history.md に記録
+- kb/ の更新時は kb/update-history.md に記録。private/kb/更新時は private/kb/update-history.md に記録
 - 自己改善時は docs/decisions/ にADRを残す
 - 実験的機能は積極利用（docs/philosophy.md参照）

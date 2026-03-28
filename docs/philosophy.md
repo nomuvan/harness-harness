@@ -52,10 +52,16 @@ AIが何をしているか、何ができて何ができないか、どれくら
 
 harness-harnessの第一目的は汎用ハーネスフレームワークだが、対象プロジェクトは様々な業務ドメインを扱う。どのようなハーネスにすべきかは業務ドメインの理解なしには最適化できない。
 
-- ユーザーが指示した業務ドメインについてはkb/domains/に徹底調査・深掘りの知見を蓄積する
+- ユーザーが指示した業務ドメインについてはkb/（public）またはprivate/kb/（private）に徹底調査・深掘りの知見を蓄積する
 - ドメイン知見はfrontmatterで概要・キーワードを掲載し、段階的開示でコンテキスト過多を防ぐ
 - 汎用的なハーネス構造パターン（ドメイン非依存）とドメイン固有の専門知識は明確に分離する
-- プロジェクト固有の機密情報（顧客名、数値等）はprivate/に格納し、kb/domains/には汎用的な業務知見のみ記載
+
+#### public/private振り分け基準（ユーザー指示が最優先）
+- Anthropic/OpenAI/Claude/Codex公式 → public (kb/)
+- 汎用ハーネス・技術分析・研究 → public (kb/)
+- 業務ドメイン全般（ベンダーロックインなし）→ public (kb/)
+- 特定ベンダー固有（X, YouTube, TikTok, Amazon等）→ private (private/kb/)
+- 判断不能 → private/kb/intake/pending-user-hearing.md に記録してユーザーにヒアリング
 
 ### 暗黙知と漸進的指示
 
