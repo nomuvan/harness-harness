@@ -56,19 +56,16 @@
 - `plan/*`: 計画策定用（Claude/Codex計画等）
 - private submoduleは本体と独立してmainに直接push可
 
-### worktree運用
-- mainは司令塔。日常の編集作業はworktreeで行う
+### worktree運用とPR必須
+- **mainへの直接push禁止。必ずfeatureブランチ→PR→マージ。例外なし**
+- mainは司令塔。日常の編集作業はworktreeまたはfeatureブランチで行う
 - 並列作業（調査、ハーネス作成、クロスレビュー等）にはgit worktreeを活用する
 - Claude Code: `EnterWorktree` ツールで `.claude/worktrees/` に作成。`isolation: "worktree"` でサブエージェント隔離も可
 - Codex CLI: 外側で `git worktree add` → `codex exec --cd <worktree>` で対象化
 - worktreeパスは `../<リポジトリ名>-wt-<ブランチ短縮名>/` とする
 - worktree作成後、`private/` が必要なら `git submodule update --init --recursive` を実行
-- 作業完了後はmainへマージしてworktreeを削除
+- 作業完了後はPR経由でmainにマージし、worktreeを削除
 - 詳細規約は docs/conventions.md 参照
-
-### PR推奨
-- 変更はworktreeまたはfeature/ブランチで作業し、PR経由でmainにマージする
-- 軽微な自己改善（typo修正、コメント追加等）のみmainに直接push可
 
 ### プライベート情報の分離
 - プロジェクト固有の情報（プロジェクト名、パス、PR URL等）はprivate/ submoduleに格納
