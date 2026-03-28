@@ -18,15 +18,10 @@ description: |
 
 ### 1. 管理対象プロジェクトの収集
 
-private/registry/projects.md（存在する場合）またはregistry/projects.md からプロジェクト一覧を取得。
+private/registry/projects.md からプロジェクト一覧を取得。
 
 ```bash
-# private submoduleがあればそちらを優先
-if [ -f private/registry/projects.md ]; then
-  cat private/registry/projects.md
-else
-  cat registry/projects.md
-fi
+cat private/registry/projects.md
 ```
 
 ### 2. 各プロジェクトのハーネス棚卸し

@@ -15,7 +15,7 @@
 - `kb/` — 外部プロジェクト調査、戦術的知見
 - `templates/` — ハーネステンプレート（Claude/Codex × 目的別）
 - `mapping/` — Claude⇔Codex変換ルール
-- `registry/` — 管理対象プロジェクト一覧
+- `private/registry/` — 管理対象プロジェクト一覧（private submodule内）
 - `scripts/` — クロスプラットフォームユーティリティ
 - `logs/` — 巡回・評価・セッションログ
 
