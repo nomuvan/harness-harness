@@ -12,7 +12,8 @@
 
 - `docs/` — 思想・方針、アーキテクチャ、規約
 - `specs/` — Claude Code, Codex CLIの仕様書
-- `kb/` — 外部プロジェクト調査、戦術的知見
+- `kb/` — 外部プロジェクト調査、業務ドメイン知見、スキルエコシステム（public）
+- `private/kb/` — ベンダー固有・機密ナレッジ（private submodule内）
 - `templates/` — ハーネステンプレート（Claude/Codex × 目的別）
 - `mapping/` — Claude⇔Codex変換ルール
 - `private/registry/` — 管理対象プロジェクト一覧（private submodule内）
