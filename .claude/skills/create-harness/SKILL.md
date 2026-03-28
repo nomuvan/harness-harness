@@ -2,160 +2,165 @@
 name: create-harness
 description: |
   新規プロジェクトにClaude Code / Codex CLIのハーネスを作成するスキル。
-  プロジェクト分析→方針決定→ハーネス生成→検証→PR&フィードバックを実行。
-  specs/の最新仕様とkb/のベストプラクティスを根拠に、プロジェクト特性に合わせたハーネスを生成。
+  harness-harnessの全知識資産（philosophy/specs/kb/推薦スキル）を毎回解析し、
+  思想を行動規則に、知見をHooks/rules/スキルに変換して注入する。
   「ハーネス作って」「新規プロジェクトにハーネスを設定して」「CLAUDE.mdを作って」で起動。
 ---
 
 # create-harness スキル
 
-新規プロジェクトにClaude Code / Codex CLIのハーネスを作成する。specs/を根拠に、対象プロジェクトの特性に最適化されたハーネスファイル一式を生成する。
-
-## 入力形式
-
-```
-/path/to/project にハーネスを作って
-```
-
-```
-以下のプロジェクトにClaude/Codex両方のハーネスを作成して:
-/path/to/project
-```
+新規プロジェクトにClaude Code / Codex CLIのハーネスを作成する。philosophy.mdの思想を行動規則に変換し、specs/kb/推薦スキルを蒸留して注入する。毎回harness-harnessの最新知識資産を読み込む。
 
 ## 処理フロー
 
 ### Phase 1: プロジェクト分析
 
-対象プロジェクトを徹底的に分析する。
+対象プロジェクトの技術スタック、ディレクトリ構造、既存設定を徹底分析。
+既にハーネスがある場合 → diagnose-harnessに案内して終了。
 
-1. **ディレクトリ構造の読み取り**: `ls`, `tree`（浅い階層）で全体構造を把握
-2. **技術スタックの自動検出**:
-   - マニフェストファイル: `package.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`, `pom.xml`, `build.gradle` 等
-   - テストフレームワーク: Jest, pytest, cargo test, go test 等
-   - リンター/フォーマッター: ESLint, Prettier, rustfmt, black, gofmt 等
-   - CI/CD設定: `.github/workflows/`, `.gitlab-ci.yml`, `Makefile` 等
-3. **既存ハーネスの有無チェック**: CLAUDE.md, AGENTS.md, .claude/, .codex/, .cursor/ 等
-   - 既にハーネスがある場合 → diagnose-harnessスキルの利用を案内して終了
-4. **モノレポ判定**: workspaces設定、複数のマニフェストファイルの存在
-5. **README・ドキュメントの確認**: プロジェクトの目的・概要を把握
-
-**Codex並行分析**（フォールバック付き）:
-
+Codex並行分析（フォールバック付き）:
 ```bash
 codex exec -a never -s read-only --cd <project-path> \
-  "このプロジェクトの技術スタック、ディレクトリ構造、開発フローを分析して。
-   ビルドコマンド、テストコマンド、デプロイ方法を特定して。結果をJSON形式で出力して。"
+  "技術スタック、ディレクトリ構造、開発フローを分析して。JSON形式で出力。"
 ```
 
-Codex exec失敗時はClaude単独で完遂する。
+### Phase 1.5: harness-harness知識資産の読み込み（必須・省略厳禁）
 
-### Phase 2: 方針決定（ユーザー対話 -- 必須）
+**init-project経由の場合はPhase 0.5の結果を受け取る。単独実行時は以下を自前で実行。**
 
-Phase 1の分析結果をユーザーに提示し、以下を対話で決定する。段階的開示で最初は必須項目のみ提示。
+harness-harnessは動的に変更される前提。毎回最新を読み込む。
 
-**必須決定事項**:
+#### Step A: philosophy.md → 行動規則
 
-1. **対象プラットフォーム**: Claude only / Codex only / Both
-2. **安全度レベル**: mapping/shared-concepts.md の安全度レベルに基づく
-   - **strict**: 全ツール事前承認。初回・評価用
-   - **standard**: ファイル操作は許可、外部通信は承認。日常開発用（推奨）
-   - **permissive**: ほぼ全許可、破壊操作のみ承認。経験者向け
+docs/philosophy.mdの各原則を、生成するCLAUDE.md/AGENTS.mdに記述する具体的な行動規則に変換:
 
-**詳細決定事項**（ユーザーが求めた場合に展開）:
+- 段階的開示 → 「CLAUDE.md 200行以下。詳細はrules/docs/に分離。@importで参照」
+- 透過性 → 「判断根拠を明示。却下した選択肢と理由もコメントに残す」
+- 指示追従<AI提案 → 「優れた代替案があればpros/cons付きで提案せよ」
+- 自律完遂 → 「タスク完了まで中断せず進め。不明点はサブエージェントで調査」
+- 自己評価 → 「作業完了後に自己評価。省略厳禁。keep/discard台帳で改善」
+- 多様性は善 → 「選択肢は1つに絞らない。各案のメリット・デメリットを提示」
+- 実践先行 → 「過剰scaffoldしない。最小限で始めて実践で育てる」
+- 暗黙知と漸進的指示 → 「追加指示はハーネス自体にフィードバック」
 
-3. **Hooks方針**:
-   - minimal: SessionStartのみ（デフォルト）
-   - standard: + PreToolUse, PostToolUse
-   - full: 全イベント活用
-4. **MCP**: 使用するMCPサーバーがあるか
-5. **Skills初期セット**: cross-project-copyで他プロジェクトから移植するか、最小限から始めるか
-6. **Codex生成時（Bothの場合）**: プロファイル設計
-   - safe: read-only + on-request（コードレビュー用）
-   - dev: workspace-write + on-request（日常開発用）
-   - verify: workspace-write + untrusted（テスト実行用）
-   - ci: workspace-write + never + ephemeral（CI/CD用）
-各選択肢にpros/consを明示し、ユーザーの判断材料を提供する。
+#### Step B: specs/ → ベストプラクティス
 
-目的別に複数ハーネスを使い分けたい場合は、switch-harnessスキルを案内する。
+- CLAUDE.md「地図型」（簡潔。詳細はrules/分離。ECC知見）
+- Hooksパターン:
+  - minimal: SessionStart（コンテキスト注入）
+  - standard: + PreToolUse（破壊的コマンドブロック）+ PostToolUse（自動フォーマット）
+  - full: + ECC安全3点セット（no-verify/config-protection/secret-detect）
+- スキル: context:fork + allowed-tools + pathsフロントマター（superpowers知見）
+- rules/: pathsスコープ分離（ECC知見: common + 言語別）
+- @import: 100行超見込み時にファイル分割
+
+#### Step C: kb/ → 外部知見
+
+プロジェクト種別に応じて適用:
+- **全プロジェクト**: AGENTS.mdルート配置（ECC: クロスツール標準）
+- **開発プロセスあり**: 軽量スプリント Think→Build→Review→Ship→Reflect（gstack）
+- **自律改善あり**: bounded autoresearch pattern（autoresearch: 不変judge+可変面+台帳）
+- **テスト重視**: TDDサイクル強制（superpowers）
+- **安全性重視**: /careful /freeze相当のガードレール（gstack）
+
+#### Step D: 推薦スキル選定
+
+kb/skills/recommended.mdから技術スタック・プロジェクト目的に応じて選定:
+- 全プロジェクト: skill-creator, systematic-debugging, brainstorming
+- テストあり: test-driven-development
+- Git運用: using-git-worktrees
+- 並列: dispatching-parallel-agents
+- 条件付きTier B候補もマッチすれば提案
+
+### Phase 2: 方針決定（ユーザー対話）
+
+分析結果+Phase 1.5の知見をユーザーに提示し対話で決定。
+
+**必須**: 対象プラットフォーム、安全度レベル
+**詳細**: Hooks方針、MCP、Skills初期セット、Codexプロファイル
+
+**AIは方針提案時にPhase 1.5の知見を根拠として明示する。** 「gstackの軽量スプリントを採用しますか？理由は...」のように。
 
 ### Phase 3: ハーネス生成
 
-対象プロジェクトでgit worktreeを作成し、ハーネスファイルを生成する。
+worktreeを作成し、Phase 1.5の全解析結果を反映してハーネスを生成。
 
-**テンプレート戦略**:
-- `templates/{platform}/{type}/` にテンプレートがあれば使用
-- なければ（現状）specs/ + kb/ + mapping/ から動的生成
+**Step 3-A: CLAUDE.md/AGENTS.mdの生成**
 
-**Claude向け生成物**:
+必須セクション:
+- プロジェクト概要、技術スタック、ビルド/テストコマンド
+- **AI行動規則**（Step Aで変換したphilosophy行動規則）
+- **自律レベル定義**（L1協業→L2半自律→L3自律。現在地と昇格条件）
+- **Read Order**（段階的開示の実装: CLAUDE.md→docs/→rules→skills→対象ファイル）
+- 推薦スキル一覧（Step Dで選定したもの）
+- 開発プロセス（worktree運用、PR必須、コミット規約）
 
-| ファイル | 根拠 | 内容 |
-|----------|------|------|
-| `CLAUDE.md` | specs/claude/best-practices.md | 200行以下。プロジェクト概要、ビルド/テストコマンド、コーディング規約。大規模時は`@`インポートで分割 |
-| `.claude/settings.json` | specs/claude/configuration.md | permissions, sandbox設定。Phase 2の安全度レベルに基づく |
-| `.claude/rules/` | specs/claude/configuration.md | パススコープのルール（モノレポ時） |
-| `.claude/skills/` | specs/claude/skills-and-commands.md | プロジェクトに適した初期スキル |
-| `.mcp.json` | specs/claude/mcp.md | MCP設定（Phase 2で決定した場合） |
-| `.claude/agents/` | specs/claude/agent-teams.md | カスタムサブエージェント（該当する場合） |
+**Step 3-B: Hooks/settings.jsonの生成**
 
-**Codex向け生成物**（Bothの場合）:
+Phase 2で決定したHooks方針に基づき生成:
+```json
+{
+  "hooks": {
+    "SessionStart": [{"hooks": [{"type": "command", "command": ".claude/hooks/session-context.sh"}]}],
+    "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": ".claude/hooks/block-destructive.sh"}]}]
+  }
+}
+```
 
-| ファイル | 根拠 | 内容 |
-|----------|------|------|
-| `AGENTS.md` | specs/codex/configuration.md | CLAUDE.mdと内容同期しつつCodexネイティブに記述 |
-| `.codex/config.toml` | specs/codex/configuration.md | approval_policy, sandbox_mode, プロファイル4種 |
-| `.agents/skills/` | .claude/skills/からコピー。ディレクトリ名のみ変更 |
-| `agents/openai.yaml` | specs/codex/configuration.md | スキルUI表示・ポリシー設定 |
+**Step 3-C: rules/の生成**
 
-**Both生成時の共通指示**:
-- `docs/shared-instructions.md`パターン（mapping/shared-concepts.md 1.1参照）の導入を検討
-- 共通の指示はCLAUDE.md/AGENTS.md両方に記述し、プラットフォーム固有部分のみ分離
+pathsフロントマター付きでスコープ分離:
+- common-rules.md（pathsなし、全体適用）
+- 技術スタック固有rules（paths付き）
 
-**鉄則**: ソースコードは一切変更しない。ハーネスファイルのみを生成する。
+**Step 3-D: 推薦スキルの注入**
 
-### Phase 4: 検証
+選定されたスキルをCLAUDE.mdに記載し、利用可能なものは.claude/skills/に配置。
+SKILL.mdフロントマター: CSO最適化済みdescription、context:fork（調査系）、allowed-tools。
 
-1. **構造チェック**: 生成されたファイルがspecs/の制約を満たすか確認
-   - CLAUDE.md/AGENTS.mdのサイズ制限
-   - settings.json/config.tomlの必須キー
-   - SKILL.mdのフロントマター形式
-2. **一貫性チェック（Both生成時）**: Claude側とCodex側の設定が矛盾しないか、mapping/に照らして確認
-3. **ユーザープレビュー**: 生成されたファイル一覧と主要ファイルの内容をユーザーに提示
-4. **Codex検証**（可能な場合）:
-   ```bash
-   codex exec --ephemeral --cd <worktree-path> "このプロジェクトのハーネス設定を確認して。
-   AGENTS.md、config.toml、skillsが正しくロードされるか検証して。"
-   ```
+**Step 3-E: 出典記録**
+
+docs/harness-sources.md を生成。どの知見がどこから来たかを記録（透過性の実装）。
+
+**Step 3-F: Codex側生成**（Both選択時）
+
+AGENTS.md, .codex/config.toml（プロファイル4種）, .agents/skills/
+
+**鉄則**: ソースコードは一切変更しない。
+
+### Phase 4: Codexレビュー（必須・省略厳禁）
+
+**生成されたハーネス全体をCodexにレビューさせる。**
+
+```bash
+codex exec -a never -s read-only --cd <worktree-path> \
+  "このプロジェクトのハーネスをレビューして。
+   1. philosophy行動規則が具体的に記述されているか（スローガンになっていないか）
+   2. 推薦スキルが適切に注入されているか
+   3. Hooks/rulesのスコープ設定が正しいか
+   4. 生成物が浅くありきたりでないか、プロジェクト固有の深い設計になっているか
+   5. specs/のベストプラクティスに準拠しているか
+   findingsをseverity順で報告して。"
+```
+
+Codexフィードバックに基づき修正。**レビューなしにPR作成は禁止。**
 
 ### Phase 5: PR作成 & フィードバック
 
-1. featureブランチ `harness/init-{project-name}` でcommit → push → PR作成
-2. PR本文に記載:
-   - 検出した技術スタック
-   - 選択した方針（安全度レベル、Hooks方針等）
-   - 生成したファイル一覧
-   - harness-harness由来であることの明記
-3. **自動マージはしない**（デフォルト）。ユーザー確認後にマージ
-
-**フィードバック**（省略厳禁）:
-
-- templates/の改善候補: 動的生成した結果のうち汎用性の高いパターンをログに記録
-- registry/の更新: 管理対象プロジェクトにエントリ追加
-- kb/update-history.md: 生成過程で得た知見を記録
-- cross-project-copy候補: 他プロジェクトにも有用なスキル/hooks/rulesを特定
-
-## 既存スキルとの連携
-
-- **patrol-docs**: Phase 1の前にspecs/が最新か確認。古ければpatrol-docsの実行を推奨
-- **cross-project-copy**: Phase 2で「他プロジェクトからスキルを移植するか」を提案
-- **research-kb**: 対象プロジェクトで未知の技術が検出された場合、research-kbでの調査を提案
-- **diagnose-harness**: 既存ハーネスがある場合はdiagnose-harnessに案内
+1. featureブランチでcommit → push → PR作成
+2. PR本文: 技術スタック、方針、Phase 1.5の知見適用内容、Codexレビュー結果
+3. **フィードバック**（省略厳禁）:
+   - templates/改善候補をログに記録
+   - registry/にプロジェクト登録
+   - kb/update-history.mdに知見記録
+   - cross-project-copy候補特定
 
 ## 注意事項
 
+- **Phase 1.5は省略厳禁。harness-harnessの知識資産を読まずに生成しない**
+- **Phase 4のCodexレビューも省略厳禁。レビューなしにPR作成しない**
+- philosophy行動規則は「スローガン」ではなく「検証可能な具体指示」として注入
+- 生成物が浅くありきたりなら失格。AIの知識を最大限活用した深い設計を行う
+- harness-harnessは動的に変更される。毎回最新を読む
 - ソースコードは変更しない（ハーネスファイルのみ）
-- Phase 2のユーザー対話は省略しない。自動判断で全てを決定しない
-- 生成するCLAUDE.mdは200行以下。超える場合は@importで分割
-- プライベートプロジェクト名はPR本文やログに混入させない（匿名化）
-- テンプレートがなくても動作する。テンプレートの存在は品質向上だが必須ではない
-- Codex exec失敗時はClaude単独で完遂する（Codex依存にしない）
-- 「多様性は善」: 方針決定時にpros/consを明示し選択肢を残す
+- CLAUDE.mdは200行以下。超える場合は@importで分割
