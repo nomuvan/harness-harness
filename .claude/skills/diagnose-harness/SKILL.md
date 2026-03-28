@@ -9,7 +9,7 @@ description: |
 
 # diagnose-harness スキル
 
-既存プロジェクトのハーネスを診断し、ADR-001の5ステップ（診断→改善提案→実装→PR→フィードバック）を一貫実行する。specs/の最新仕様との乖離、未活用機能、ベストプラクティス違反を検出し、ユーザーとの対話で改善を進める。
+既存プロジェクトのハーネスを診断し、ADR-001の5ステップ（診断→改善提案→実装→PR→フィードバック）を一貫実行する。**毎回harness-harnessの最新知識資産を読み込み**、specs/の最新仕様との乖離、未活用機能、ベストプラクティス違反、philosophy.md行動規則の未反映を検出する。
 
 ## 入力形式
 
@@ -22,6 +22,16 @@ description: |
 ```
 
 ## 処理フロー（ADR-001準拠 5ステップ）
+
+### Phase 0.5: harness-harness知識資産の読み込み（必須・省略厳禁）
+
+create-harness Phase 1.5と同一手順。harness-harnessのdocs/philosophy.md、specs/、kb/、kb/skills/recommended.mdを読み込み、診断基準として使用する。harness-harnessは動的に変更される前提。毎回最新を読む。
+
+追加の診断基準:
+- philosophy.mdの各原則が対象ハーネスで「行動規則」として実装されているか
+- 推薦スキルが適切に注入されているか
+- Hooks/rules/のスコープ設定がspecs/ベストプラクティスに準拠しているか
+- kb/外部知見（ECC, gstack, superpowers, autoresearch）のパターンが活用されているか
 
 ### Phase 1: 診断（ADR-001 ステップ1）
 
@@ -118,6 +128,17 @@ Phase 2で承認された改善を一括実装する。
 5. mapping/の変換ルールを参照して一貫性を維持
 
 Phase 2で「今回は診断だけ」となった場合、このPhaseはスキップ。
+
+### Phase 3.5: Codexレビュー（実装後、PR前に必須）
+
+改善実装後の結果をCodexにレビューさせる:
+```bash
+codex exec -a never -s read-only --cd <worktree-path> \
+  "この改善後のハーネスをレビュー。philosophy行動規則の反映度、
+   推薦スキル注入の適切性、Hooks/rulesのスコープ設定を評価。
+   findingsをseverity順で報告して。"
+```
+Codexフィードバックに基づき修正。**レビューなしにPR作成は禁止。**
 
 ### Phase 4: PR・レビュー・マージ（ADR-001 ステップ4）
 
