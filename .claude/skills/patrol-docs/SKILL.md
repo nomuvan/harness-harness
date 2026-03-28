@@ -1,15 +1,16 @@
 ---
 name: patrol-docs
 description: |
-  Claude Code・Codex CLIの公式ドキュメントを巡回し、specs/・kb/を最新化するスキル。
+  Claude Code・Codex CLIの公式ドキュメントとスキルエコシステムを巡回し、specs/・kb/を最新化するスキル。
   変更があればcommit→push→PR作成（→自動マージ）まで実行。
+  スキルエコシステム（公式スキル、推薦スキル、トレンド）も巡回対象。
   「巡回して」「公式ドキュメント巡回」「patrol」「specs更新して」で起動。
   定期実行はlaunchd-scheduleスキルと組み合わせて実現。
 ---
 
 # patrol-docs スキル
 
-Claude Code・Codex CLIの公式ドキュメントを巡回し、harness-harnessのspecs/・kb/を最新化する。
+Claude Code・Codex CLIの公式ドキュメントとスキルエコシステムを巡回し、harness-harnessのspecs/・kb/を最新化する。
 
 ## 引数
 
@@ -83,6 +84,29 @@ Claude Code・Codex CLIの公式ドキュメントを巡回し、harness-harness
 changelog元データの取得先（公式サイトリニューアルで変わっても追随）:
 - Claude Code: `https://code.claude.com/docs/en/changelog` または GitHub CHANGELOG.md
 - Codex: `https://developers.openai.com/codex/changelog`
+
+### Phase 3.5: スキルエコシステム巡回
+
+kb/skills/ のスキルエコシステム情報を巡回・更新する。
+
+**巡回対象**:
+
+| サイト | URL | 確認内容 |
+|--------|-----|---------|
+| anthropics/skills | https://github.com/anthropics/skills | 新スキル追加、Stars変動 |
+| openai/skills | https://github.com/openai/skills | 新スキル追加、カテゴリ変更 |
+| claude.com/plugins | https://claude.com/plugins | 新プラグイン、カテゴリ変更 |
+| Codex Skills Docs | https://developers.openai.com/codex/skills | 仕様変更 |
+| skills.sh | https://skills.sh/ | トレンドスキル上位10件 |
+| agentskills.io | https://agentskills.io/ | 仕様バージョン変更 |
+
+**更新判断**:
+- 新しい有力スキルが登場 → `kb/skills/recommended.md` に追加検討（昇格ルーブリックで評価）
+- 既存推薦スキルが非推奨・放棄 → Tier降格 or 削除
+- Agent Skills仕様変更 → `kb/skills/sources.md` 更新
+- トレンドの変化 → `kb/skills/_index.md` の最終巡回日更新
+
+**段階的開示**: 全スキル一覧は不要。推薦に値するものだけ `recommended.md` に記録。詳細は必要時に公式サイトにWebFetchでアクセス。
 
 ### Phase 4: kb/update-history.md記録
 
