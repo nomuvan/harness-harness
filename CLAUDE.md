@@ -15,7 +15,7 @@
 - `kb/` — 外部プロジェクト調査、業務ドメイン知見、スキルエコシステム、戦術的知見
 - `templates/` — ハーネステンプレート（Claude/Codex × 目的別）
 - `mapping/` — Claude⇔Codex変換ルール
-- `registry/` — 管理対象プロジェクト一覧（テンプレート。実データはprivate/）
+- `private/registry/` — 管理対象プロジェクト一覧（private submodule内）
 - `scripts/` — クロスプラットフォームユーティリティ
 - `logs/` — 巡回・評価ログ（匿名化済み。原本はprivate/）
 - `private/` — git submodule（harness-harness-private）。プロジェクト固有情報
