@@ -57,7 +57,7 @@
 - private submoduleは本体と独立してmainに直接push可
 
 ### worktree運用とPR必須
-- **mainへの直接push禁止。必ずfeatureブランチ→PR→マージ。例外なし**
+- **複数ファイルにまたがる変更は必ずfeatureブランチ→PR→マージ。mainへの直接pushは軽微な修正のみ**
 - mainは司令塔。日常の編集作業はworktreeまたはfeatureブランチで行う
 - 並列作業（調査、ハーネス作成、クロスレビュー等）にはgit worktreeを活用する
 - Claude Code: `EnterWorktree` ツールで `.claude/worktrees/` に作成。`isolation: "worktree"` でサブエージェント隔離も可
