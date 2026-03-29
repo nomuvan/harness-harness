@@ -59,7 +59,7 @@ bash "$SKILL_DIR/scripts/manage-schedule.sh" list <project-name>
 ```
 
 デフォルトではカレントディレクトリ名でフィルタし、自プロジェクトのスケジュールのみ表示。
-各スケジュールにはProject名が表示される（plistのHARNESS_PROJECT環境変数から取得）。
+各スケジュールにはProject名が表示される（plistのSCHEDULE_PROJECT環境変数から取得）。
 
 ### update — スケジュール変更
 

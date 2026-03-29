@@ -103,7 +103,7 @@ ${interval}
         <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:$HOME/.local/bin:$HOME/.nodenv/shims</string>
         <key>HOME</key>
         <string>$HOME</string>
-        <key>HARNESS_PROJECT</key>
+        <key>SCHEDULE_PROJECT</key>
         <string>${project_name}</string>
     </dict>
 </dict>
@@ -142,7 +142,7 @@ list_schedules() {
 
     # プロジェクト名を取得
     local project
-    project=$(defaults read "$plist" EnvironmentVariables 2>/dev/null | grep -A1 "HARNESS_PROJECT" | tail -1 | tr -d ' ";' || echo "unknown")
+    project=$(defaults read "$plist" EnvironmentVariables 2>/dev/null | grep -A1 "SCHEDULE_PROJECT" | tail -1 | tr -d ' ";' || echo "unknown")
 
     # フィルタ適用
     if [ -n "$filter_project" ] && [ "$project" != "$filter_project" ]; then
