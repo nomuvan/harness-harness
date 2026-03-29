@@ -1,5 +1,35 @@
 # harness-harness 更新履歴
 
+## 2026-03-30 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（76ページ、前回79→3ページ減、再編成の可能性）、settings, hooks, skills, mcp, changelog
+- Codex CLI: changelog
+
+### 検出された変更と更新内容
+
+#### Claude Code
+- 新バージョンなし（v2.1.86が最新のまま）
+
+1. **specs/claude/configuration.md** — 設定キー5件補完（前回以前の巡回で取りこぼし）
+   - `autoMode`: Auto Mode分類器設定（`environment`, `allow`, `soft_deny`）
+   - `disableAutoMode`: Auto Mode有効化の阻止（`"disable"`）
+   - `useAutoModeDuringPlan`: プランモードでのAuto Modeセマンティクス（デフォルト`true`）
+   - `defaultShell`: `!`コマンドのデフォルトシェル（`bash` / `powershell`）
+   - `otelHeadersHelper`: 動的OpenTelemetryヘッダー生成スクリプト
+   - `attribution` の重複エントリ修正
+
+#### Codex CLI
+- 変更なし（CLI 0.117.0、App 26.323 が最新のまま）
+
+### スキルエコシステム巡回
+- スキップ（last_patrol: 2026-03-28、7日以内）
+
+### llms.txt ページ数変化（79→76）
+- 3ページ減。ページ統合・リネームの可能性（詳細は次回以降に追跡）
+
+---
+
 ## 2026-03-29 — 公式ドキュメント巡回
 
 ### 巡回対象URL
