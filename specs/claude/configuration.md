@@ -1,6 +1,6 @@
 # Claude Code 設定仕様書
 
-最終更新: 2026-03-28（巡回更新）
+最終更新: 2026-03-30（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/settings / https://code.claude.com/docs/en/memory
 
@@ -126,6 +126,11 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `availableModels` | 選択可能モデル制限 |
 | `modelOverrides` | モデルIDマッピング |
 | `effortLevel` | エフォートレベル (`low` / `medium` / `high`) |
+| `autoMode` | Auto Modeの分類器設定。`environment`, `allow`, `soft_deny` 配列で構成。共有プロジェクト設定からは読み込まれない |
+| `disableAutoMode` | `"disable"` で Auto Mode の有効化を阻止。`Shift+Tab` サイクルから除外し `--permission-mode auto` を拒否 |
+| `useAutoModeDuringPlan` | プランモードで Auto Mode セマンティクスを使用（デフォルト: `true`）。共有プロジェクト設定からは読み込まれない |
+| `defaultShell` | `!` コマンドのデフォルトシェル。`"bash"`（デフォルト）または `"powershell"`（Windows、`CLAUDE_CODE_USE_POWERSHELL_TOOL=1` 必要） |
+| `otelHeadersHelper` | 動的OpenTelemetryヘッダー生成スクリプト。起動時と定期的に実行 |
 | `apiKeyHelper` | カスタムAPIキー生成スクリプト |
 | `autoMemoryEnabled` | オートメモリ有効/無効（デフォルト: true） |
 | `autoMemoryDirectory` | オートメモリ保存先ディレクトリ |
@@ -145,14 +150,13 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `agent` | メインスレッドをサブエージェントとして実行 |
 | `language` | 応答言語設定 |
 | `sandbox.*` | サンドボックス設定 |
-| `attribution` | git commit/PR 帰属表記設定 |
+| `attribution` | git commit/PR 帰属表記設定（`commit`, `pr` キー） |
 | `alwaysThinkingEnabled` | 拡張思考のデフォルト有効化 |
 | `plansDirectory` | プランファイル保存先 |
 | `spinnerVerbs` | スピナー動詞カスタマイズ |
 | `autoUpdatesChannel` | 更新チャンネル (`stable` / `latest`) |
 | `respectGitignore` | `@` ファイルピッカーで `.gitignore` を尊重（デフォルト: `true`） |
 | `includeGitInstructions` | 組み込みcommit/PRワークフロー指示の有効化（デフォルト: `true`） |
-| `attribution` | git commit/PR 帰属表記設定（`commit`, `pr` キー） |
 | `includeCoAuthoredBy` | **非推奨**: `attribution` を使用 |
 | `channelsEnabled` | （Managed のみ）Team/Enterprise ユーザーのチャンネル機能 |
 | `allowManagedPermissionRulesOnly` | （Managed のみ）ユーザー/プロジェクトの権限ルール定義を禁止 |
