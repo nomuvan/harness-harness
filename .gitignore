@@ -19,3 +19,4 @@ domain/
 
 # Patrol cache (page content, metadata)
 .patrol-cache/
+.playwright-mcp/
