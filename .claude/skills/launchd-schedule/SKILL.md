@@ -48,10 +48,18 @@ bash "$SKILL_DIR/scripts/manage-schedule.sh" create \
 ### list — スケジュール一覧
 
 ```bash
+# 現在のプロジェクトのスケジュールのみ表示（デフォルト）
 bash "$SKILL_DIR/scripts/manage-schedule.sh" list
+
+# 全プロジェクトのスケジュールを表示
+bash "$SKILL_DIR/scripts/manage-schedule.sh" list --all
+
+# 特定プロジェクトのスケジュールを表示
+bash "$SKILL_DIR/scripts/manage-schedule.sh" list <project-name>
 ```
 
-`com.harness-schedule.*` ラベルのlaunchdジョブのみ抽出。
+デフォルトではカレントディレクトリ名でフィルタし、自プロジェクトのスケジュールのみ表示。
+各スケジュールにはProject名が表示される（plistのHARNESS_PROJECT環境変数から取得）。
 
 ### update — スケジュール変更
 
