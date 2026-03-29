@@ -72,6 +72,10 @@ create_schedule() {
   local interval
   interval=$(cron_to_plist_interval "$cron_expr")
 
+  # プロジェクト名をworkdirから自動取得
+  local project_name
+  project_name=$(basename "$workdir")
+
   cat > "$plist_file" << PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -99,6 +103,8 @@ ${interval}
         <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:$HOME/.local/bin:$HOME/.nodenv/shims</string>
         <key>HOME</key>
         <string>$HOME</string>
+        <key>HARNESS_PROJECT</key>
+        <string>${project_name}</string>
     </dict>
 </dict>
 </plist>
@@ -112,16 +118,39 @@ PLIST
 }
 
 list_schedules() {
-  echo "=== harness-schedule 一覧 ==="
+  local filter_project="${1:-}"
+  local current_project
+  current_project=$(basename "$(pwd)")
+
+  if [ "$filter_project" = "--all" ]; then
+    echo "=== harness-schedule 一覧（全プロジェクト） ==="
+    filter_project=""
+  elif [ -z "$filter_project" ]; then
+    echo "=== harness-schedule 一覧（${current_project}） ==="
+    filter_project="$current_project"
+  else
+    echo "=== harness-schedule 一覧（${filter_project}） ==="
+  fi
+
   local found=false
   for plist in "$PLIST_DIR"/${LABEL_PREFIX}.*.plist; do
     [ -f "$plist" ] || continue
-    found=true
+
     local label
     label=$(defaults read "$plist" Label 2>/dev/null)
     local name="${label#${LABEL_PREFIX}.}"
 
-    # スケジュール情報を抽出
+    # プロジェクト名を取得
+    local project
+    project=$(defaults read "$plist" EnvironmentVariables 2>/dev/null | grep -A1 "HARNESS_PROJECT" | tail -1 | tr -d ' ";' || echo "unknown")
+
+    # フィルタ適用
+    if [ -n "$filter_project" ] && [ "$project" != "$filter_project" ]; then
+      continue
+    fi
+
+    found=true
+
     local status
     if launchctl list "$label" >/dev/null 2>&1; then
       status="active"
@@ -129,20 +158,20 @@ list_schedules() {
       status="inactive"
     fi
 
-    # plistからセッション名とプロンプトを取得
-    local args
-    args=$(defaults read "$plist" ProgramArguments 2>/dev/null | tr -d '()",' | tr '\n' ' ')
-
     echo ""
     echo "  Name: $name"
+    echo "  Project: $project"
     echo "  Status: $status"
     echo "  Label: $label"
     echo "  Plist: $plist"
-    echo "  Args: $args"
   done
 
   if [ "$found" = false ]; then
-    echo "  (スケジュールなし)"
+    if [ -n "$filter_project" ]; then
+      echo "  (${filter_project}のスケジュールなし。--all で全プロジェクト表示)"
+    else
+      echo "  (スケジュールなし)"
+    fi
   fi
 }
 
@@ -254,7 +283,8 @@ case "${1:-help}" in
     create_schedule "$@"
     ;;
   list)
-    list_schedules
+    shift
+    list_schedules "${1:-}"
     ;;
   update)
     shift
