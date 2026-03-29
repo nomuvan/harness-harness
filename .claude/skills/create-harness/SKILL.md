@@ -112,7 +112,22 @@ worktreeを作成し、Phase 1.5の全解析結果を反映してハーネスを
 - **自律レベル定義**（L1協業→L2半自律→L3自律。現在地と昇格条件）
 - **Read Order**（段階的開示の実装: CLAUDE.md→docs/→rules→skills→対象ファイル）
 - 推薦スキル一覧（Step Dで選定したもの）
-- 開発プロセス（worktree運用、PR必須、コミット規約）
+- **開発ワークフロー**（ユーザーから特に指示がない場合、harness-harness標準を適用）:
+  - mainは司令塔。日常の編集作業はworktreeで行う
+  - 複数ファイル変更はfeatureブランチ→PR→マージ。軽微な修正のみmain直接push
+  - Claude Code: EnterWorktreeで作業→完了→PR→マージ→ExitWorktree
+  - Codex: 外側でworktree作成→`codex exec --cd <worktree> --profile author`→完了→PR→worktree削除
+  - 1タスク1worktree。worktreeパスは`../<repo>-wt-<branch-short>/`
+  - 詳細はdocs/conventions.mdに委譲（8-12行の要約のみCLAUDE.md/AGENTS.mdに記載）
+
+**Step 3-A2: docs/conventions.mdの生成**
+
+対象プロジェクトにdocs/conventions.mdを生成し、harness-harness docs/conventions.mdの以下を端的に移植:
+- git worktree運用ルール（Claude方式/Codex方式）
+- ブランチ命名規約（feature/*, review/*, fix/*）
+- PR必須の線引き（複数ファイル→PR、軽微→main直接push可）
+- コミットメッセージ規約
+- 完了条件（commit+push≠完了。PR→マージ→worktree削除までが1サイクル）
 
 **Step 3-B: Hooks/settings.jsonの生成**
 
