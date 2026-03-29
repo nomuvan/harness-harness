@@ -142,7 +142,7 @@ list_schedules() {
 
     # プロジェクト名を取得
     local project
-    project=$(defaults read "$plist" EnvironmentVariables 2>/dev/null | grep -A1 "SCHEDULE_PROJECT" | tail -1 | tr -d ' ";' || echo "unknown")
+    project=$(defaults read "$plist" EnvironmentVariables 2>/dev/null | grep "SCHEDULE_PROJECT" | sed 's/.*= *"\{0,1\}\([^";]*\)"\{0,1\}.*/\1/' || echo "unknown")
 
     # フィルタ適用
     if [ -n "$filter_project" ] && [ "$project" != "$filter_project" ]; then
