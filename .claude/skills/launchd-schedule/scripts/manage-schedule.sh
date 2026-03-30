@@ -52,6 +52,7 @@ create_schedule() {
   local workdir="$4"
   local claude_cmd="$5"
   local prompt="$6"
+  local mode="${7:-session}"  # session (既存) or script (新規)
 
   local label="${LABEL_PREFIX}.${name}"
   local plist_file="${PLIST_DIR}/${label}.plist"
@@ -76,6 +77,25 @@ create_schedule() {
   local project_name
   project_name=$(basename "$workdir")
 
+  # モードに応じてランナーを選択
+  local runner_script
+  local runner_args
+  if [ "$mode" = "script" ]; then
+    runner_script="$SCRIPT_DIR/run-scheduled-script.sh"
+    # scriptモードは追加引数（スケジュール名）が先頭に入る
+    runner_args="        <string>${name}</string>
+        <string>${session}</string>
+        <string>${workdir}</string>
+        <string>${claude_cmd}</string>
+        <string>${prompt}</string>"
+  else
+    runner_script="$RUNNER"
+    runner_args="        <string>${session}</string>
+        <string>${workdir}</string>
+        <string>${claude_cmd}</string>
+        <string>${prompt}</string>"
+  fi
+
   cat > "$plist_file" << PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -86,11 +106,8 @@ create_schedule() {
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>${RUNNER}</string>
-        <string>${session}</string>
-        <string>${workdir}</string>
-        <string>${claude_cmd}</string>
-        <string>${prompt}</string>
+        <string>${runner_script}</string>
+${runner_args}
     </array>
 ${interval}
     <key>StandardOutPath</key>
@@ -105,16 +122,18 @@ ${interval}
         <string>$HOME</string>
         <key>SCHEDULE_PROJECT</key>
         <string>${project_name}</string>
+        <key>SCHEDULE_MODE</key>
+        <string>${mode}</string>
     </dict>
 </dict>
 </plist>
 PLIST
 
   launchctl load "$plist_file"
-  echo "Created schedule '$name' ($cron_expr)"
+  echo "Created schedule '$name' ($cron_expr) [mode: $mode]"
   echo "  Label: $label"
   echo "  Plist: $plist_file"
-  echo "  Session: $session | Workdir: $workdir"
+  echo "  Session: $session | Workdir: $workdir | Mode: $mode"
 }
 
 list_schedules() {
