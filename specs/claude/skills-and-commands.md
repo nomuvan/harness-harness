@@ -58,7 +58,7 @@ my-skill/
 | `user-invocable` | No | `false` で `/` メニューから非表示。バックグラウンド知識用 |
 | `allowed-tools` | No | スキル有効時に許可なしで使えるツール |
 | `model` | No | スキル有効時のモデル指定 |
-| `effort` | No | エフォートレベル (`low` / `medium` / `high` / `max`) |
+| `effort` | No | エフォートレベル (`low` / `medium` / `high` / `max`（Opus 4.6のみ）) |
 | `context` | No | `fork` でフォークサブエージェントコンテキストで実行 |
 | `agent` | No | `context: fork` 時のサブエージェントタイプ指定 |
 | `hooks` | No | スキルライフサイクルにスコープされたフック |

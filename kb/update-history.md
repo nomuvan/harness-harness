@@ -1,5 +1,28 @@
 # harness-harness 更新履歴
 
+## 2026-03-31 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（73ページ、前回76→3ページ減）、settings, hooks, skills, mcp, changelog, env-vars
+- Codex CLI: changelog
+
+### 検出された変更と更新内容
+
+#### Claude Code
+- **specs/claude/changelog.md** — v2.1.87 追加（Cowork Dispatch メッセージ未配信修正のみ）
+- **specs/claude/skills-and-commands.md** — `effort` フロントマターの `max` オプションに「Opus 4.6のみ」注記追加
+
+#### Codex CLI
+- 変更なし（CLI 0.117.0、App 26.323 が最新のまま）
+
+### スキルエコシステム巡回
+- スキップ（last_patrol: 2026-03-28、7日以内）
+
+### llms.txt ページ数変化（76→73）
+- 3ページ減。ページ統合の可能性（前回巡回でも79→76の減少傾向あり）
+
+---
+
 ## 2026-03-30 — 公式ドキュメント巡回
 
 ### 巡回対象URL
