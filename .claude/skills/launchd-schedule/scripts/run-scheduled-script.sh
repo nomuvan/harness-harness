@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# run-scheduled-script.sh — tmux上でClaude CLIスクリプトモード実行（セッションに入らない）
+#
+# 既存の run-scheduled-prompt.sh（sessionモード）との違い:
+#   - Claudeセッションに入らず `claude -p "prompt"` でバッチ実行
+#   - 実行完了後にtmuxセッションは自動終了
+#   - psベースの二重起動制御（ロックファイル不使用）
+#
+# 引数:
+#   $1 — スケジュール名（二重起動制御に使用）
+#   $2 — tmuxセッション名
+#   $3 — ワークディレクトリ
+#   $4 — claudeコマンドライン（例: claude --dangerously-skip-permissions）
+#   $5 — 実行するプロンプト
+
+SCHED_NAME="${1:?スケジュール名が必要です}"
+SESSION="${2:?セッション名が必要です}"
+WORKDIR="${3:?ワークディレクトリが必要です}"
+CLAUDE_CMD="${4:-claude --dangerously-skip-permissions}"
+PROMPT="${5:?プロンプトが必要です}"
+
+LOG_DIR="$HOME/.local/share/harness-schedule/logs"
+mkdir -p "$LOG_DIR"
+
+LOG_FILE="$LOG_DIR/${SCHED_NAME}-$(date +%Y%m%d-%H%M%S).log"
+
+log() { echo "[$(date +%H:%M:%S)] $*" | tee -a "$LOG_FILE"; }
+
+# --- 二重起動制御（psベース。ロックファイル不使用） ---
+# 自分以外に同じスケジュール名で動いているrun-scheduled-script.shがいたらスキップ
+MY_PID=$$
+RUNNING_PIDS=$(pgrep -f "run-scheduled-script.sh ${SCHED_NAME}" 2>/dev/null | grep -v "^${MY_PID}$" || true)
+
+if [ -n "$RUNNING_PIDS" ]; then
+  log "=== SKIP: '$SCHED_NAME' is already running (PIDs: $RUNNING_PIDS) ==="
+  exit 0
+fi
+
+log "=== Script Schedule Start: $SCHED_NAME ==="
+log "Workdir: $WORKDIR | Cmd: $CLAUDE_CMD"
+log "Mode: script (non-interactive) | PID: $MY_PID"
+
+# tmuxセッションが既に存在する場合は終了を待つか強制終了
+if tmux has-session -t "$SESSION" 2>/dev/null; then
+  log "WARN: tmux session '$SESSION' already exists. Killing it."
+  tmux kill-session -t "$SESSION" 2>/dev/null || true
+  sleep 1
+fi
+
+# プロンプトをファイルに書き出し（エスケープ問題回避）
+PROMPT_FILE="$LOG_DIR/${SCHED_NAME}-prompt-$$.txt"
+echo "$PROMPT" > "$PROMPT_FILE"
+
+# tmuxセッション作成 + Claude CLIスクリプトモード実行
+log "Creating tmux session and running Claude CLI script mode..."
+tmux new-session -d -s "$SESSION" -c "$WORKDIR" \
+  "$CLAUDE_CMD -p \"\$(cat '$PROMPT_FILE')\" 2>&1 | tee -a '$LOG_FILE'; echo '[SCRIPT_DONE]' >> '$LOG_FILE'; rm -f '$PROMPT_FILE'"
+
+# 実行完了を待つ（最大30分）
+MAX_WAIT=1800
+WAITED=0
+log "Waiting for script completion (max ${MAX_WAIT}s)..."
+
+while [ "$WAITED" -lt "$MAX_WAIT" ]; do
+  sleep 10
+  WAITED=$((WAITED + 10))
+
+  # tmuxセッションが終了したか確認
+  if ! tmux has-session -t "$SESSION" 2>/dev/null; then
+    log "tmux session ended. (${WAITED}s)"
+    break
+  fi
+
+  # ログにSCRIPT_DONEが出たか確認
+  if grep -q '\[SCRIPT_DONE\]' "$LOG_FILE" 2>/dev/null; then
+    log "Script completed. (${WAITED}s)"
+    tmux kill-session -t "$SESSION" 2>/dev/null || true
+    break
+  fi
+
+  # 5分ごとに進捗ログ
+  if [ $((WAITED % 300)) -eq 0 ]; then
+    log "  Still running... (${WAITED}s / ${MAX_WAIT}s)"
+  fi
+done
+
+if [ "$WAITED" -ge "$MAX_WAIT" ]; then
+  log "ERROR: Script timed out after ${MAX_WAIT}s. Killing session."
+  tmux kill-session -t "$SESSION" 2>/dev/null || true
+fi
+
+# クリーンアップ
+rm -f "$PROMPT_FILE"
+log "=== Script Schedule Complete: $SCHED_NAME ==="
