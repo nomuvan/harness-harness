@@ -1,6 +1,6 @@
 # Claude Code 設定仕様書
 
-最終更新: 2026-03-30（巡回更新）
+最終更新: 2026-04-01（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/settings / https://code.claude.com/docs/en/memory
 
@@ -134,7 +134,8 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `apiKeyHelper` | カスタムAPIキー生成スクリプト |
 | `autoMemoryEnabled` | オートメモリ有効/無効（デフォルト: true） |
 | `autoMemoryDirectory` | オートメモリ保存先ディレクトリ |
-| `cleanupPeriodDays` | セッション保持日数（デフォルト: 30） |
+| `cleanupPeriodDays` | セッション保持日数（デフォルト: 30）。`0` は全トランスクリプト削除+永続化無効。検証エラーで拒否されなくなった（v2.1.89で `0` の動作変更） |
+| `showThinkingSummaries` | thinking summariesの表示（v2.1.89でデフォルト `false` に変更。`true` で復元） |
 | `companyAnnouncements` | 起動時通知メッセージ |
 | `forceLoginMethod` | ログイン方式強制（`claudeai` / `console`） |
 | `forceLoginOrgUUID` | 組織UUID強制選択 |
@@ -344,6 +345,8 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_SUPPORTS` | ピンモデルのeffort/thinking検出オーバーライド（v2.1.84） |
 | `CLAUDE_CODE_MCP_SERVER_NAME` | MCP `headersHelper` スクリプトに渡されるサーバー名（v2.1.85） |
 | `CLAUDE_CODE_MCP_SERVER_URL` | MCP `headersHelper` スクリプトに渡されるサーバーURL（v2.1.85） |
+| `CLAUDE_CODE_NO_FLICKER` | `1` でフリッカーフリーのalt-screen描画有効化（リサーチプレビュー）（v2.1.89） |
+| `MCP_CONNECTION_NONBLOCKING` | `true` で `-p` モードのMCP接続待機スキップ。`--mcp-config` サーバー接続は5秒上限（v2.1.89） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 
