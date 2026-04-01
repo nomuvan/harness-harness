@@ -1,5 +1,29 @@
 # harness-harness 更新履歴
 
+## 2026-04-01 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（75ページ、前回73→2ページ増）、changelog, hooks, settings, env-vars, skills
+- Codex CLI: changelog
+
+### 検出された変更と更新内容
+
+#### Claude Code
+- **specs/claude/changelog.md** — v2.1.89 追加（大規模アップデート: defer permission, PermissionDenied hook, NO_FLICKER env, autocompact thrash検出, thinking summaries デフォルト無効化 他多数）
+- **specs/claude/hooks.md** — `PermissionDenied` イベント追加、`PreToolUse` に `defer` permission decision 追加
+- **specs/claude/configuration.md** — `showThinkingSummaries`, `cleanupPeriodDays` 動作変更注記追加。`CLAUDE_CODE_NO_FLICKER`, `MCP_CONNECTION_NONBLOCKING` 環境変数追加
+
+#### Codex CLI
+- **specs/codex/changelog.md** — CLI 0.118.0 追加（Windows sandbox proxy networking, device code flow, codex exec stdin, dynamic bearer tokens）
+
+### スキルエコシステム巡回
+- スキップ（last_patrol: 2026-03-28、7日以内→4月4日以降に実施予定）
+
+### llms.txt ページ数変化（73→75）
+- 2ページ増。新規ドキュメントの追加を示唆
+
+---
+
 ## 2026-03-31 — 公式ドキュメント巡回
 
 ### 巡回対象URL

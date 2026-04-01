@@ -3,9 +3,35 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-03-31
+最終更新: 2026-04-01
 
 ---
+
+## v2.1.89 (2026-04-01)
+
+- `PreToolUse` フックに `"defer"` permission decision 追加（ヘッドレスセッションがツールコールで一時停止、`-p --resume` で再評価）
+- `PermissionDenied` フックイベント追加（Auto Mode分類器の拒否後に発火。`{retry: true}` で再試行指示可能）
+- `CLAUDE_CODE_NO_FLICKER=1` 環境変数追加（フリッカーフリーのalt-screen描画、仮想スクロールバック）
+- `MCP_CONNECTION_NONBLOCKING=true` 環境変数（`-p` モードでMCP接続待機スキップ。`--mcp-config` サーバー接続は5秒上限）
+- 名前付きサブエージェントが `@` メンションタイプアヘッドに表示
+- Auto Mode: 拒否コマンドが通知表示、`/permissions` → Recent タブで `r` キーでリトライ可能
+- `Edit` ツールが `Bash` の `sed -n` / `cat` で閲覧したファイルに対しても `Read` 不要で動作
+- フック出力50K文字超がディスク保存（ファイルパス+プレビューをコンテキストに注入）
+- `cleanupPeriodDays: 0` が検証エラーで拒否されるように変更（以前はトランスクリプト永続化が無効化）
+- thinking summaries がインタラクティブセッションでデフォルト非生成に変更（`showThinkingSummaries: true` で復元）
+- `Edit(//path/**)`/`Read(//path/**)` の allow ルールがシンボリックリンクの解決先をチェックするよう修正
+- autocompact スラッシュループ検出（3回連続で即座にリフィルした場合にエラー停止）
+- プロンプトキャッシュミス修正（ツールスキーマバイト変更によるセッション中のミス）
+- ネストされた CLAUDE.md の重複再注入修正（長セッションで数十回再注入される問題）
+- `StructuredOutput` スキーマキャッシュバグ修正（複数スキーマ使用時の50%失敗率）
+- フック `if` 条件が複合コマンド（`ls && git push`）や環境変数プレフィックス付きコマンドにマッチするよう修正
+- `-p --resume` のハング修正（64KB超ツール入力、deferred マーカー不在時）
+- CJK・絵文字・デーヴァナーガリーテキストの切り詰め/ドロップ修正
+- Windows: Edit/Write の CRLF 二重化修正、PowerShell stderr 偽エラー修正
+- macOS: 音声モードマイク権限修正（Apple Silicon）
+- `/stats` がサブエージェント使用量を含むよう修正
+- `/env` が PowerShell ツールコマンドにも適用
+- `/buddy` エイプリルフール機能
 
 ## v2.1.87 (2026-03-29)
 
