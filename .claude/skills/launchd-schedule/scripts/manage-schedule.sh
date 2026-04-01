@@ -164,7 +164,8 @@ ${interval}
 </plist>
 PLIST
 
-  launchctl load "$plist_file"
+  launchctl bootstrap "gui/$(id -u)" "$plist_file" 2>/dev/null \
+    || launchctl load "$plist_file"
   echo "Created schedule '$name' ($cron_expr) [mode: $mode]"
   echo "  Label: $label"
   echo "  Plist: $plist_file"
@@ -232,6 +233,27 @@ list_schedules() {
       echo "  (スケジュールなし)"
     fi
   fi
+
+  # ゴーストジョブ検出: launchdにロード済みだがplistが存在しないジョブ
+  local ghosts=()
+  while IFS=$'\t' read -r _pid _status label; do
+    [ -z "$label" ] && continue
+    [[ "$label" != ${LABEL_PREFIX}.* ]] && continue
+    local ghost_plist="${PLIST_DIR}/${label}.plist"
+    if [ ! -f "$ghost_plist" ]; then
+      ghosts+=("$label")
+    fi
+  done < <(launchctl list 2>/dev/null | grep "${LABEL_PREFIX}\.")
+
+  if [ ${#ghosts[@]} -gt 0 ]; then
+    echo ""
+    echo "=== ゴーストジョブ（plistなし・launchdに残留） ==="
+    for g in "${ghosts[@]}"; do
+      local ghost_name="${g#${LABEL_PREFIX}.}"
+      echo "  WARNING: $ghost_name ($g)"
+      echo "    → 'manage-schedule.sh delete $ghost_name' で削除可能"
+    done
+  fi
 }
 
 update_schedule() {
@@ -247,7 +269,8 @@ update_schedule() {
   fi
 
   # unload → plist書き換え → reload
-  launchctl unload "$plist_file" 2>/dev/null || true
+  launchctl bootout "gui/$(id -u)/${label}" 2>/dev/null \
+    || launchctl unload "$plist_file" 2>/dev/null || true
 
   # StartCalendarIntervalを置換
   local interval
@@ -274,7 +297,8 @@ with open("$plist_file", "wb") as f:
     plistlib.dump(plist, f)
 PYEOF
 
-  launchctl load "$plist_file"
+  launchctl bootstrap "gui/$(id -u)" "$plist_file" 2>/dev/null \
+    || launchctl load "$plist_file"
   echo "Updated schedule '$name' to: $cron_expr"
 }
 
@@ -283,18 +307,25 @@ delete_schedule() {
   local label="${LABEL_PREFIX}.${name}"
   local plist_file="${PLIST_DIR}/${label}.plist"
 
-  if [ ! -f "$plist_file" ]; then
-    echo "ERROR: Schedule '$name' not found."
-    return 1
-  fi
+  local had_plist=false
+  [ -f "$plist_file" ] && had_plist=true
 
-  launchctl unload "$plist_file" 2>/dev/null || true
+  # launchdから確実に削除（plist有無に関わらず）
+  launchctl bootout "gui/$(id -u)/${label}" 2>/dev/null \
+    || launchctl unload "$plist_file" 2>/dev/null \
+    || launchctl remove "$label" 2>/dev/null \
+    || true
+
+  # plist・プロンプトファイルを削除
   rm -f "$plist_file"
-
-  # プロンプトファイルも削除
   rm -f "$HOME/.local/share/harness-schedule/prompts/${name}.txt"
 
-  echo "Deleted schedule '$name'"
+  if [ "$had_plist" = true ]; then
+    echo "Deleted schedule '$name'"
+  else
+    # plistなしでもlaunchdから削除を試みた（ゴースト対応）
+    echo "Cleaned up ghost schedule '$name' (plist was already missing)"
+  fi
 }
 
 run_now() {
