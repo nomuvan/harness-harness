@@ -1,5 +1,29 @@
 # harness-harness 更新履歴
 
+## 2026-04-02 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（81ページ、前回75→6ページ増）、changelog, hooks, settings, mcp, scheduled-tasks, web-scheduled-tasks, discover-plugins
+- Codex CLI: changelog
+
+### 検出された変更と更新内容
+
+#### Claude Code
+- **specs/claude/hooks.md** — `CwdChanged`, `FileChanged`, `TaskCreated`, `WorktreeCreate` の入力フィールド修正（公式ドキュメントとの不整合解消）
+- **specs/claude/skills-and-commands.md** — スケジュールタスク（セクション3: Cloud/Desktop/`/loop`比較、CronCreate/CronList/CronDelete）、プラグインマーケットプレース（セクション4: 公式マーケット、コードインテリジェンス11言語LSP、外部インテグレーション）追加。`/schedule`, `/reload-plugins` コマンド追加
+- **specs/claude/mcp.md** — `MCP_CONNECTION_NONBLOCKING` 環境変数をMCPセクションに追記
+
+#### Codex CLI
+- 新バージョンなし（0.118.0 が最新、前回キャプチャ済み）
+
+### スキルエコシステム巡回
+- スキップ（last_patrol: 2026-03-28、5日前→7日以内のためスキップ。4月4日以降に実施予定）
+
+### llms.txt ページ数変化（75→81）
+- 6ページ増。新規ドキュメント: scheduled-tasks, web-scheduled-tasks, discover-plugins, plugin-marketplaces, plugins-reference, channels-reference
+
+---
+
 ## 2026-04-01 — 公式ドキュメント巡回
 
 ### 巡回対象URL
