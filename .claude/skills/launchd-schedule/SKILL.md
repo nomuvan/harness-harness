@@ -109,14 +109,23 @@ bash "$SKILL_DIR/scripts/manage-schedule.sh" delete "<name>"
 
 ## 動作の仕組み
 
-1. launchdがcron式に従い `run-scheduled-prompt.sh` を起動
-2. tmuxセッションの存在を確認
-   - 存在しない → 新規作成 → Claude CLI起動
-   - 存在するがClaude死亡 → セッション再作成 → Claude CLI起動
-   - 存在してClaude稼働中 → そのまま使用
-3. Claude起動時は**pane出力を監視して準備完了を自動検出**（最大60秒待機）
-   - project trust確認が出たら自動で `y` を送信
-4. `/clear` → プロンプト送信
+全モード共通で `guard-execution.sh` が最初に呼ばれ、二重起動防止とcooldownチェックを行う。
+
+```
+launchd → guard-execution.sh <name> -- <実コマンド>
+              ├─ pgrep で同名スケジュールの既存プロセスをチェック → 重複ならSKIP
+              ├─ cooldownファイルチェック → 有効ならSKIP
+              └─ 実コマンドを実行
+```
+
+### sessionモード
+guard → `run-scheduled-prompt.sh` → tmux + Claude対話
+
+### scriptモード
+guard → `run-scheduled-script.sh` → tmux + `claude -p`
+
+### execモード
+guard → `bash -c "cd workdir && command"`
 
 ## ファイル配置
 

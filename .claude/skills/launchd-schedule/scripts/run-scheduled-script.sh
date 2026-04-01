@@ -6,10 +6,10 @@ set -euo pipefail
 # 既存の run-scheduled-prompt.sh（sessionモード）との違い:
 #   - Claudeセッションに入らず `claude -p "prompt"` でバッチ実行
 #   - 実行完了後にtmuxセッションは自動終了
-#   - psベースの二重起動制御（ロックファイル不使用）
+#   - 二重起動防止はguard-execution.shが担当
 #
 # 引数:
-#   $1 — スケジュール名（二重起動制御に使用）
+#   $1 — スケジュール名（ログ識別に使用）
 #   $2 — tmuxセッション名
 #   $3 — ワークディレクトリ
 #   $4 — claudeコマンドライン（例: claude --dangerously-skip-permissions）
@@ -103,19 +103,11 @@ check_rate_limit_cooldown() {
 
 check_rate_limit_cooldown
 
-# --- 二重起動制御（psベース。ロックファイル不使用） ---
-# 自分以外に同じスケジュール名で動いているrun-scheduled-script.shがいたらスキップ
-MY_PID=$$
-RUNNING_PIDS=$(pgrep -f "run-scheduled-script.sh ${SCHED_NAME}" 2>/dev/null | grep -v "^${MY_PID}$" || true)
-
-if [ -n "$RUNNING_PIDS" ]; then
-  log "=== SKIP: '$SCHED_NAME' is already running (PIDs: $RUNNING_PIDS) ==="
-  exit 0
-fi
+# 二重起動防止はguard-execution.shが担当（このスクリプトの呼び出し元）
 
 log "=== Script Schedule Start: $SCHED_NAME ==="
 log "Workdir: $WORKDIR | Cmd: $CLAUDE_CMD"
-log "Mode: script (non-interactive) | PID: $MY_PID"
+log "Mode: script (non-interactive) | PID: $$"
 
 # tmuxセッションが既に存在する場合は終了を待つか強制終了
 if tmux has-session -t "$SESSION" 2>/dev/null; then

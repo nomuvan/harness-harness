@@ -88,17 +88,46 @@ create_schedule() {
   local project_name
   project_name=$(basename "$workdir")
 
+  # --- 全モード共通: guard-execution.sh 経由でplist生成 ---
+  local guard_script="$SCRIPT_DIR/guard-execution.sh"
+
+  # モード別の実コマンドを組み立て
+  local inner_cmd_args=""
   if [ "$mode" = "exec" ]; then
-    # --- execモード: 任意コマンドを直接実行（Claude不要） ---
-    # claude_cmd引数を「実行コマンド」として使う（例: "python3 src/note_researcher.py ai_tech"）
+    # execモード: 任意コマンドを直接実行
     local exec_cmd="$claude_cmd"
-    # promptがあれば引数として追加
     [ -n "${prompt:-}" ] && exec_cmd="$exec_cmd $prompt"
-
-    # XMLエスケープ: & → &amp;
+    # bash -c で実行（cd含む）
     local exec_cmd_escaped="${exec_cmd//&/&amp;}"
+    inner_cmd_args="        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>cd ${workdir} &amp;&amp; ${exec_cmd_escaped}</string>"
+  elif [ "$mode" = "script" ]; then
+    # scriptモード: run-scheduled-script.sh 経由でClaude -p実行
+    local prompt_dir="$HOME/.local/share/harness-schedule/prompts"
+    mkdir -p "$prompt_dir"
+    echo "$prompt" > "$prompt_dir/${name}.txt"
+    inner_cmd_args="        <string>/bin/bash</string>
+        <string>$SCRIPT_DIR/run-scheduled-script.sh</string>
+        <string>${name}</string>
+        <string>${session}</string>
+        <string>${workdir}</string>
+        <string>${claude_cmd}</string>
+        <string>${prompt}</string>"
+  else
+    # sessionモード: run-scheduled-prompt.sh 経由でClaude対話
+    local prompt_dir="$HOME/.local/share/harness-schedule/prompts"
+    mkdir -p "$prompt_dir"
+    echo "$prompt" > "$prompt_dir/${name}.txt"
+    inner_cmd_args="        <string>/bin/bash</string>
+        <string>$RUNNER</string>
+        <string>${session}</string>
+        <string>${workdir}</string>
+        <string>${claude_cmd}</string>
+        <string>${prompt}</string>"
+  fi
 
-    cat > "$plist_file" << PLIST
+  cat > "$plist_file" << PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -108,8 +137,10 @@ create_schedule() {
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>-c</string>
-        <string>cd ${workdir} &amp;&amp; ${exec_cmd_escaped}</string>
+        <string>${guard_script}</string>
+        <string>${name}</string>
+        <string>--</string>
+${inner_cmd_args}
     </array>
 ${interval}
     <key>StandardOutPath</key>
@@ -127,71 +158,11 @@ ${interval}
         <key>SCHEDULE_PROJECT</key>
         <string>${project_name}</string>
         <key>SCHEDULE_MODE</key>
-        <string>exec</string>
-    </dict>
-</dict>
-</plist>
-PLIST
-
-  else
-    # --- session/scriptモード: Claude CLI実行 ---
-
-    # プロンプトをファイルに保存（plistのエスケープ問題回避）
-    local prompt_dir="$HOME/.local/share/harness-schedule/prompts"
-    mkdir -p "$prompt_dir"
-    echo "$prompt" > "$prompt_dir/${name}.txt"
-
-    local runner_script
-    local runner_args
-    if [ "$mode" = "script" ]; then
-      runner_script="$SCRIPT_DIR/run-scheduled-script.sh"
-      runner_args="        <string>${name}</string>
-        <string>${session}</string>
-        <string>${workdir}</string>
-        <string>${claude_cmd}</string>
-        <string>${prompt}</string>"
-    else
-      runner_script="$RUNNER"
-      runner_args="        <string>${session}</string>
-        <string>${workdir}</string>
-        <string>${claude_cmd}</string>
-        <string>${prompt}</string>"
-    fi
-
-    cat > "$plist_file" << PLIST
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>${label}</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/bin/bash</string>
-        <string>${runner_script}</string>
-${runner_args}
-    </array>
-${interval}
-    <key>StandardOutPath</key>
-    <string>${log_dir}/${name}-stdout.log</string>
-    <key>StandardErrorPath</key>
-    <string>${log_dir}/${name}-stderr.log</string>
-    <key>EnvironmentVariables</key>
-    <dict>
-        <key>PATH</key>
-        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:$HOME/.local/bin:$HOME/.nodenv/shims:$HOME/.pyenv/shims</string>
-        <key>HOME</key>
-        <string>$HOME</string>
-        <key>SCHEDULE_PROJECT</key>
-        <string>${project_name}</string>
-        <key>SCHEDULE_MODE</key>
         <string>${mode}</string>
     </dict>
 </dict>
 </plist>
 PLIST
-
-  fi
 
   launchctl load "$plist_file"
   echo "Created schedule '$name' ($cron_expr) [mode: $mode]"
@@ -338,31 +309,10 @@ run_now() {
 
   echo "Running schedule '$name' immediately..."
 
-  # plistからProgramArgumentsを読み取り
-  # XMLパース問題を避けるためgrepベースで抽出
-  local mode
-  mode=$(grep -A1 'SCHEDULE_MODE' "$plist_file" | grep string | sed 's/.*<string>//;s/<\/string>//' | head -1)
-
-  if [ "$mode" = "exec" ]; then
-    # execモード: bash -c "command" の形式
-    # ProgramArguments配列の3番目(index 2)が実行コマンド
-    local cmd
-    cmd=$(python3 -c "
-import plistlib
-with open('$plist_file', 'rb') as f:
-    p = plistlib.load(f)
-args = p.get('ProgramArguments', [])
-print(args[2] if len(args) >= 3 else '')
-")
-
-    echo "  Mode: exec"
-    echo "  Command: $cmd"
-    echo ""
-    bash -c "$cmd"
-  else
-    # session/scriptモード: plistlibで解析
-    local args
-    args=$(python3 -c "
+  # plistからProgramArgumentsを読み取り、そのまま実行
+  # guard-execution.sh経由なので二重起動防止も効く
+  local args
+  args=$(python3 -c "
 import plistlib
 with open('$plist_file', 'rb') as f:
     plist = plistlib.load(f)
@@ -370,21 +320,20 @@ for a in plist['ProgramArguments'][1:]:
     print(a)
 " 2>/dev/null)
 
-    if [ -z "$args" ]; then
-      echo "ERROR: Failed to parse plist arguments."
-      return 1
-    fi
-
-    local script_args=()
-    while IFS= read -r line; do
-      script_args+=("$line")
-    done <<< "$args"
-
-    echo "  Mode: $mode"
-    echo "  Script: ${script_args[0]}"
-    echo ""
-    bash "${script_args[@]}"
+  if [ -z "$args" ]; then
+    echo "ERROR: Failed to parse plist arguments."
+    return 1
   fi
+
+  local script_args=()
+  while IFS= read -r line; do
+    script_args+=("$line")
+  done <<< "$args"
+
+  echo "  Guard: ${script_args[0]}"
+  echo "  Schedule: $name"
+  echo ""
+  bash "${script_args[@]}"
 }
 
 # メインディスパッチ
