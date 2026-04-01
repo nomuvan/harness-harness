@@ -20,12 +20,28 @@ cron_to_plist_interval() {
   local minute hour day month weekday
   read -r minute hour day month weekday <<< "$cron_expr"
 
+  # */N 形式の検出 → launchdのStartInterval(秒)に変換
+  # launchdのStartCalendarIntervalは*/Nを理解しない
+  if [[ "$minute" == *"/"* ]]; then
+    local step="${minute##*/}"
+    local seconds=$((step * 60))
+    echo "    <key>StartInterval</key>"
+    echo "    <integer>${seconds}</integer>"
+    return
+  fi
+  if [[ "$hour" == *"/"* ]]; then
+    local step="${hour##*/}"
+    local seconds=$((step * 3600))
+    echo "    <key>StartInterval</key>"
+    echo "    <integer>${seconds}</integer>"
+    return
+  fi
+
   echo "    <key>StartCalendarInterval</key>"
 
   # 複数エントリが必要な場合(カンマ区切り)は配列にする
   if [[ "$minute" == *","* ]] || [[ "$hour" == *","* ]]; then
     echo "    <array>"
-    # 簡易実装: 単一値のみ対応
     echo "    <dict>"
     [ "$minute" != "*" ] && echo "        <key>Minute</key><integer>$minute</integer>"
     [ "$hour" != "*" ] && echo "        <key>Hour</key><integer>$hour</integer>"
@@ -52,7 +68,7 @@ create_schedule() {
   local workdir="$4"
   local claude_cmd="$5"
   local prompt="$6"
-  local mode="${7:-session}"  # session (既存) or script (新規)
+  local mode="${7:-session}"  # session | script | exec
 
   local label="${LABEL_PREFIX}.${name}"
   local plist_file="${PLIST_DIR}/${label}.plist"
@@ -65,11 +81,6 @@ create_schedule() {
     return 1
   fi
 
-  # プロンプトをファイルに保存（plistのエスケープ問題回避）
-  local prompt_dir="$HOME/.local/share/harness-schedule/prompts"
-  mkdir -p "$prompt_dir"
-  echo "$prompt" > "$prompt_dir/${name}.txt"
-
   local interval
   interval=$(cron_to_plist_interval "$cron_expr")
 
@@ -77,26 +88,77 @@ create_schedule() {
   local project_name
   project_name=$(basename "$workdir")
 
-  # モードに応じてランナーを選択
-  local runner_script
-  local runner_args
-  if [ "$mode" = "script" ]; then
-    runner_script="$SCRIPT_DIR/run-scheduled-script.sh"
-    # scriptモードは追加引数（スケジュール名）が先頭に入る
-    runner_args="        <string>${name}</string>
+  if [ "$mode" = "exec" ]; then
+    # --- execモード: 任意コマンドを直接実行（Claude不要） ---
+    # claude_cmd引数を「実行コマンド」として使う（例: "python3 src/note_researcher.py ai_tech"）
+    local exec_cmd="$claude_cmd"
+    # promptがあれば引数として追加
+    [ -n "${prompt:-}" ] && exec_cmd="$exec_cmd $prompt"
+
+    # XMLエスケープ: & → &amp;
+    local exec_cmd_escaped="${exec_cmd//&/&amp;}"
+
+    cat > "$plist_file" << PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>${label}</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>cd ${workdir} &amp;&amp; ${exec_cmd_escaped}</string>
+    </array>
+${interval}
+    <key>StandardOutPath</key>
+    <string>${log_dir}/${name}-stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>${log_dir}/${name}-stderr.log</string>
+    <key>WorkingDirectory</key>
+    <string>${workdir}</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:$HOME/.local/bin:$HOME/.nodenv/shims:$HOME/.pyenv/shims</string>
+        <key>HOME</key>
+        <string>$HOME</string>
+        <key>SCHEDULE_PROJECT</key>
+        <string>${project_name}</string>
+        <key>SCHEDULE_MODE</key>
+        <string>exec</string>
+    </dict>
+</dict>
+</plist>
+PLIST
+
+  else
+    # --- session/scriptモード: Claude CLI実行 ---
+
+    # プロンプトをファイルに保存（plistのエスケープ問題回避）
+    local prompt_dir="$HOME/.local/share/harness-schedule/prompts"
+    mkdir -p "$prompt_dir"
+    echo "$prompt" > "$prompt_dir/${name}.txt"
+
+    local runner_script
+    local runner_args
+    if [ "$mode" = "script" ]; then
+      runner_script="$SCRIPT_DIR/run-scheduled-script.sh"
+      runner_args="        <string>${name}</string>
         <string>${session}</string>
         <string>${workdir}</string>
         <string>${claude_cmd}</string>
         <string>${prompt}</string>"
-  else
-    runner_script="$RUNNER"
-    runner_args="        <string>${session}</string>
+    else
+      runner_script="$RUNNER"
+      runner_args="        <string>${session}</string>
         <string>${workdir}</string>
         <string>${claude_cmd}</string>
         <string>${prompt}</string>"
-  fi
+    fi
 
-  cat > "$plist_file" << PLIST
+    cat > "$plist_file" << PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -117,7 +179,7 @@ ${interval}
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
-        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:$HOME/.local/bin:$HOME/.nodenv/shims</string>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:$HOME/.local/bin:$HOME/.nodenv/shims:$HOME/.pyenv/shims</string>
         <key>HOME</key>
         <string>$HOME</string>
         <key>SCHEDULE_PROJECT</key>
@@ -129,11 +191,18 @@ ${interval}
 </plist>
 PLIST
 
+  fi
+
   launchctl load "$plist_file"
   echo "Created schedule '$name' ($cron_expr) [mode: $mode]"
   echo "  Label: $label"
   echo "  Plist: $plist_file"
-  echo "  Session: $session | Workdir: $workdir | Mode: $mode"
+  if [ "$mode" = "exec" ]; then
+    echo "  Command: $exec_cmd"
+    echo "  Workdir: $workdir"
+  else
+    echo "  Session: $session | Workdir: $workdir"
+  fi
 }
 
 list_schedules() {
@@ -267,32 +336,55 @@ run_now() {
     return 1
   fi
 
-  # plistからProgramArgumentsを読み取って実行
   echo "Running schedule '$name' immediately..."
-  local args
-  args=$(python3 << PYEOF
+
+  # plistからProgramArgumentsを読み取り
+  # XMLパース問題を避けるためgrepベースで抽出
+  local mode
+  mode=$(grep -A1 'SCHEDULE_MODE' "$plist_file" | grep string | sed 's/.*<string>//;s/<\/string>//' | head -1)
+
+  if [ "$mode" = "exec" ]; then
+    # execモード: bash -c "command" の形式
+    # ProgramArguments配列の3番目(index 2)が実行コマンド
+    local cmd
+    cmd=$(python3 -c "
 import plistlib
-with open("$plist_file", "rb") as f:
+with open('$plist_file', 'rb') as f:
+    p = plistlib.load(f)
+args = p.get('ProgramArguments', [])
+print(args[2] if len(args) >= 3 else '')
+")
+
+    echo "  Mode: exec"
+    echo "  Command: $cmd"
+    echo ""
+    bash -c "$cmd"
+  else
+    # session/scriptモード: plistlibで解析
+    local args
+    args=$(python3 -c "
+import plistlib
+with open('$plist_file', 'rb') as f:
     plist = plistlib.load(f)
-args = plist["ProgramArguments"]
-# 最初の /bin/bash を除いたスクリプトと引数を出力
-for a in args[1:]:
+for a in plist['ProgramArguments'][1:]:
     print(a)
-PYEOF
-  )
+" 2>/dev/null)
 
-  # 引数を配列に読み込み
-  local script_args=()
-  while IFS= read -r line; do
-    script_args+=("$line")
-  done <<< "$args"
+    if [ -z "$args" ]; then
+      echo "ERROR: Failed to parse plist arguments."
+      return 1
+    fi
 
-  echo "  Script: ${script_args[0]}"
-  echo "  Session: ${script_args[1]:-}"
-  echo ""
+    local script_args=()
+    while IFS= read -r line; do
+      script_args+=("$line")
+    done <<< "$args"
 
-  # 実行（バックグラウンドではなくフォアグラウンドで結果を表示）
-  bash "${script_args[@]}"
+    echo "  Mode: $mode"
+    echo "  Script: ${script_args[0]}"
+    echo ""
+    bash "${script_args[@]}"
+  fi
 }
 
 # メインディスパッチ
@@ -319,14 +411,20 @@ case "${1:-help}" in
     ;;
   *)
     echo "Usage:"
-    echo "  $0 create <name> <cron-expr> <session> <workdir> <claude-cmd> <prompt>"
-    echo "  $0 list"
+    echo "  $0 create <name> <cron-expr> <session> <workdir> <cmd> <prompt> [session|script|exec]"
+    echo "  $0 list [--all|<project>]"
     echo "  $0 update <name> <cron-expr>"
     echo "  $0 delete <name>"
     echo "  $0 run <name>"
     echo ""
-    echo "Example:"
-    echo "  $0 create daily-patrol '0 3 * * *' harness-patrol /path/to/harness 'claude --dangerously-skip-permissions' '巡回して'"
-    echo "  $0 run daily-patrol"
+    echo "Modes:"
+    echo "  session  Claude CLI対話モード（デフォルト）"
+    echo "  script   Claude CLI -p モード"
+    echo "  exec     任意コマンド実行（Claude不要）"
+    echo ""
+    echo "Examples:"
+    echo "  $0 create patrol '0 3 * * *' harness-patrol /path 'claude --dangerously-skip-permissions' '/patrol'"
+    echo "  $0 create research '0 6 * * *' '' /path 'python3 src/researcher.py' 'ai_tech' exec"
+    echo "  $0 run patrol"
     ;;
 esac
