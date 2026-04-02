@@ -257,11 +257,11 @@ MCPツールは `mcp__<server>__<tool>` パターンに従う:
 | `SubagentStart` | `agent_id`, `agent_type` |
 | `SubagentStop` | `stop_hook_active`, `agent_id`, `agent_type`, `agent_transcript_path`, `last_assistant_message` |
 | `InstructionsLoaded` | `file_path`, `memory_type`, `load_reason`, `globs`(opt), `trigger_file_path`(opt), `parent_file_path`(opt) |
-| `CwdChanged` | `old_cwd`, `new_cwd` |
+| `CwdChanged` | `cwd` |
 | `FileChanged` | `file_path`, `change_type` (`created`/`modified`/`deleted`) |
-| `TaskCreated` | `task_id`, `task_subject`, `task_description`(opt) |
+| `TaskCreated` | `task_id`, `task_subject`, `task_description`(opt), `teammate_name`, `team_name` |
 | `ConfigChange` | `source`, `file_path` |
-| `WorktreeCreate` | `name` |
+| `WorktreeCreate` | `worktree_path`, `isolation_level` |
 | `WorktreeRemove` | `worktree_path` |
 | `PreCompact` | `trigger`, `custom_instructions` |
 | `PostCompact` | `trigger`, `compact_summary` |
@@ -340,10 +340,8 @@ HTTP フック (`type: "http"`): レスポンスJSON の `hookSpecificOutput.wor
 
 ```bash
 #!/bin/bash
-NAME=$(jq -r .name)
-DIR="$HOME/.claude/worktrees/$NAME"
-mkdir -p "$DIR"
-echo "$DIR"
+WORKTREE_PATH=$(jq -r .worktree_path)
+echo "$WORKTREE_PATH"
 ```
 
 ---

@@ -10,15 +10,39 @@
 
 #### Claude Code
 - **specs/claude/changelog.md** — v2.1.90 追加（/powerup コマンド、PLUGIN_KEEP_MARKETPLACE_ON_FAILURE env var、.husky保護、Auto Mode境界尊重、PostToolUse format-on-save修正、PowerShell脆弱性修正、パフォーマンス改善）
-- **specs/claude/skills-and-commands.md** — `/powerup`, `/fast`, `/release-notes`, `/schedule`, `/stats`, `/insights` コマンド追加
+- **specs/claude/skills-and-commands.md** — `/powerup`, `/fast`, `/release-notes`, `/stats`, `/insights` コマンド追加
 - **specs/claude/configuration.md** — `CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE` 環境変数追加
-- **specs/claude/hooks.md** — `FileChanged` に `change_type` フィールド追加、`PermissionDenied` 入力フィールド修正（`tool_use_id`, `reason`）
+- **specs/claude/hooks.md** — `PermissionDenied` 入力フィールド修正（`tool_use_id`, `reason`）
 
 #### Codex CLI
 - 変更なし（CLI 0.118.0 が最新のまま）
 
 ### スキルエコシステム巡回
 - スキップ（last_patrol: 2026-03-28、7日以内→4月5日以降に実施予定）
+
+---
+
+## 2026-04-02 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（81ページ、前回75→6ページ増）、changelog, hooks, settings, mcp, scheduled-tasks, web-scheduled-tasks, discover-plugins
+- Codex CLI: changelog
+
+### 検出された変更と更新内容
+
+#### Claude Code
+- **specs/claude/hooks.md** — `CwdChanged`, `FileChanged`, `TaskCreated`, `WorktreeCreate` の入力フィールド修正（公式ドキュメントとの不整合解消）
+- **specs/claude/skills-and-commands.md** — スケジュールタスク（セクション3: Cloud/Desktop/`/loop`比較、CronCreate/CronList/CronDelete）、プラグインマーケットプレース（セクション4: 公式マーケット、コードインテリジェンス11言語LSP、外部インテグレーション）追加。`/schedule`, `/reload-plugins` コマンド追加
+- **specs/claude/mcp.md** — `MCP_CONNECTION_NONBLOCKING` 環境変数をMCPセクションに追記
+
+#### Codex CLI
+- 新バージョンなし（0.118.0 が最新、前回キャプチャ済み）
+
+### スキルエコシステム巡回
+- スキップ（last_patrol: 2026-03-28、5日前→7日以内のためスキップ。4月4日以降に実施予定）
+
+### llms.txt ページ数変化（75→81）
+- 6ページ増。新規ドキュメント: scheduled-tasks, web-scheduled-tasks, discover-plugins, plugin-marketplaces, plugins-reference, channels-reference
 
 ---
 
