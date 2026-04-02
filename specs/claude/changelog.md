@@ -3,9 +3,24 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-01
+最終更新: 2026-04-03
 
 ---
+
+## v2.1.90 (2026-04-01)
+
+- `/powerup` コマンド追加（Claude Code機能のインタラクティブレッスン＋アニメーションデモ）
+- `CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE` 環境変数追加（`git pull` 失敗時にマーケットプレースキャッシュを保持。オフライン環境向け）
+- `.husky` を保護ディレクトリに追加（acceptEditsモード）
+- レート制限オプションダイアログの無限ループ修正（自動再表示→クラッシュの問題）
+- `--resume` のプロンプトキャッシュミス修正（deferred tools/MCP/カスタムエージェント使用時。v2.1.69からのリグレッション）
+- Edit/Write ツールの "File content has changed" エラー修正（PostToolUse format-on-save フックによるファイル書き換え時）
+- `PreToolUse` フックの exit code 2 + JSON stdout が正しくツールコールをブロックするように修正
+- Auto Mode がユーザーの明示的境界（"don't push", "wait for X before Y"）を尊重するように修正
+- PowerShell ツールの脆弱性修正（`&` バックグラウンドジョブバイパス、デバッガーハング、アーカイブ展開TOCTOU、パース失敗フォールバック）
+- パフォーマンス改善（MCPツールスキーマのper-turn JSON.stringify廃止、SSEトランスポート線形時間化、SDK長会話最適化）
+- `/resume` が全プロジェクトセッションを並列ロードに改善
+- DNSキャッシュコマンドを自動許可リストから削除（プライバシー）
 
 ## v2.1.89 (2026-04-01)
 
