@@ -1,6 +1,6 @@
 # Claude Code Hooks 仕様書
 
-最終更新: 2026-04-01（巡回更新）
+最終更新: 2026-04-03（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/hooks
 
@@ -250,7 +250,7 @@ MCPツールは `mcp__<server>__<tool>` パターンに従う:
 | `PermissionRequest` | `tool_name`, `tool_input`, `permission_suggestions`(opt) |
 | `PostToolUse` | `tool_name`, `tool_input`, `tool_response`, `tool_use_id` |
 | `PostToolUseFailure` | `tool_name`, `tool_input`, `tool_use_id`, `error`, `is_interrupt` |
-| `PermissionDenied` | `tool_name`, `tool_input`, `denial_reason` |
+| `PermissionDenied` | `tool_name`, `tool_input`, `tool_use_id`, `reason` |
 | `Stop` | `stop_hook_active`, `last_assistant_message` |
 | `StopFailure` | `error`, `error_details`, `last_assistant_message` |
 | `Notification` | `message`, `title`, `notification_type` |
@@ -258,7 +258,7 @@ MCPツールは `mcp__<server>__<tool>` パターンに従う:
 | `SubagentStop` | `stop_hook_active`, `agent_id`, `agent_type`, `agent_transcript_path`, `last_assistant_message` |
 | `InstructionsLoaded` | `file_path`, `memory_type`, `load_reason`, `globs`(opt), `trigger_file_path`(opt), `parent_file_path`(opt) |
 | `CwdChanged` | `old_cwd`, `new_cwd` |
-| `FileChanged` | `file_path`, `file_name` |
+| `FileChanged` | `file_path`, `change_type` (`created`/`modified`/`deleted`) |
 | `TaskCreated` | `task_id`, `task_subject`, `task_description`(opt) |
 | `ConfigChange` | `source`, `file_path` |
 | `WorktreeCreate` | `name` |

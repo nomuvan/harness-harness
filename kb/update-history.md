@@ -1,5 +1,27 @@
 # harness-harness 更新履歴
 
+## 2026-04-03 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（75ページ）、changelog, hooks, settings, env-vars, commands
+- Codex CLI: changelog
+
+### 検出された変更と更新内容
+
+#### Claude Code
+- **specs/claude/changelog.md** — v2.1.90 追加（/powerup コマンド、PLUGIN_KEEP_MARKETPLACE_ON_FAILURE env var、.husky保護、Auto Mode境界尊重、PostToolUse format-on-save修正、PowerShell脆弱性修正、パフォーマンス改善）
+- **specs/claude/skills-and-commands.md** — `/powerup`, `/fast`, `/release-notes`, `/schedule`, `/stats`, `/insights` コマンド追加
+- **specs/claude/configuration.md** — `CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE` 環境変数追加
+- **specs/claude/hooks.md** — `FileChanged` に `change_type` フィールド追加、`PermissionDenied` 入力フィールド修正（`tool_use_id`, `reason`）
+
+#### Codex CLI
+- 変更なし（CLI 0.118.0 が最新のまま）
+
+### スキルエコシステム巡回
+- スキップ（last_patrol: 2026-03-28、7日以内→4月5日以降に実施予定）
+
+---
+
 ## 2026-04-01 — 公式ドキュメント巡回
 
 ### 巡回対象URL

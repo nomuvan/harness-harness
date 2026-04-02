@@ -1,6 +1,6 @@
 # Claude Code Skills & コマンド仕様書
 
-最終更新: 2026-03-29（巡回更新）
+最終更新: 2026-04-03（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/skills / https://code.claude.com/docs/en/commands / https://code.claude.com/docs/en/sub-agents
 
@@ -170,6 +170,7 @@ Claude Code に同梱されるスキル:
 |:--|:--|
 | `/config` (`/settings`) | 設定インターフェース表示 |
 | `/permissions` (`/allowed-tools`) | 権限設定 |
+| `/fast [on\|off]` | Fastモードトグル |
 | `/model [model]` | モデル変更 |
 | `/effort [level]` | エフォートレベル設定 |
 | `/memory` | CLAUDE.md/オートメモリ管理 |
@@ -178,7 +179,9 @@ Claude Code に同梱されるスキル:
 | `/status` | ステータス表示 |
 | `/context` | コンテキスト使用量の可視化 |
 | `/cost` | トークン使用統計 |
+| `/stats` | 日次使用量・セッション履歴・ストリーク・モデル使用の可視化 |
 | `/usage` | プラン使用量・レート制限表示 |
+| `/insights` | セッション分析レポート（プロジェクト領域、操作パターン、摩擦点） |
 
 ### 2.3 開発ワークフロー
 
@@ -187,9 +190,12 @@ Claude Code に同梱されるスキル:
 | `/init` | CLAUDE.md の自動生成 |
 | `/diff` | 差分ビューア |
 | `/plan` | プランモード開始 |
+| `/powerup` | Claude Code機能のインタラクティブレッスン＋アニメーションデモ |
 | `/pr-comments [PR]` | GitHub PRコメント取得 |
 | `/security-review` | セキュリティ脆弱性分析 |
+| `/release-notes` | 完全な変更ログ表示（最新版がプロンプト付近） |
 | `/sandbox` | サンドボックスモード切替 |
+| `/schedule [description]` | Cloud定期タスクの作成・管理 |
 
 ### 2.4 環境・インテグレーション
 
