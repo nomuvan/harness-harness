@@ -1,5 +1,31 @@
 # harness-harness 更新履歴
 
+## 2026-04-04 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（75ページ）、changelog, hooks, settings, env-vars, commands, mcp
+- Codex CLI: changelog
+- スキルエコシステム: anthropics/skills, skills.sh
+
+### 検出された変更と更新内容
+
+#### Claude Code
+- **specs/claude/changelog.md** — v2.1.91 追加（MCP `_meta["anthropic/maxResultSizeChars"]` 500K上限オーバーライド、`disableSkillShellExecution` 設定、プラグイン `bin/` 実行ファイル同梱、ディープリンク複数行対応、Edit ツール短アンカー化、各種修正）
+- **specs/claude/configuration.md** — `disableSkillShellExecution` 設定追加、`CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE` 環境変数追加
+- **specs/claude/hooks.md** — `PermissionDenied` の matcher 修正（matcherなし→ツール名）
+- **specs/claude/mcp.md** — §8.8 ツール結果サイズのサーバー側オーバーライド機能を追加、セクション番号再整理
+
+#### Codex CLI
+- 変更なし（CLI 0.118.0 が最新のまま）
+
+### スキルエコシステム巡回
+- anthropics/skills: 105K→110K stars。構造的変更なし
+- skills.sh: find-skills 750K→788K installs、frontend-design 211K→222K installs
+- 推薦スキル変更なし（Tier A/B据え置き）
+- kb/skills/_index.md, recommended.md のインストール数・stars数更新
+
+---
+
 ## 2026-04-03 — 公式ドキュメント巡回
 
 ### 巡回対象URL

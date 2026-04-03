@@ -1,6 +1,6 @@
 # Claude Code Hooks 仕様書
 
-最終更新: 2026-04-03（巡回更新）
+最終更新: 2026-04-04（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/hooks
 
@@ -28,7 +28,7 @@ CLAUDE.md の指示は助言的だが、Hooks は**決定論的**であり確実
 | `PostToolUseFailure` | ツール失敗後 | No | ツール名 |
 | `Stop` | Claude の応答完了時 | Yes | - |
 | `StopFailure` | APIエラー発生時 | No | `rate_limit`, `authentication_failed`, `billing_error`, `invalid_request`, `server_error`, `max_output_tokens`, `unknown` |
-| `PermissionDenied` | Auto Mode分類器が拒否した後 | No | matcherなし |
+| `PermissionDenied` | Auto Mode分類器が拒否した後 | No | ツール名 |
 | `SessionEnd` | セッション終了時 | No | `clear`, `resume`, `logout`, `prompt_input_exit`, `bypass_permissions_disabled`, `other` |
 
 ### 2.2 サブエージェントイベント
