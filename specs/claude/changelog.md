@@ -3,9 +3,26 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-04
+最終更新: 2026-04-05
 
 ---
+
+## v2.1.92 (2026-04-04)
+
+- `forceRemoteSettingsRefresh` ポリシー設定追加（マネージド設定の強制リフレッシュ）
+- Bedrock インタラクティブセットアップウィザード追加（AWS認証・設定のガイド付きフロー）
+- `/cost` にモデル別・キャッシュヒット内訳を追加（サブスクリプションユーザー向け）
+- `/release-notes` がインタラクティブバージョンピッカーに変更
+- Remote Control セッション名のデフォルトプレフィックスがホスト名に変更（`--remote-control-session-name-prefix` / `CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX` でカスタマイズ）
+- Pro ユーザーにプロンプトキャッシュ有効期限のフッターヒント表示
+- `Write` ツールの差分計算が60%高速化
+- `/tag` と `/vim` コマンド削除
+- Linux サンドボックスに `apply-seccomp` ヘルパー追加（unix-socketブロッキング）
+- サブエージェント起動、prompt-type Stop フック、ツール入力バリデーション等のバグ修正
+
+## v2.1.90 (2026-04-01)
+
+- `/powerup` コマンド追加（Claude Code機能のインタラクティブレッスン。ターミナル内でアニメーションデモ）
 
 ## v2.1.91 (2026-04-02)
 
