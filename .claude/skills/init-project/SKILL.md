@@ -126,12 +126,16 @@ docs/project-brief.md（Phase 0の要件記録）を生成。
 
 ### Phase 3: ハーネス生成（create-harnessに委譲）
 
+**Claude Code + Codex CLI 両方のハーネスを必ず生成する。** Codexハーネスはオプションではなく標準。
+
 **委譲時に渡す情報**:
 - Phase 0の要件
 - **Phase 0.5の全解析結果**（行動規則、ベストプラクティス、外部知見、推薦スキル）
 - Phase 2の技術スタック情報
+- **対象プラットフォーム: Claude Code + Codex CLI（両方必須）**
 
 create-harnessはPhase 0.5の解析結果を受け取り、再解析せずに適用する。
+create-harnessのStep 3-Fに従い、mapping/claude-to-codex.mdの変換ルールでCodex側を生成する。
 
 ### Phase 4: 業務ドメイン知見の反映
 
