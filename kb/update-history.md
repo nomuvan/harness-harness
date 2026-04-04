@@ -1,5 +1,33 @@
 # harness-harness 更新履歴
 
+## 2026-04-05 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（78ページ）、changelog, settings, whats-new/2026-w14, ultraplan, fast-mode, checkpointing, remote-control
+- Codex CLI: changelog
+
+### 検出された変更と更新内容
+
+#### Claude Code
+- **specs/claude/changelog.md** — v2.1.92 追加（`forceRemoteSettingsRefresh`、Bedrockウィザード、`/cost` モデル別内訳、`/release-notes` ピッカー化、Write差分60%高速化、`/tag`・`/vim` 削除、Linux seccomp）、v2.1.90 追加（`/powerup` コマンド）
+- **specs/claude/configuration.md** — `forceRemoteSettingsRefresh` 設定追加、`CLAUDE_CODE_DISABLE_FAST_MODE`・`CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX` 環境変数追加、重複行修正
+- **specs/claude/skills-and-commands.md** — `/release-notes` 説明更新（インタラクティブピッカー）、`/ultraplan` コマンド追加
+- **specs/claude/hooks.md** — 最終更新日のみ更新（変更なし）
+- **specs/claude/mcp.md** — 最終更新日のみ更新（変更なし）
+
+#### 新規ドキュメントページ検出（specs未反映・参考情報）
+- `ultraplan.md` — クラウドプランニング機能（リサーチプレビュー）
+- `fast-mode.md` — Fastモード詳細（$30/150 MTok、2.5x高速）
+- `checkpointing.md` — チェックポイント/巻き戻し機能詳細
+- `remote-control.md` — Remote Control詳細（server mode、spawn、capacity）
+- `computer-use.md` — CLI内Computer Use（リサーチプレビュー）
+- `whats-new/2026-w14.md` — Week 14 ダイジェスト
+
+#### Codex CLI
+- 変更なし（CLI 0.118.0 が最新のまま）
+
+---
+
 ## 2026-04-04 — 公式ドキュメント巡回
 
 ### 巡回対象URL

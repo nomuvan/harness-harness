@@ -1,6 +1,6 @@
 # Claude Code MCP 仕様書
 
-最終更新: 2026-04-04（巡回更新）
+最終更新: 2026-04-05（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/mcp
 

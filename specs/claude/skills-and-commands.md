@@ -1,6 +1,6 @@
 # Claude Code Skills & コマンド仕様書
 
-最終更新: 2026-04-04（巡回更新）
+最終更新: 2026-04-05（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/skills / https://code.claude.com/docs/en/commands / https://code.claude.com/docs/en/sub-agents / https://code.claude.com/docs/en/scheduled-tasks / https://code.claude.com/docs/en/web-scheduled-tasks / https://code.claude.com/docs/en/discover-plugins
 
@@ -193,7 +193,8 @@ Claude Code に同梱されるスキル:
 | `/powerup` | Claude Code機能のインタラクティブレッスン＋アニメーションデモ |
 | `/pr-comments [PR]` | GitHub PRコメント取得 |
 | `/security-review` | セキュリティ脆弱性分析 |
-| `/release-notes` | 完全な変更ログ表示（最新版がプロンプト付近） |
+| `/release-notes` | インタラクティブバージョンピッカー付き変更ログ表示（v2.1.92で改善） |
+| `/ultraplan [prompt]` | クラウドプランニングセッション起動。CLIからClaude Code on the webにプラン作成を委譲し、ブラウザでレビュー・修正後に実行先（クラウド/ローカル）を選択（リサーチプレビュー） |
 | `/sandbox` | サンドボックスモード切替 |
 | `/schedule [description]` | クラウドスケジュールタスクの作成・管理 |
 
