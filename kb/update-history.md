@@ -26,6 +26,12 @@
 #### Codex CLI
 - 変更なし（CLI 0.118.0 が最新のまま）
 
+#### スキルエコシステム
+- **kb/skills/_index.md** — last_patrol更新、プラットフォーム数32→33（Kiro追加確認）
+- **kb/skills/sources.md** — last_checked更新
+- agentskills.io: 33プラットフォーム対応を確認。新規: Kiro（AWS、spec-driven development）
+- 推薦スキル: 変更なし（Tier A/B据え置き）
+
 ---
 
 ## 2026-04-04 — 公式ドキュメント巡回
