@@ -3,26 +3,25 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-05
+最終更新: 2026-04-06
 
 ---
 
 ## v2.1.92 (2026-04-04)
 
-- `forceRemoteSettingsRefresh` ポリシー設定追加（マネージド設定の強制リフレッシュ）
-- Bedrock インタラクティブセットアップウィザード追加（AWS認証・設定のガイド付きフロー）
+- `forceRemoteSettingsRefresh` ポリシー設定追加（リモート設定取得をfail-closed化。取得失敗時にセッション起動をブロック）
+- Bedrock インタラクティブセットアップウィザード追加（ログイン画面から直接起動可能）
 - `/cost` にモデル別・キャッシュヒット内訳を追加（サブスクリプションユーザー向け）
 - `/release-notes` がインタラクティブバージョンピッカーに変更
-- Remote Control セッション名のデフォルトプレフィックスがホスト名に変更（`--remote-control-session-name-prefix` / `CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX` でカスタマイズ）
+- Remote Control セッション名のデフォルトプレフィックスがホスト名に変更（`CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX` でカスタマイズ）
 - Pro ユーザーにプロンプトキャッシュ有効期限のフッターヒント表示
-- `Write` ツールの差分計算が60%高速化
-- `/tag` と `/vim` コマンド削除
+- `Write` ツールの差分計算が大規模ファイルで60%高速化
+- `/tag` コマンド削除
+- `/vim` コマンド削除（`/config` → Editor mode に統合）
 - Linux サンドボックスに `apply-seccomp` ヘルパー追加（unix-socketブロッキング）
-- サブエージェント起動、prompt-type Stop フック、ツール入力バリデーション等のバグ修正
-
-## v2.1.90 (2026-04-01)
-
-- `/powerup` コマンド追加（Claude Code機能のインタラクティブレッスン。ターミナル内でアニメーションデモ）
+- サブエージェント起動時の "Could not determine pane count" エラー修正
+- prompt-type Stop フック、ツール入力バリデーション、拡張思考ホワイトスペースAPI 400等のバグ修正
+- プラグインMCPサーバーが "connecting" で停止する問題修正
 
 ## v2.1.91 (2026-04-02)
 
