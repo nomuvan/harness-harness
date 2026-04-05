@@ -1,5 +1,31 @@
 # harness-harness 更新履歴
 
+## 2026-04-06 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（80ページ）、changelog, settings, commands, env-vars
+- Codex CLI: changelog
+- スキルエコシステム: anthropics/skills, openai/skills, skills.sh, agentskills.io
+
+### 検出された変更と更新内容
+
+#### Claude Code
+- **specs/claude/changelog.md** — v2.1.92 追加（`forceRemoteSettingsRefresh` ポリシー、Bedrock セットアップウィザード、`/cost` モデル別内訳、`/tag` `/vim` 削除、Write ツール60%高速化、各種修正）
+- **specs/claude/configuration.md** — `forceRemoteSettingsRefresh` 設定追加
+- **specs/claude/skills-and-commands.md** — `/ultraplan` コマンド追加、`/pr-comments` を `/ultraplan` に置換（v2.1.91で廃止済み）
+
+#### Codex CLI
+- 変更なし（CLI 0.118.0 が最新のまま）
+
+### スキルエコシステム巡回
+- anthropics/skills: 110K+ stars。新規コミットなし
+- openai/skills: 16K+ stars、45スキル。新規コミットなし
+- skills.sh: 91.5K件（+1.5K）。find-skills 774K installs
+- agentskills.io: 対応プラットフォーム33に増加（+1。新規: Kiro, Mistral Vibe, Snowflake Cortex Code, Databricks Genie Code等）
+- 推薦スキル変更なし（Tier A/B据え置き）
+
+---
+
 ## 2026-04-04 — 公式ドキュメント巡回
 
 ### 巡回対象URL

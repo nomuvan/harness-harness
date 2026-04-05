@@ -1,6 +1,6 @@
 # Claude Code Skills & コマンド仕様書
 
-最終更新: 2026-04-04（巡回更新）
+最終更新: 2026-04-06（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/skills / https://code.claude.com/docs/en/commands / https://code.claude.com/docs/en/sub-agents / https://code.claude.com/docs/en/scheduled-tasks / https://code.claude.com/docs/en/web-scheduled-tasks / https://code.claude.com/docs/en/discover-plugins
 
@@ -191,7 +191,7 @@ Claude Code に同梱されるスキル:
 | `/diff` | 差分ビューア |
 | `/plan` | プランモード開始 |
 | `/powerup` | Claude Code機能のインタラクティブレッスン＋アニメーションデモ |
-| `/pr-comments [PR]` | GitHub PRコメント取得 |
+| `/ultraplan <prompt>` | Ultraplan セッションでプランを作成。ブラウザでレビュー後、リモート実行またはターミナルに送信 |
 | `/security-review` | セキュリティ脆弱性分析 |
 | `/release-notes` | 完全な変更ログ表示（最新版がプロンプト付近） |
 | `/sandbox` | サンドボックスモード切替 |
