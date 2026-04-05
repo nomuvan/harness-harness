@@ -349,8 +349,9 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `CLAUDE_CODE_MCP_SERVER_URL` | MCP `headersHelper` スクリプトに渡されるサーバーURL（v2.1.85） |
 | `CLAUDE_CODE_NO_FLICKER` | `1` でフリッカーフリーのalt-screen描画有効化（リサーチプレビュー）（v2.1.89） |
 | `MCP_CONNECTION_NONBLOCKING` | `true` で `-p` モードのMCP接続待機スキップ。`--mcp-config` サーバー接続は5秒上限（v2.1.89） |
-| `CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE` | `git pull` 失敗時にマーケットプレースキャッシュを保持（オフライン環境向け）（v2.1.90） |
 | `CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE` | `1` で `git pull` 失敗時にマーケットプレースキャッシュを保持。オフライン/エアギャップ環境向け（v2.1.90） |
+| `CLAUDE_CODE_DISABLE_FAST_MODE` | `1` でFastモードを完全無効化（v2.1.92） |
+| `CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX` | Remote Controlセッション名の自動生成プレフィックス（デフォルト: ホスト名）（v2.1.92） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 
