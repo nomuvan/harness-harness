@@ -1,6 +1,6 @@
 ---
 title: スキルエコシステム参照先
-last_checked: "2026-04-05"
+last_checked: "2026-04-18"
 ---
 
 # スキルエコシステム参照先
@@ -28,7 +28,7 @@ last_checked: "2026-04-05"
 
 | サイト | URL | 役割 | 巡回優先度 |
 |--------|-----|------|----------|
-| agentskills.io | https://agentskills.io/ | Agent Skills仕様。33+プラットフォーム採用。SKILL.mdフォーマット | 中 |
+| agentskills.io | https://agentskills.io/ | Agent Skills仕様。37+プラットフォーム採用（TRAE, Spring AI, Snowflake Cortex Code等が追加）。SKILL.mdフォーマット | 中 |
 
 ## コミュニティ
 
@@ -42,4 +42,4 @@ last_checked: "2026-04-05"
 - **skills.shはAnthropicの公式サイトではない**。コミュニティ運営のディレクトリとして扱う
 - **agentskills.ioはディレクトリではなく仕様サイト**。スキル一覧はここにはない
 - **OpenAI側: Skills = authoring format、Plugins = distribution unit**。公開マーケットプレイスは準備中
-- **Agent Skills標準（SKILL.md）は33+プラットフォームで共通**。Claude/Codex間でスキルファイル自体は変換不要
+- **Agent Skills標準（SKILL.md）は37+プラットフォームで共通**。Claude/Codex間でスキルファイル自体は変換不要

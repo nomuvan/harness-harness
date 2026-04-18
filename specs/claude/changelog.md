@@ -3,9 +3,97 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-06
+最終更新: 2026-04-18
 
 ---
+
+## v2.1.113 (2026-04-17)
+
+- **ネイティブバイナリ化**: bundled JavaScript ではなくネイティブ Claude Code バイナリを直接起動（起動高速化）
+- `sandbox.network.deniedDomains` 設定追加（特定ドメインのブロック。allow/deny の併用可）
+- フルスクリーンモード改善: `Shift+↑/↓` でスクロール、`Ctrl+A/E` で行頭・行末移動
+- Windows: `Ctrl+Backspace` で直前単語削除
+- `/loop` 改善: `Esc` で pending wakeup キャンセル
+- `/extra-usage` が Remote Control クライアントから利用可能に
+- `/ultrareview` 改善: 起動高速化、並列チェック、diffstat 表示
+- Bash ツール・権限ルールのセキュリティハードニング
+- MCP・UI/UX 各種改善
+
+## v2.1.112 (2026-04-16)
+
+- "claude-opus-4-7 is temporarily unavailable" エラー（Auto mode）修正
+
+## v2.1.111 (2026-04-16)
+
+- **Claude Opus 4.7 xhigh 利用可能** （`/effort` で段階調整）
+- Max サブスクライバー向け Auto mode が Opus 4.7 対応
+- `/effort` が矢印キーのインタラクティブスライダーに
+- "Auto (match terminal)" テーマ追加
+- `/less-permission-prompts` スキル追加
+- `/ultrareview` コマンド追加（クラウドベースの包括的コードレビュー）
+- Windows: PowerShell ツール段階展開（opt-in）
+- Auto mode に `--enable-auto-mode` フラグ不要化
+- プランファイル名がプロンプト由来に（例: `fix-auth-race-snug-otter.md`）
+- グロブ付き読み取り専用 bash コマンドが権限プロンプトをトリガーしないように
+- `/skills` メニューにトークン数ソート追加
+
+## v2.1.110 (2026-04-15)
+
+- `/tui` コマンド追加（フリッカーフリー・フルスクリーン描画）
+- Remote Control 向け push notification ツール追加
+- `Ctrl+O` を normal/verbose トランスクリプトビュー切り替えに変更
+- `/focus` コマンド追加
+- `/plugin` Installed タブ改善（favorites、注意インジケーター）
+- `/doctor` の MCP サーバー警告改善
+- `--resume`/`--continue` が未失効のスケジュールタスクを復元
+- MCP・権限各種修正
+
+## v2.1.109 (2026-04-15)
+
+- 拡張思考インジケーター改善（回転式プログレスヒント）
+
+## v2.1.108 (2026-04-14)
+
+- `ENABLE_PROMPT_CACHING_1H` 環境変数追加（プロンプトキャッシュTTL 1時間化）
+- recap 機能追加（セッション復帰時のおさらい。`/config` で設定可）
+- モデルが Skill ツール経由で組み込みスラッシュコマンドを発見・実行可能に
+- `/undo` を `/rewind` のエイリアスとして追加
+- `/model` がセッション中の切り替え前に警告
+- `/resume` ピッカーが現在ディレクトリのセッション優先に
+- オンデマンド文法ロードでメモリフットプリント削減
+
+## v2.1.107 (2026-04-14)
+
+- 長時間処理中に thinking ヒントを早めに表示
+
+## v2.1.105 (2026-04-13)
+
+- `EnterWorktree` ツールに `path` パラメータ追加
+- **PreCompact フック対応**（コンパクト前のフック実行）
+- プラグインのバックグラウンドモニター対応
+- `/proactive` を `/loop` のエイリアスとして追加
+- API ストリーム停滞処理改善（5分タイムアウト）
+- WebFetch 改善（`<style>`・`<script>` タグを除去）
+- プラグイン・スキル・MCP 各種修正
+
+## v2.1.101 (2026-04-10)
+
+- `/team-onboarding` コマンド追加
+- OS の CA 証明書ストアをデフォルトで信頼
+- `/ultraplan` がクラウド環境を自動作成
+- brief・focus モード改善
+- Bash ツール権限バイパス修正（セキュリティ）
+- レート制限リトライメッセージ修正
+- 設定回復性改善
+
+## v2.1.98 (2026-04-09)
+
+- Google Vertex AI インタラクティブセットアップウィザード追加
+- `CLAUDE_CODE_PERFORCE_MODE` 環境変数追加
+- **Monitor ツール追加**（バックグラウンドイベントのストリーミング）
+- Linux: サブプロセスサンドボックスで PID namespace 分離
+- Bash ツール権限バイパス修正（セキュリティ）
+- ストリーミング応答停滞時のフォールバックモード修正
 
 ## v2.1.92 (2026-04-04)
 

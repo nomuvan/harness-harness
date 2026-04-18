@@ -3,9 +3,36 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://developers.openai.com/codex/changelog
 
-最終更新: 2026-04-01（巡回更新）
+最終更新: 2026-04-18
 
 ---
+
+## CLI 0.121.0 (2026-04-15)
+
+- **マーケットプレースインストール**: GitHub、git URL、ローカルディレクトリからインストール可能に
+- TUI 履歴改善: `Ctrl+R` で逆方向検索
+- メモリモード制御と削除エンドポイント追加
+- MCP Apps のツールコール対応と並列コール対応
+- Realtime API 拡張（output modality、transcript events）
+- bubblewrap 対応のセキュア devcontainer プロファイル
+- macOS sandbox/proxy、Windows パスマッチング、レート制限、Guardian タイムアウトの修正
+
+## CLI 0.120.0 (2026-04-11)
+
+- Realtime V2 のバックグラウンドエージェント進捗ストリーミング
+- TUI でのフック実行可視化改善
+- MCP `outputSchema` 対応（構造化ツール結果）
+- `/clear` セッション向け SessionStart フック区別
+- Windows elevated サンドボックスの split policy 処理、symlink writable root、TLS websocket、ツール検索順序、live stop-hook、MCP クリーンアップの修正
+
+## CLI 0.119.0 (2026-04-10)
+
+- **Realtime 音声セッションが v2 WebRTC デフォルト**（transport 設定可）
+- MCP Apps のリソース読み取り、ツールコールメタデータ、カスタムサーバーツール検索
+- Remote workflow: egress websocket、remote `--cd` 転送、ランタイムリモートコントロール
+- TUI `Ctrl+O` で最新エージェント応答をコピー
+- `/resume` で ID・名前によるセッションジャンプ
+- TUI 起動高速化（async レート制限取得）、resume ピッカー安定化、composer 挙動改善、MCP ノイズ削減
 
 ## CLI 0.118.0 (2026-03-31)
 
