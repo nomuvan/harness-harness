@@ -1,5 +1,30 @@
 # harness-harness 更新履歴
 
+## 2026-04-19 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog, settings, hooks, llms.txt
+- Codex CLI: changelog
+- スキルエコシステム: 前回巡回(2026-04-18)から1日経過のためスキップ（7日ルール）
+
+### 検出された変更と更新内容
+
+#### Claude Code（v2.1.114、4月18日）
+- **specs/claude/changelog.md** — v2.1.114 を追記
+  - エージェントチームのチームメイトがツール権限リクエスト時の権限ダイアログクラッシュを修正（バグ修正のみ）
+
+#### Codex CLI
+- 変更なし（0.121.0 が引き続き最新）
+
+#### その他
+- `whats-new/2026-w16` は未公開
+- settings/hooks/skills/mcp/agent-teams/best-practices いずれも変更なし
+
+### 更新ファイル
+- specs/claude/changelog.md
+
+---
+
 ## 2026-04-18 — 公式ドキュメント巡回
 
 ### 巡回対象URL
