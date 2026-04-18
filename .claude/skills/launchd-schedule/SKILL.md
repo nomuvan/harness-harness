@@ -1,53 +1,64 @@
 ---
 name: launchd-schedule
 description: |
-  macOSのlaunchd + tmuxで定期的にClaudeプロンプトを実行するスケジューラ。
-  tmuxセッション作成→Claude起動→準備完了検出→プロンプト送信を自動化。
+  macOSのlaunchdで定期タスクを実行するスケジューラ。
+  3モード: session(Claude対話), script(Claude -p), exec(任意コマンド)。
   「スケジュール登録して」「スケジュール一覧」「スケジュール変更」「スケジュール削除」「今すぐ実行」で起動。
   「巡回スケジュール作って」「定期実行を設定して」でも起動。
 ---
 
 # launchd-schedule スキル
 
-macOSのlaunchd + tmuxでClaudeプロンプトを定期実行する。podmanコンテナ不要。
+macOSのlaunchdで定期タスクを実行する。Claude CLIだけでなく任意コマンドも対応。
 
 ## 操作
 
 ### create — スケジュール登録
 
-2つのモードを選択可能:
-- **session**（デフォルト）: tmux上でClaudeセッションに入りプロンプトを送信。既存互換
-- **script**: tmux上でClaude CLIスクリプトモード（`claude -p "prompt"`）で実行。セッションに入らない。psベース二重起動制御付き
+3つのモードを選択可能:
+- **session**（デフォルト）: tmux上でClaudeセッションに入りプロンプトを送信
+- **script**: Claude CLIスクリプトモード（`claude -p "prompt"`）で実行
+- **exec**: 任意コマンドを直接実行（Claude不要。Python/bash等）
 
 ```bash
 SKILL_DIR=$(find .claude/skills/launchd-schedule -name manage-schedule.sh -exec dirname {} \; | head -1)/..
 
-# sessionモード（既存互換、デフォルト）
+# sessionモード（Claude対話、デフォルト）
 bash "$SKILL_DIR/scripts/manage-schedule.sh" create \
   "<name>" "<cron-expr>" "<tmux-session>" "<workdir>" "<claude-cmd>" "<prompt>"
 
-# scriptモード（新規）
+# scriptモード（Claude -p）
 bash "$SKILL_DIR/scripts/manage-schedule.sh" create \
   "<name>" "<cron-expr>" "<tmux-session>" "<workdir>" "<claude-cmd>" "<prompt>" script
+
+# execモード（任意コマンド。Claude不要）
+bash "$SKILL_DIR/scripts/manage-schedule.sh" create \
+  "<name>" "<cron-expr>" "" "<workdir>" "<command>" "<args>" exec
 ```
 
 引数:
 - `name`: スケジュール名（英数字ハイフン）
-- `cron-expr`: cron式（分 時 日 月 曜日）。例: `0 3 * * *` = 毎日3:00
-- `tmux-session`: tmuxセッション名。デフォルト推奨: `harness-{name}`
-- `workdir`: ワークディレクトリ。未指定時は現在のワークディレクトリを使う
-- `claude-cmd`: claudeコマンドライン。デフォルト: `claude --dangerously-skip-permissions`
-- `prompt`: 実行するプロンプト文字列
+- `cron-expr`: cron式（分 時 日 月 曜日）。例: `0 3 * * *` = 毎日3:00, `*/5 * * * *` = 5分毎
+  - `*/N`形式はlaunchdのStartInterval(N×60秒)に自動変換
+- `tmux-session`: tmuxセッション名（execモードでは空文字""でOK）
+- `workdir`: ワークディレクトリ
+- `claude-cmd`: session/scriptモード→claudeコマンド、execモード→実行コマンド
+- `prompt`: session/scriptモード→プロンプト、execモード→コマンド引数
 
-例:
+例（Claude）:
 ```bash
 bash "$SKILL_DIR/scripts/manage-schedule.sh" create \
-  "daily-patrol" \
-  "0 3 * * *" \
-  "harness-patrol" \
+  "daily-patrol" "0 3 * * *" "harness-patrol" \
   "/Users/nomuvan/work/harnesss-harness" \
-  "claude --dangerously-skip-permissions" \
-  "specs/とkb/を公式ドキュメントと照合して最新化して。変更があればPR作成して"
+  "claude --dangerously-skip-permissions" "/patrol-docs"
+```
+
+例（Python script）:
+```bash
+bash "$SKILL_DIR/scripts/manage-schedule.sh" create \
+  "research-morning" "0 6 * * *" "" \
+  "/Users/nomuvan/work/harnesss-harness" \
+  "python3 src/researcher.py" "ai_tech" exec
 ```
 
 ### list — スケジュール一覧
@@ -98,14 +109,23 @@ bash "$SKILL_DIR/scripts/manage-schedule.sh" delete "<name>"
 
 ## 動作の仕組み
 
-1. launchdがcron式に従い `run-scheduled-prompt.sh` を起動
-2. tmuxセッションの存在を確認
-   - 存在しない → 新規作成 → Claude CLI起動
-   - 存在するがClaude死亡 → セッション再作成 → Claude CLI起動
-   - 存在してClaude稼働中 → そのまま使用
-3. Claude起動時は**pane出力を監視して準備完了を自動検出**（最大60秒待機）
-   - project trust確認が出たら自動で `y` を送信
-4. `/clear` → プロンプト送信
+全モード共通で `guard-execution.sh` が最初に呼ばれ、二重起動防止とcooldownチェックを行う。
+
+```
+launchd → guard-execution.sh <name> -- <実コマンド>
+              ├─ pgrep で同名スケジュールの既存プロセスをチェック → 重複ならSKIP
+              ├─ cooldownファイルチェック → 有効ならSKIP
+              └─ 実コマンドを実行
+```
+
+### sessionモード
+guard → `run-scheduled-prompt.sh` → tmux + Claude対話
+
+### scriptモード
+guard → `run-scheduled-script.sh` → tmux + `claude -p`
+
+### execモード
+guard → `bash -c "cd workdir && command"`
 
 ## ファイル配置
 
