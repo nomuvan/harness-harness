@@ -177,6 +177,62 @@ PLIST
   fi
 }
 
+format_age() {
+  local age_sec="$1"
+  if [ "$age_sec" -lt 60 ]; then
+    echo "${age_sec}s ago"
+  elif [ "$age_sec" -lt 3600 ]; then
+    echo "$((age_sec / 60))min ago"
+  elif [ "$age_sec" -lt 86400 ]; then
+    echo "$((age_sec / 3600))h ago"
+  else
+    echo "$((age_sec / 86400))d ago"
+  fi
+}
+
+# スケジュールの健全性メトリクス取得
+# stdout: "health|last_run_display"
+# health: ok | FAILING | NEVER-RAN
+compute_health() {
+  local name="$1"
+  local log_dir="$HOME/.local/share/harness-schedule/logs"
+  local stderr_file="$log_dir/${name}-stderr.log"
+
+  # guard-execution.sh が書く日付付きログ（${name}-YYYYMMDD-HHMMSS.log）の最新
+  local latest_log=""
+  latest_log=$(ls -t "$log_dir"/"${name}"-20*.log 2>/dev/null | head -1)
+
+  local now_epoch last_epoch=0 stderr_epoch=0
+  now_epoch=$(date +%s)
+
+  local last_run="(never)"
+  if [ -n "$latest_log" ]; then
+    last_epoch=$(stat -f %m "$latest_log" 2>/dev/null || echo 0)
+    local age=$((now_epoch - last_epoch))
+    last_run="$(date -r "$last_epoch" '+%Y-%m-%d %H:%M') ($(format_age "$age"))"
+  fi
+
+  local health="ok"
+  local stderr_note=""
+  if [ -s "$stderr_file" ]; then
+    stderr_epoch=$(stat -f %m "$stderr_file" 2>/dev/null || echo 0)
+    if [ -z "$latest_log" ] || [ "$stderr_epoch" -gt "$last_epoch" ]; then
+      local stderr_size
+      stderr_size=$(wc -c < "$stderr_file" | tr -d ' ')
+      local stderr_tail
+      stderr_tail=$(tail -1 "$stderr_file" 2>/dev/null | head -c 120)
+      health="FAILING — stderr ${stderr_size}B, last: \"${stderr_tail}\""
+      stderr_note="$stderr_tail"
+    fi
+  fi
+
+  if [ "$health" = "ok" ] && [ -z "$latest_log" ]; then
+    health="NEVER-RAN"
+  fi
+
+  printf '%s\n%s\n' "$health" "$last_run"
+}
+
 list_schedules() {
   local filter_project="${1:-}"
   local current_project
@@ -218,10 +274,15 @@ list_schedules() {
       status="inactive"
     fi
 
+    local health last_run
+    { read -r health; read -r last_run; } < <(compute_health "$name")
+
     echo ""
     echo "  Name: $name"
     echo "  Project: $project"
     echo "  Status: $status"
+    echo "  Health: $health"
+    echo "  LastRun: $last_run"
     echo "  Label: $label"
     echo "  Plist: $plist"
   done
