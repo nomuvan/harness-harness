@@ -77,6 +77,18 @@ bash "$SKILL_DIR/scripts/manage-schedule.sh" list <project-name>
 デフォルトではカレントディレクトリ名でフィルタし、自プロジェクトのスケジュールのみ表示。
 各スケジュールにはProject名が表示される（plistのSCHEDULE_PROJECT環境変数から取得）。
 
+各エントリに以下が表示される:
+
+| フィールド | 意味 |
+|---|---|
+| Status | launchd登録状態（active/inactive） |
+| Health | `ok` / `FAILING — stderr <N>B, last: "<tail>"` / `NEVER-RAN` |
+| LastRun | 直近のguard実行時刻（`YYYY-MM-DD HH:MM (Xmin ago)`） |
+
+**Health判定:** `${name}-stderr.log` が非空かつ最新のguard dated logより新しければ `FAILING`。
+guardは成功時も日付付きログを書くので、`Status: active` だけでは実際に動いているかは分からない。
+**運用判断は Health/LastRun を優先すること**。
+
 ### update — スケジュール変更
 
 ```bash
