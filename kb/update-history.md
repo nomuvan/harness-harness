@@ -1,5 +1,53 @@
 # harness-harness 更新履歴
 
+## 2026-04-18 — 公式ドキュメント巡回
+
+### 巡回対象URL
+- Claude Code: llms.txt（96ページ、16増）、changelog、settings、commands、hooks
+- Codex CLI: changelog
+- スキルエコシステム: anthropics/skills, openai/skills, agentskills.io, skills.sh
+
+### 検出された変更と更新内容
+
+#### Claude Code（v2.1.98〜v2.1.113 の10バージョン、4月9〜17日）
+- **specs/claude/changelog.md** — 新バージョン10件を追記
+  - v2.1.113: ネイティブバイナリ化、`sandbox.network.deniedDomains`、フルスクリーン操作拡張、`/ultrareview` 改善
+  - v2.1.111: **Claude Opus 4.7 xhigh**、`/effort` スライダー、`/ultrareview` 追加、`/less-permission-prompts` スキル
+  - v2.1.110: `/tui`、`/focus`、push notification ツール
+  - v2.1.108: `ENABLE_PROMPT_CACHING_1H`、recap 機能、`/undo` エイリアス、Skill ツール経由の組み込みコマンド呼び出し
+  - v2.1.105: **PreCompact フック対応**、`EnterWorktree.path` パラメータ、`/proactive` エイリアス
+  - v2.1.101: `/team-onboarding`、OS CA 証明書信頼、`/ultraplan` クラウド環境自動作成
+  - v2.1.98: Vertex AI セットアップウィザード、`CLAUDE_CODE_PERFORCE_MODE`、**Monitor ツール**
+- **specs/claude/configuration.md** — `sandbox.network.deniedDomains`、`CLAUDE_CODE_PERFORCE_MODE`、`ENABLE_PROMPT_CACHING_1H` 追加
+- **specs/claude/skills-and-commands.md** — `/ultrareview`、`/tui`、`/focus`、`/team-onboarding`、`/less-permission-prompts`、`/undo`、`/proactive`、`/extra-usage` 追加
+
+#### 新規ドキュメントページ検出
+- `ultrareview.md`（新規コマンド）、`whats-new/2026-w13.md`、`whats-new/2026-w15.md`（週次ダイジェスト）
+
+#### Codex CLI（3バージョン、4月10〜15日）
+- **specs/codex/changelog.md** — 新バージョン3件を追記
+  - CLI 0.121.0: マーケットプレースインストール（GitHub/git URL/ローカル）、`Ctrl+R` 逆検索、MCP Apps 並列コール、bubblewrap devcontainer
+  - CLI 0.120.0: Realtime V2 進捗ストリーミング、MCP `outputSchema`、`/clear` 用 SessionStart フック区別
+  - CLI 0.119.0: Realtime 音声 v2 WebRTC デフォルト化、Remote workflow、`/resume` ID ジャンプ
+
+### スキルエコシステム巡回
+- anthropics/skills: **120K+ stars**（115K→120K）
+- agentskills.io: 対応プラットフォーム **37+** に増加（33→37）。新規: TRAE, Spring AI, VT Code, Qodo, Emdash, Snowflake Cortex Code, nanobot
+- skills.sh: find-skills が **1.1M installs** でトップ（788K→1.1M）、frontend-design 310K、vercel-react-best-practices 328K
+- 推薦スキル: Tier A/B 据え置き。find-skills と frontend-design のインストール数更新
+
+### 更新ファイル
+- `specs/claude/changelog.md`
+- `specs/claude/configuration.md`
+- `specs/claude/skills-and-commands.md`
+- `specs/codex/changelog.md`
+- `kb/skills/_index.md`
+- `kb/skills/sources.md`
+- `kb/skills/recommended.md`
+- `kb/update-history.md`
+
+---
+
 ## 2026-04-06 — 公式ドキュメント巡回（04-05巡回を統合）
 
 ### 巡回対象URL

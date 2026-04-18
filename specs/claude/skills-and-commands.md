@@ -1,6 +1,6 @@
 # Claude Code Skills & コマンド仕様書
 
-最終更新: 2026-04-06（巡回更新）
+最終更新: 2026-04-18（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/skills / https://code.claude.com/docs/en/commands / https://code.claude.com/docs/en/sub-agents / https://code.claude.com/docs/en/scheduled-tasks / https://code.claude.com/docs/en/web-scheduled-tasks / https://code.claude.com/docs/en/discover-plugins
 
@@ -141,8 +141,11 @@ Claude Code に同梱されるスキル:
 | `/batch <instruction>` | コードベース全体の大規模変更を並列オーケストレーション。ワークツリーごとにエージェントを起動しPRを作成 |
 | `/claude-api` | Claude API リファレンス素材の読み込み（Python/TS/Java等） |
 | `/debug [description]` | セッションデバッグログの解析 |
-| `/loop [interval] <prompt>` | プロンプトを定期的に繰り返し実行 |
+| `/loop [interval] <prompt>` (`/proactive`) | プロンプトを定期的に繰り返し実行（v2.1.105 で `/proactive` エイリアス追加） |
 | `/simplify [focus]` | 変更ファイルのコード品質レビューと修正（3エージェント並列） |
+| `/less-permission-prompts` | 読み取り専用 bash/MCP 呼び出しを検出し許可リスト追加を提案（v2.1.111） |
+| `/team-onboarding` | 新メンバー向けのプロジェクトオンボーディング資料生成（v2.1.101） |
+| `/ultrareview` | クラウドベースの包括的コードレビュー。並列チェック・diffstat 表示（v2.1.111、v2.1.113 で改善） |
 
 ---
 
@@ -158,7 +161,7 @@ Claude Code に同梱されるスキル:
 | `/compact [instructions]` | 会話コンパクション |
 | `/resume [session]` (`/continue`) | セッション再開 |
 | `/rename [name]` | セッション名変更 |
-| `/rewind` (`/checkpoint`) | 会話/コードを前の状態に巻き戻し |
+| `/rewind` (`/checkpoint`, `/undo`) | 会話/コードを前の状態に巻き戻し（v2.1.108 で `/undo` エイリアス追加） |
 | `/branch [name]` (`/fork`) | 会話のブランチ作成 |
 | `/export [filename]` | 会話をテキストエクスポート |
 | `/exit` (`/quit`) | CLI終了 |
@@ -182,6 +185,9 @@ Claude Code に同梱されるスキル:
 | `/stats` | 日次使用量・セッション履歴・ストリーク・モデル使用の可視化 |
 | `/usage` | プラン使用量・レート制限表示 |
 | `/insights` | セッション分析レポート（プロジェクト領域、操作パターン、摩擦点） |
+| `/extra-usage` | 追加使用量情報（v2.1.113 で Remote Control クライアントからも利用可能に） |
+| `/tui` | フリッカーフリー・フルスクリーン描画の切り替え（v2.1.110） |
+| `/focus` | フォーカスモード切替（v2.1.110。brief・focus モードは v2.1.101 で改善） |
 
 ### 2.3 開発ワークフロー
 
