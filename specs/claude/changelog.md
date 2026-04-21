@@ -3,9 +3,27 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-19
+最終更新: 2026-04-22
 
 ---
+
+## v2.1.116 (2026-04-20)
+
+- **`/resume` 高速化**: 40MB 超の大規模セッションで最大67%高速化、dead-fork エントリを含むセッションの処理効率改善
+- **MCP 起動高速化**: 複数 stdio サーバー設定時の起動が高速化。`resources/templates/list` は最初の `@` メンションまで遅延実行
+- **フルスクリーンスクロール改善**: VS Code/Cursor/Windsurf ターミナルでスムーズに。`/terminal-setup` がエディタのスクロール感度を設定
+- Thinking スピナーが進捗をインライン表示（"still thinking" → "thinking more" → "almost done thinking"）
+- `/config` 検索がオプション値にもマッチ（例: "vim" で Editor mode 設定がヒット）
+- `/doctor` が応答中でも起動可能に
+- `/reload-plugins` とバックグラウンドプラグイン自動更新が、追加済みマーケットプレースから不足プラグイン依存を自動インストール
+- Bash ツールが `gh` コマンドの GitHub API レート制限ヒット時にヒントを表示（エージェントがバックオフ可能）
+- Settings の Usage タブが 5時間・週次使用量を即時表示、レート制限時もフェイル回避
+- Agent フロントマターの `hooks:` が `--agent` 経由のメインスレッド実行でも発火
+- **セキュリティ**: サンドボックス自動許可が `rm`/`rmdir` の `/`, `$HOME` 等重要ディレクトリ対象時の危険パスチェックをバイパスしないよう修正
+- Devanagari 等インド系文字のターミナル列整列修正、Kitty キーボードプロトコル下での `Ctrl+-`（undo）・`Cmd+←/→` 修正
+- npx/bun run 等ラッパー経由起動時の `Ctrl+Z` ハング修正、インラインモードのスクロールバック重複修正
+- `/branch` が 50MB 超トランスクリプトを拒否する問題、`/resume` が大規模セッションで空会話を表示する問題修正
+- `/update` と `/tui` が worktree 投入後に動作しない問題修正
 
 ## v2.1.114 (2026-04-18)
 
