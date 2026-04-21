@@ -296,7 +296,11 @@ default_permissions = "restricted"
 
 [permissions.restricted]
 # ファイルシステムとネットワークのアクセスルールを定義
+# deny-read グロブで秘密情報を含むパスを読み取り禁止に指定可能（0.122.0+）
+# 管理対象 deny-read は強制要件として設定可能
 ```
+
+隔離 `codex exec` 実行時はユーザー設定の permission プロファイルをバイパスし、ジョブ固有のサンドボックス境界のみ適用される（0.122.0+）。
 
 ### 5.4 OpenTelemetry 監視（オプトイン）
 

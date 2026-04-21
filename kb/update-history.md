@@ -1,5 +1,41 @@
 # harness-harness 更新履歴
 
+## 2026-04-22 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog, llms.txt（settings/hooks/skills/mcp/agent-teams/best-practices はキャッシュ比較で変更なし）
+- Codex CLI: changelog
+- スキルエコシステム: 前回巡回(2026-04-18)から4日経過のためスキップ（7日ルール）
+
+### 検出された変更と更新内容
+
+#### Claude Code（v2.1.116、4月20日）
+- **specs/claude/changelog.md** — v2.1.116 を追記
+  - `/resume` 大規模セッション高速化（最大67%）、MCP 起動高速化、フルスクリーンスクロール改善
+  - Thinking スピナーのインライン進捗表示
+  - Agent フロントマター `hooks:` がメインスレッド `--agent` 実行で発火
+  - サンドボックス危険パスチェックの修正（`rm`/`rmdir` `/`, `$HOME` 対象時）
+  - ターミナル互換性の多数の修正（Kitty プロトコル、インラインモードスクロールバック等）
+- v2.1.115 は公開changelogに記載なし（スキップ）
+
+#### Codex CLI（0.122.0、4月20日）
+- **specs/codex/changelog.md** — 0.122.0 を追記
+- **specs/codex/commands.md** — `/side` コマンド（サイド会話）を1.4 セッション管理に追加
+- **specs/codex/configuration.md** — 5.3 権限プロファイルに deny-read グロブ、隔離 exec の注記追加
+
+#### その他
+- `whats-new/2026-w16` は未公開
+- agent-teams/best-practices/hooks/mcp/settings/skills いずれも差分なし
+
+### 更新ファイル
+- specs/claude/changelog.md
+- specs/codex/changelog.md
+- specs/codex/commands.md
+- specs/codex/configuration.md
+- .patrol-cache/url-metadata.json
+
+---
+
 ## 2026-04-19 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
