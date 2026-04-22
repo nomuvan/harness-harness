@@ -1,5 +1,40 @@
 # harness-harness 更新履歴
 
+## 2026-04-23 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（v2.1.117 検出）、llms.txt（whats-new は w13-w15 のまま）
+- Codex CLI: changelog（0.122.0 のまま、変更なし）
+- スキルエコシステム: 前回巡回(2026-04-18)から5日経過のためスキップ（7日ルール）
+
+### 検出された変更と更新内容
+
+#### Claude Code（v2.1.117、4月22日）
+- **specs/claude/changelog.md** — v2.1.117 を追記
+  - ネイティブビルドで `Glob`/`Grep` ツール廃止、`bfs`/`ugrep` を Bash 経由で使用（macOS/Linux のみ）
+  - `CLAUDE_CODE_FORK_SUBAGENT=1` で外部ビルドのフォークサブエージェント解禁
+  - エージェント `mcpServers:` フロントマターがメインスレッド `--agent` でも有効
+  - `/model` 選択が再起動後も永続化、`/resume` が stale 大規模セッションを要約提案
+  - Pro/Max の Opus 4.6 / Sonnet 4.6 デフォルト effort が `high` に昇格
+  - `blockedMarketplaces` / `strictKnownMarketplaces` がプラグイン操作全般で強制適用
+  - `cleanupPeriodDays` 対象に `tasks/`、`shell-snapshots/`、`backups/` を追加
+  - OpenTelemetry に `command_name` / `command_source` / `effort` 属性追加（`OTEL_LOG_TOOL_DETAILS=1` で redact 解除）
+  - Opus 4.7 `/context` を 1M コンテキスト前提に修正（早期 autocompact 解消）
+  - OAuth/WebFetch/プロキシ/Bedrock 等の重要バグ修正
+- **specs/claude/configuration.md** — `CLAUDE_CODE_FORK_SUBAGENT`、`OTEL_LOG_TOOL_DETAILS` を環境変数表に追加、`cleanupPeriodDays` の対象拡張を注記
+
+#### Codex CLI
+- 新バージョンなし（0.122.0 のまま）
+
+#### その他
+- `whats-new/2026-w16` は依然未公開
+
+### 更新ファイル
+- specs/claude/changelog.md
+- specs/claude/configuration.md
+
+---
+
 ## 2026-04-22 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
