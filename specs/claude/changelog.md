@@ -3,9 +3,40 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-22
+最終更新: 2026-04-23
 
 ---
+
+## v2.1.117 (2026-04-22)
+
+- **ネイティブビルド Glob/Grep ツール廃止**: macOS/Linux ネイティブビルドで `Glob`/`Grep` ツールが廃止され、組み込み `bfs`/`ugrep` を Bash ツール経由で使用（ツール呼び出しラウンドトリップ削減で高速化）。Windows・npm インストール版は従来通り
+- **外部ビルドでのフォークサブエージェント有効化**: `CLAUDE_CODE_FORK_SUBAGENT=1` でサードパーティビルドでもフォークサブエージェント利用可能に
+- **エージェント `mcpServers` メインスレッド対応**: フロントマターの `mcpServers:` が `--agent` 経由のメインスレッド起動でも読み込まれる
+- **`/model` 永続化**: 選択モデルが再起動後も維持される（プロジェクトが別モデルをピン止めしていても）。起動ヘッダにプロジェクト/managed-settings ピン止めの出典を表示
+- **`/resume` 大規模セッション要約**: stale な大規模セッション再読み込み前に要約を提案（`--resume` 既存動作に整合）
+- **MCP 起動高速化**: ローカル + claude.ai MCP サーバー両方設定時の並列接続がデフォルトに
+- **Pro/Max デフォルト effort 変更**: Opus 4.6 / Sonnet 4.6 で `high` がデフォルトに（`medium` から昇格）
+- **プラグイン依存自動解決**: `plugin install` 済みプラグインに対しても不足依存をインストール。`marketplace add` が設定済みマーケットプレースから不足依存を自動解決
+- **Managed-settings 強制**: `blockedMarketplaces` と `strictKnownMarketplaces` がプラグイン install/update/refresh/autoupdate でも強制適用
+- **Advisor Tool (experimental)**: "experimental" ラベル、learn-more リンク、起動時通知を追加。プロンプト毎に "Advisor tool result content could not be processed" で固まる問題を修正
+- **`cleanupPeriodDays` 対象拡張**: `~/.claude/tasks/`、`~/.claude/shell-snapshots/`、`~/.claude/backups/` も保持期間スイープ対象に
+- **OpenTelemetry 強化**:
+  - `user_prompt` イベントに `command_name` / `command_source` 追加（スラッシュコマンド用）
+  - `cost.usage` / `token.usage` / `api_request` / `api_error` に `effort` 属性追加（effort レベル対応モデル）
+  - カスタム/MCP コマンド名は `OTEL_LOG_TOOL_DETAILS=1` 設定がない限り redact
+- **Windows 起動高速化**: `where.exe` 実行ファイル検索をプロセス毎にキャッシュ
+- **重要バグ修正**:
+  - Plain-CLI OAuth セッションがアクセストークン期限切れで "Please run /login" で終了する問題を修正（401 で reactive refresh）
+  - `WebFetch` が超大規模 HTML ページでハングする問題（HTML→markdown 変換前に truncate）
+  - プロキシが HTTP 204 No Content を返す際の `TypeError` クラッシュ
+  - `CLAUDE_CODE_OAUTH_TOKEN` で起動後トークン期限切れ時に `/login` が無効化される問題
+  - Opus 4.7 セッションの `/context` 値が膨張し早期 autocompact される問題（200K コンテキスト前提の計算を 1M ネイティブに修正）
+  - メイン/サブエージェントで異モデル実行時にファイル読み取りが malware 警告される問題
+  - Bedrock application-inference-profile が Opus 4.7 + thinking 無効で 400 エラーを返す問題
+  - プロンプト入力 undo (`Ctrl+_`) が入力直後に動作せず状態をスキップする問題
+  - `NO_PROXY` が Bun 実行時に remote API リクエストで無視される問題
+  - バックグラウンドタスク存在時の idle 再描画ループ（Linux でのメモリ増加）
+  - MCP `elicitation/create` が print/SDK モードで接続完了と同時に自動キャンセルされる問題
 
 ## v2.1.116 (2026-04-20)
 
