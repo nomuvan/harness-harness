@@ -139,6 +139,19 @@ Claude モデルにプロンプトを送信して評価。
 }
 ```
 
+### 3.5 MCP Tool ハンドラ（v2.1.118+）
+
+MCP サーバーのツールを直接呼び出す。シェル経由のラッパースクリプトなしに MCP ツールを発火可能。
+
+```json
+{
+  "type": "mcp_tool",
+  "server": "my-server",
+  "tool": "validate_change",
+  "timeout": 30
+}
+```
+
 ---
 
 ## 4. 設定方法
