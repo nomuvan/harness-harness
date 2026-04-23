@@ -3,9 +3,35 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-23
+最終更新: 2026-04-24
 
 ---
+
+## v2.1.118 (2026-04-23)
+
+- **vim ビジュアルモード**: `v`（visual）/`V`（visual-line）で選択、オペレータ適用、ビジュアルフィードバックを備えたビジュアルモード追加
+- **`/cost` と `/stats` が `/usage` に統合**: 両コマンドはタイピングショートカットとして残り、対応タブを開く
+- **カスタムテーマ機能**: `/theme` から名前付きカスタムテーマの作成・切替可能に。`~/.claude/themes/` で JSON 直接編集も可。プラグインも `themes/` ディレクトリでテーマを提供可能
+- **フックが MCP ツールを直接呼び出し可能**: `type: "mcp_tool"` 新設
+- **`DISABLE_UPDATES` 環境変数**: 手動 `claude update` 含む全更新パスをブロック（`DISABLE_AUTOUPDATER` より厳格）
+- **WSL 管理設定継承**: `wslInheritsWindowsSettings` ポリシーキーで WSL on Windows が Windows 側 managed settings を継承可能
+- **Auto mode `"$defaults"`**: `autoMode.allow` / `soft_deny` / `environment` に `"$defaults"` を含めることで組み込みルールを置換せずカスタムルールを追加
+- Auto mode オプトインプロンプトに "Don't ask again" オプション追加
+- **`claude plugin tag` 追加**: バージョンバリデーション付きでプラグインのリリース git タグを作成
+- `--continue` / `--resume` が `/add-dir` で追加されたディレクトリを持つセッションも検索対象に
+- `/color` がリモートコントロール接続時にセッションのアクセント色を claude.ai/code に同期
+- `/model` ピッカーが `ANTHROPIC_BASE_URL` ゲートウェイ使用時の `ANTHROPIC_DEFAULT_*_MODEL_NAME` / `_DESCRIPTION` オーバーライドを尊重
+- プラグイン自動更新が別プラグインのバージョン制約でスキップされた場合、`/doctor` と `/plugin` Errors タブに表示
+- **重要バグ修正**:
+  - `/mcp` メニューが `headersHelper` 設定サーバーの OAuth Authenticate/Re-authenticate アクションを隠す問題、HTTP/SSE MCP サーバーがカスタムヘッダーで 401 後に "needs authentication" 状態に固まる問題
+  - MCP サーバーの OAuth トークンレスポンスが `expires_in` を省略すると毎時再認証を要求される問題
+  - macOS キーチェーンレースで並行 MCP トークンリフレッシュが新鮮な OAuth トークンを上書きし "Please run /login" を誘発する問題
+  - Linux/Windows でクレデンシャル保存クラッシュが `~/.claude/.credentials.json` を破損させる問題
+  - `/login` が `CLAUDE_CODE_OAUTH_TOKEN` 起動セッションで無効化される問題（env トークンをクリアしディスククレデンシャルを有効化）
+  - エージェントタイプフックが `Stop` / `SubagentStop` 以外のイベントで "Messages are required for agent hooks" で失敗する問題
+  - `/fork` が fork 毎に親会話全体をディスクに書き込む問題（ポインタ方式に変更）
+  - リモートセッション接続時に `~/.claude/settings.json` の `model` 設定が上書きされる問題
+  - `plugin install` が不正バージョンインストール済み依存の再解決に失敗する問題
 
 ## v2.1.117 (2026-04-22)
 

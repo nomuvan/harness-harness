@@ -126,7 +126,7 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `availableModels` | 選択可能モデル制限 |
 | `modelOverrides` | モデルIDマッピング |
 | `effortLevel` | エフォートレベル (`low` / `medium` / `high`) |
-| `autoMode` | Auto Modeの分類器設定。`environment`, `allow`, `soft_deny` 配列で構成。共有プロジェクト設定からは読み込まれない |
+| `autoMode` | Auto Modeの分類器設定。`environment`, `allow`, `soft_deny` 配列で構成。共有プロジェクト設定からは読み込まれない。v2.1.118 で `"$defaults"` を配列に含めることで組み込みルールを置換せず追加可能 |
 | `disableAutoMode` | `"disable"` で Auto Mode の有効化を阻止。`Shift+Tab` サイクルから除外し `--permission-mode auto` を拒否 |
 | `useAutoModeDuringPlan` | プランモードで Auto Mode セマンティクスを使用（デフォルト: `true`）。共有プロジェクト設定からは読み込まれない |
 | `defaultShell` | `!` コマンドのデフォルトシェル。`"bash"`（デフォルト）または `"powershell"`（Windows、`CLAUDE_CODE_USE_POWERSHELL_TOOL=1` 必要） |
@@ -162,6 +162,7 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `channelsEnabled` | （Managed のみ）Team/Enterprise ユーザーのチャンネル機能 |
 | `allowManagedPermissionRulesOnly` | （Managed のみ）ユーザー/プロジェクトの権限ルール定義を禁止 |
 | `strictKnownMarketplaces` | プラグインマーケットプレース許可リスト |
+| `wslInheritsWindowsSettings` | （Managed のみ）WSL on Windows が Windows 側の managed settings を継承（v2.1.118） |
 | `blockedMarketplaces` | （Managed のみ）マーケットプレースブロックリスト |
 | `pluginTrustMessage` | （Managed のみ）プラグイン信頼警告のカスタムメッセージ |
 | `awsAuthRefresh` | AWS認証リフレッシュカスタムスクリプト |
@@ -357,6 +358,7 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX` | Remote Controlセッション名の自動生成プレフィックス（デフォルト: ホスト名）（v2.1.92） |
 | `CLAUDE_CODE_FORK_SUBAGENT` | `1` で外部ビルド（サードパーティ）でもフォークサブエージェントを有効化（v2.1.117） |
 | `OTEL_LOG_TOOL_DETAILS` | `1` で OpenTelemetry のカスタム/MCP コマンド名の redact を解除（v2.1.117） |
+| `DISABLE_UPDATES` | 手動 `claude update` 含む全更新パスをブロック（`DISABLE_AUTOUPDATER` より厳格）（v2.1.118） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 

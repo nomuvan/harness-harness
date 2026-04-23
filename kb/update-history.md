@@ -1,5 +1,42 @@
 # harness-harness 更新履歴
 
+## 2026-04-24 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（v2.1.118 検出）、llms.txt（whats-new は w13-w15 のまま）
+- Codex CLI: changelog（0.123.0 検出）
+- スキルエコシステム: 前回巡回(2026-04-18)から6日経過のためスキップ（7日ルール）
+
+### 検出された変更と更新内容
+
+#### Claude Code（v2.1.118、4月23日）
+- **specs/claude/changelog.md** — v2.1.118 を追記
+  - vim ビジュアルモード（`v`/`V`）追加
+  - `/cost` と `/stats` が `/usage` に統合（両コマンドはタイピングショートカットとして残存）
+  - カスタムテーマ機能（`/theme` で作成・切替、`~/.claude/themes/` 直接編集、プラグインの `themes/` 提供）
+  - **フックが MCP ツールを直接呼び出し可能**（`type: "mcp_tool"` 新設）
+  - `DISABLE_UPDATES` 環境変数追加（`DISABLE_AUTOUPDATER` より厳格）
+  - `wslInheritsWindowsSettings` ポリシーキーで WSL が Windows 側 managed settings を継承
+  - Auto mode `"$defaults"` で組み込みルールを置換せずカスタム追加可能
+  - `claude plugin tag` コマンド追加（バージョンバリデーション付きリリースタグ作成）
+  - `--continue`/`--resume` が `/add-dir` で追加したディレクトリを持つセッションも検索
+  - OAuth（`expires_in` 省略、keychain レース、`.credentials.json` 破損）等の重要修正
+- **specs/claude/configuration.md** — `DISABLE_UPDATES` と `wslInheritsWindowsSettings` を追加、`autoMode` の `$defaults` 記法を注記
+- **specs/claude/hooks.md** — セクション 3.5 に MCP Tool ハンドラ（`type: "mcp_tool"`）を追加
+- **specs/claude/skills-and-commands.md** — `/cost`/`/stats` を `/usage` のショートカットに変更
+
+#### Codex CLI（0.123.0、4月23日）
+- **specs/codex/changelog.md** — 0.123.0 を追記
+  - Amazon Bedrock プロバイダー対応
+  - `/mcp verbose` 診断コマンドで MCP 接続状態とツール一覧を詳細出力
+  - バックグラウンドエージェントの Realtime ハンドオフ強化
+  - `/copy` のロールバック後動作、VS Code WSL の Unicode 入力修正
+
+#### その他
+- `whats-new/2026-w16` は依然未公開
+
+---
+
 ## 2026-04-23 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
