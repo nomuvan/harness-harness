@@ -261,8 +261,8 @@ MCPツールは `mcp__<server>__<tool>` パターンに従う:
 | `UserPromptSubmit` | `prompt` |
 | `PreToolUse` | `tool_name`, `tool_input`, `tool_use_id` |
 | `PermissionRequest` | `tool_name`, `tool_input`, `permission_suggestions`(opt) |
-| `PostToolUse` | `tool_name`, `tool_input`, `tool_response`, `tool_use_id` |
-| `PostToolUseFailure` | `tool_name`, `tool_input`, `tool_use_id`, `error`, `is_interrupt` |
+| `PostToolUse` | `tool_name`, `tool_input`, `tool_response`, `tool_use_id`, `duration_ms`（v2.1.119+。権限プロンプトと PreToolUse 時間を除いたツール実行時間） |
+| `PostToolUseFailure` | `tool_name`, `tool_input`, `tool_use_id`, `error`, `is_interrupt`, `duration_ms`（v2.1.119+） |
 | `PermissionDenied` | `tool_name`, `tool_input`, `tool_use_id`, `reason` |
 | `Stop` | `stop_hook_active`, `last_assistant_message` |
 | `StopFailure` | `error`, `error_details`, `last_assistant_message` |

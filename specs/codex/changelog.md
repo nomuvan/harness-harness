@@ -3,9 +3,24 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://developers.openai.com/codex/changelog
 
-最終更新: 2026-04-24
+最終更新: 2026-04-25
 
 ---
+
+## CLI 0.124.0 (2026-04-23)
+
+- **TUI 推論コントロールのクイック操作**: `Alt+,` で推論レベル下げ、`Alt+.` で上げ
+- **app-server が複数環境を管理**: ターンごとに環境/作業ディレクトリを選択可能
+- **Amazon Bedrock ファーストクラス対応**: OpenAI 互換プロバイダーとして AWS SigV4 署名込みで組み込み
+- **リモートプラグインマーケットプレース**: 直接一覧・読み取り可能、より大きなページサイズ対応
+- **Hooks が正式化（stable）**: `config.toml` にインライン設定可能、managed `requirements.toml` で管理
+- **Fast サービスティアがデフォルト**: 対象 ChatGPT プランでは明示オプトアウトしない限り Fast を利用
+- Cloudflare Cookie が承認済み ChatGPT ホスト間で保持
+- リモート app-server の websocket イベント排出信頼性向上
+- `/permissions` 変更時の permission モードドリフト修正
+- `wait_agent` がメールボックスに作業がキューされている際に即返却
+- ローカル stdio MCP 起動で相対コマンドが動作
+- 管理対象 config エッジケースでの起動失敗削減
 
 ## CLI 0.123.0 (2026-04-23)
 

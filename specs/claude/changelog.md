@@ -3,9 +3,42 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-24
+最終更新: 2026-04-25
 
 ---
+
+## v2.1.119 (2026-04-23)
+
+- **`/config` 設定の永続化**: theme、editor mode、verbose 等が `~/.claude/settings.json` に保存され、project/local/policy のオーバーライド優先順位に従う
+- **`prUrlTemplate` 設定追加**: フッターの PR バッジを github.com 以外のカスタムコードレビュー URL に向けられる
+- **`CLAUDE_CODE_HIDE_CWD` 環境変数**: 起動ロゴでの作業ディレクトリ表示を隠す
+- **`--from-pr` 拡張**: GitLab merge-request、Bitbucket pull-request、GitHub Enterprise PR URL を受け付ける
+- **`--print` モードがエージェントの `tools:` / `disallowedTools:` フロントマターを尊重**（インタラクティブモードと一致）
+- **`--agent <name>` がビルトインエージェントの `permissionMode` を尊重**
+- **PowerShell ツールの permission モード自動承認**: Bash と同じ扱いに
+- **Hooks: `PostToolUse` / `PostToolUseFailure` に `duration_ms` 追加**（ツール実行時間。権限プロンプトと PreToolUse フックの時間は除く）
+- サブエージェントと SDK MCP サーバーの再設定が並列接続に
+- 別プラグインのバージョン制約でピン止めされたプラグインが、最上位の満たす git タグへ自動更新
+- **Vim モード**: INSERT 中の Esc がキューされたメッセージを入力に戻さず、再度 Esc で中断
+- `owner/repo#N` 省略リンクが github.com 固定ではなく git remote のホストを使用
+- **セキュリティ**: `blockedMarketplaces` の `hostPattern` / `pathPattern` が正しく強制適用されるように
+- **OpenTelemetry**: `tool_result` / `tool_decision` に `tool_use_id` 追加、`tool_result` に `tool_input_size_bytes` 追加
+- ステータスライン stdin JSON に `effort.level` と `thinking.enabled` 追加
+- **重要バグ修正**:
+  - ネイティブ macOS/Linux ビルドで Bash が permissions で拒否されたときに Glob/Grep ツールが消える問題
+  - フルスクリーンモードで上スクロール中にツール完了毎に最下部にスナップ戻りする問題
+  - 非 JSON OAuth discovery レスポンスによる MCP HTTP 接続の "Invalid OAuth error response" 失敗
+  - `async PostToolUse` フックが応答ペイロード無しの時にセッショントランスクリプトへ空エントリを書き込む問題
+  - auto モードがプランモードを "Execute immediately" 指示で上書きする問題
+  - Vertex AI でのツール検索デフォルト無効化（`ENABLE_TOOL_SEARCH` でオプトイン）
+  - HTTP/SSE/WebSocket MCP サーバーの `headers` 内 `${ENV_VAR}` プレースホルダ未置換
+  - `/skills` Enter キーがダイアログ閉じる代わりに `/<skill-name>` をプロンプトに pre-fill
+  - `Agent` ツール `isolation: "worktree"` が前セッションの stale worktree を再利用
+  - `/export` が会話で実際に使ったモデルではなく現在のデフォルトモデルを表示
+  - verbose 出力設定が再起動後に永続化されない
+  - `/plan` と `/plan open` がプランモード入時に既存プランに作用しない
+  - auto-compaction 前に起動されたスキルが次のユーザーメッセージに対して再実行される
+  - git worktree で作業中に PR がセッションに紐付かない
 
 ## v2.1.118 (2026-04-23)
 
