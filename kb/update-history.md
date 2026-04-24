@@ -1,5 +1,50 @@
 # harness-harness 更新履歴
 
+## 2026-04-25 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（v2.1.119 検出）、llms.txt（whats-new は依然 w13-w15）
+- Codex CLI: changelog（0.124.0 検出）
+- スキルエコシステム: 前回2026-04-18から7日経過のため巡回実施
+
+### 検出された変更と更新内容
+
+#### Claude Code（v2.1.119、4月23日）
+- **specs/claude/changelog.md** — v2.1.119 を追記
+  - `/config` 設定（theme, editor mode, verbose 等）が `~/.claude/settings.json` に永続化
+  - `prUrlTemplate` 設定追加（github.com 以外のカスタムPRレビューURL）
+  - `CLAUDE_CODE_HIDE_CWD` 環境変数追加（起動ロゴの cwd 非表示）
+  - `--from-pr` が GitLab/Bitbucket/GitHub Enterprise URL を受付
+  - `--print` がエージェントの `tools:` / `disallowedTools:` フロントマターを尊重
+  - PowerShell ツールの permission モード自動承認
+  - Hooks: `PostToolUse`/`PostToolUseFailure` に `duration_ms` 追加
+  - Vim INSERT 中の Esc 挙動改善、`owner/repo#N` ショートハンドの動的ホスト対応
+  - OpenTelemetry: `tool_result`/`tool_decision` に `tool_use_id`、`tool_result` に `tool_input_size_bytes`
+  - MCP OAuth discovery の非JSON応答、fullscreen スクロールスナップ戻り、Vertex AI ツール検索デフォルト無効化等の修正
+- **specs/claude/configuration.md** — `prUrlTemplate` と `CLAUDE_CODE_HIDE_CWD` を追加
+- **specs/claude/hooks.md** — `PostToolUse` / `PostToolUseFailure` 入力に `duration_ms` 追記
+
+#### Codex CLI（0.124.0、4月23日）
+- **specs/codex/changelog.md** — 0.124.0 を追記
+  - TUI 推論コントロールのクイック操作（`Alt+,` / `Alt+.`）
+  - app-server が複数環境を管理（ターンごとに環境選択）
+  - **Amazon Bedrock ファーストクラス対応**（OpenAI互換プロバイダーとして AWS SigV4 署名込み）
+  - リモートプラグインマーケットプレースの一覧・読み取り対応
+  - **Hooks が正式化（stable）**、`config.toml` インライン設定と managed `requirements.toml` 対応
+  - 対象 ChatGPT プランで Fast サービスティアがデフォルト
+- **specs/codex/configuration.md** — セクション 7 を「Hooks（実験的機能）」から「Hooks」に変更、0.124.0 での正式化と `requirements.toml` 対応を記載
+
+#### スキルエコシステム
+- **kb/skills/_index.md** — last_patrol を 2026-04-25 に更新、anthropics/skills stars を 123K+ に、find-skills installs を 1.2M に更新
+- **kb/skills/recommended.md** — last_checked を 2026-04-25 に、frontend-design installs を 334K に、find-skills installs を 1.2M に更新
+- skills.sh トレンド観測: vercel-react-best-practices（346K）、remotion-best-practices（264K）、microsoft-foundry（247K）が台頭。いずれもベンダー/フレームワーク特化のため Tier A/B 昇格は見送り
+- agentskills.io: 37 プラットフォーム（fast-agent, Google AI Edge Gallery, nanobot 等を確認）
+
+#### その他
+- `whats-new/2026-w16` は依然未公開
+
+---
+
 ## 2026-04-24 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
