@@ -1,5 +1,30 @@
 # harness-harness 更新履歴
 
+## 2026-04-26 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（v2.1.119 のまま変更なし）、llms.txt（whats-new は依然 w13/w14/w15、w16 はまだ未公開）
+- Codex CLI: changelog（**0.125.0 検出**）
+- スキルエコシステム: 前回 2026-04-25 から 1 日のため Phase 3.5 はスキップ
+
+### 検出された変更と更新内容
+
+#### Codex CLI（0.125.0、4月24日）
+- **specs/codex/changelog.md** — 0.125.0 を追記
+  - App-server 統合の拡張（Unix socket、ページネーション対応 resume/fork、固定環境、リモートスレッド設定）
+  - **権限プロファイルの永続化**（TUI セッション・ユーザーターン・MCP サンドボックス・shell エスカレーション・app-server API を横断）
+  - リモートプラグインインストール / マーケットプレースアップグレード対応
+  - AWS / Bedrock アカウント状態を含むモデル検出
+  - `codex exec --json` に reasoning-token 報告追加
+  - ロールアウトトレーシング（マルチエージェント関係を記録するデバッグリデューサー）
+  - 設定スキーマ強化: MultiAgentV2 スレッド制限競合検出、相対エージェント設定パス解決、MCP bearer-token 非対応フィールド隠蔽、`js_repl` 無効 MIME 型拒否
+  - WebSocket 切断軽減、TUI `/review` 中断時のフリーズ修正、Windows サンドボックス互換性向上
+- **specs/codex/configuration.md** — 5.3 権限プロファイルセクションに 0.125.0 での永続化挙動を追記
+
+#### Claude Code（変更なし）
+- v2.1.119 が依然最新。w16 weekly digest はまだ公開されていない
+- specs/claude/* の更新は不要
+
 ## 2026-04-25 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL

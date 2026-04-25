@@ -302,6 +302,8 @@ default_permissions = "restricted"
 
 隔離 `codex exec` 実行時はユーザー設定の permission プロファイルをバイパスし、ジョブ固有のサンドボックス境界のみ適用される（0.122.0+）。
 
+0.125.0 以降、permission プロファイルは TUI セッション、ユーザーターン、MCP サンドボックス状態、シェルエスカレーション、app-server API を横断して永続化される（プロセスや接続をまたいで設定が保持される）。
+
 ### 5.4 OpenTelemetry 監視（オプトイン）
 
 ```toml
