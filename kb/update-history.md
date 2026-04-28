@@ -1,5 +1,54 @@
 # harness-harness 更新履歴
 
+## 2026-04-29 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.120 / v2.1.121 検出**）、llms.txt（**w16・w17 ダイジェスト公開済み**）
+- Codex CLI: changelog（0.125.0 のまま変更なし）
+- スキルエコシステム: 前回 2026-04-25 から 4 日のため Phase 3.5 はスキップ（次回 2026-05-02 以降）
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.121（2026-04-28）
+- **specs/claude/changelog.md** — v2.1.121 を追記
+  - **MCP `alwaysLoad` オプション**（tool-search ディファード化を回避し常時ロード）
+  - **`claude plugin prune` / `plugin uninstall --prune`**（孤立した自動インストール依存の削除）
+  - **`/skills` の type-to-filter 検索ボックス**（長いスキル一覧の絞り込み）
+  - **`PostToolUse` フックの `hookSpecificOutput.updatedToolOutput` が全ツール対応**（従来は MCP のみ）
+  - フルスクリーンモードのスクロール戻り防止、オーバーフローダイアログのスクロール対応
+  - `CLAUDE_CODE_FORK_SUBAGENT=1` が SDK / `claude -p` の非インタラクティブセッションでも有効
+  - `--dangerously-skip-permissions` で `.claude/skills/`, `.claude/agents/`, `.claude/commands/` を承認スキップ
+  - **MCP サーバー起動時の transient error は最大 3 回自動リトライ**（従来は接続不能で停止）
+  - `mcp_authenticate` SDK が `redirectUri` 対応
+  - **OpenTelemetry**: LLM スパンに `stop_reason` / `gen_ai.response.finish_reasons` / `user_system_prompt`（`OTEL_LOG_USER_PROMPTS` 有効時）追加
+  - 多数の重要メモリリーク・回帰修正（画像処理・`/usage`・`--resume`・Bash ツールの worktree 削除耐性 等）
+- **specs/claude/configuration.md** — `mcpServers.<name>.alwaysLoad` と `OTEL_LOG_USER_PROMPTS` 環境変数を追加
+- **specs/claude/hooks.md** — `PostToolUse` 出力例（`updatedToolOutput`）を追加
+- **specs/claude/mcp.md** — 「3.5 サーバーごとの追加オプション」（`alwaysLoad`）と「3.6 接続の堅牢性」（自動リトライ・`redirectUri`）を追加
+- **specs/claude/skills-and-commands.md** — `/skills` と `/plugin` の説明に v2.1.121 機能を追記
+
+#### Claude Code v2.1.120（2026-04-28）
+- **specs/claude/changelog.md** — v2.1.120 を追記
+  - **Windows: Git Bash 不要**（PowerShell フォールバック）
+  - **`claude ultrareview [target]` 非インタラクティブサブコマンド**（CI / スクリプトから `/ultrareview` 実行、`--json` 対応）
+  - **スキルの `${CLAUDE_EFFORT}` 変数展開**（現在の effort level を埋め込み）
+  - **`AI_AGENT` 環境変数**（サブプロセスへ伝播。`gh` などが Claude Code を識別可能に）
+  - `claude plugin validate` が marketplace.json/plugin.json の `$schema`/`version`/`description` を受理
+  - auto モードの auto-compact 表示を `auto` に変更（誤解を招くトークン値廃止）
+  - VSCode: `/usage` がネイティブ Account & Usage ダイアログを開く
+  - 非フルスクリーンモードのスクロールバック重複や Esc / `/rewind` 系の対話オーバーレイ修正
+- **specs/claude/configuration.md** — `AI_AGENT` 環境変数を追加
+- **specs/claude/skills-and-commands.md** — `${CLAUDE_EFFORT}` を変数展開表に、`/ultrareview` に非インタラクティブモードを追記
+
+#### Codex CLI（変更なし）
+- 0.125.0（2026-04-24）が依然最新。specs/codex/* の更新は不要
+
+### llms.txt の追従
+- whats-new w16（4/13–17）、w17（4/20–24）が公開
+- w16: Opus 4.7 / xhigh effort、Routines、`/usage` breakdown、`/ultrareview`、ネイティブバイナリ
+- w17: `/ultrareview` 研究プレビュー、自動セッションリキャップ、カスタムカラーテーマ、claude.ai/code リデザイン
+- いずれも v2.1.105〜v2.1.119 の範囲で既に specs に反映済み（追加更新は不要と判断）
+
 ## 2026-04-26 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL

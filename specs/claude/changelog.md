@@ -3,9 +3,74 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-25
+最終更新: 2026-04-29
 
 ---
+
+## v2.1.121 (2026-04-28)
+
+- **MCP `alwaysLoad` オプション**: `true` を指定するとそのサーバーのツールが tool-search のディファード化対象から外れ常時ロードされる
+- **`claude plugin prune` 追加**: 孤立した自動インストール済みプラグイン依存を削除。`plugin uninstall --prune` でカスケード削除
+- **`/skills` に type-to-filter 検索ボックス**: 長いスキル一覧をスクロールせず即座に絞り込み可能
+- **`PostToolUse` フックが全ツールの出力を置換可能に**: `hookSpecificOutput.updatedToolOutput`（従来は MCP 限定）
+- **フルスクリーンモード**: スクロール上方で読書中のプロンプト入力で最下部へ戻らないように
+- **オーバーフローダイアログがスクロール可能に**: 矢印・PgUp/PgDn・Home/End・マウスホイール対応（フル/非フル両対応）
+- **SDK / `claude -p`**: `CLAUDE_CODE_FORK_SUBAGENT=1` が非インタラクティブセッションでも有効
+- **`--dangerously-skip-permissions`**: `.claude/skills/`, `.claude/agents/`, `.claude/commands/` への書き込みでプロンプトを出さない
+- **`/terminal-setup`**: iTerm2 の "Applications in terminal may access clipboard" を有効化（tmux 経由の `/copy` 対応）
+- **MCP サーバー起動時の transient error は最大3回自動リトライ**（従来は接続失敗で停止）
+- **ターミナルタブのセッションタイトルが `language` 設定に従って生成される**
+- **Claude.ai connector の同一上流URLは重複排除**（重複表示の解消）
+- **Vertex AI**: X.509 証明書ベースの Workload Identity Federation（mTLS ADC）対応
+- 起動高速化: リリースノートスプラッシュから Recent Activity パネル削除
+- LSP 診断サマリーがクリック / Ctrl+O で展開可能、展開ヒントを表示
+- **SDK**: `mcp_authenticate` が `redirectUri` 対応（カスタムスキーム / claude.ai connector）
+- **OpenTelemetry**: LLM リクエストスパンに `stop_reason`、`gen_ai.response.finish_reasons`、`user_system_prompt`（`OTEL_LOG_USER_PROMPTS` 有効時のみ）追加
+- VSCode: 音声ディクテーションが Claude Code 言語未設定時 `accessibility.voice.speechLanguage` を尊重
+- VSCode: `/context` がネイティブのトークン使用量ダイアログを開く
+- **重要バグ修正**:
+  - 多数の画像処理時の RSS 数 GB のメモリ無制限増大
+  - 大規模トランスクリプト履歴での `/usage` の最大 ~2GB メモリリーク
+  - 進捗イベントを発行しない長時間ツールでのメモリリーク
+  - セッション中に開始ディレクトリが削除/移動された場合の Bash ツール永続不能
+  - 外部ビルドでの `--resume` 起動時クラッシュ
+  - 大規模セッションで unclean shutdown による破損行のスキップ機能（従来は `--resume` 失敗）
+  - Bedrock application inference profile ARN での `thinking.type.enabled is not supported` エラー
+  - Microsoft 365 MCP OAuth の重複/未対応 `prompt` パラメータ問題
+  - tmux/GNOME Terminal/Windows Terminal/Konsole で Ctrl+L 時のスクロールバック重複
+  - 起動時 connector-list fetch のtransient auth error で claude.ai MCP connector が消失
+  - リモートセッションのビルトインツール "Always allow" がワーカー再起動で失われる
+  - native build で `managed-settings.json` 経由 `NO_PROXY` が一部 HTTP クライアントで尊重されない
+  - managed settings 承認プロンプトが受諾でもセッション終了する問題
+  - stale OAuth token 後の `/usage` rate limit エラー（自動リフレッシュに）
+  - レガシーenum値 1 つで `settings.json` 全体が無効化される問題
+  - no-flicker 無効時の `/usage` ダイアログのクリッピング
+  - フルスクリーンレンダラー無効時の `/focus` "Unknown command"（有効化方法を案内）
+  - 実行中バイナリ削除中の grep/find/rg ラッパー失敗（インストール済みツールへフォールバック）
+- 大規模ディレクトリツリーでの `find` のピーク FD 使用量削減
+
+## v2.1.120 (2026-04-28)
+
+- **Windows: Git Bash 不要に**: 未インストール時は PowerShell をシェルツールにフォールバック
+- **`claude ultrareview [target]` 非インタラクティブサブコマンド**: CI / スクリプトから `/ultrareview` を実行。stdout に findings 出力（`--json` で raw）、終了コード 0/1
+- **スキルが `${CLAUDE_EFFORT}` 参照可能**: スキル本文で現在の effort level を埋め込める
+- **`AI_AGENT` 環境変数をサブプロセスに伝播**: `gh` などが Claude Code トラフィックを識別可能に
+- スピナーのおすすめ表示はインストール済み機能（デスクトップアプリ・スキル・エージェント）に対しては非表示
+- 矢印キーがスクロールイベント未発行のターミナルで「PgUp/PgDn でスクロール」ヒントを表示
+- 多数の claude.ai connector を未認可で持つ場合のセッション開始高速化
+- auto モードの拒否メッセージが設定ドキュメントへリンク
+- **`claude plugin validate`**: `marketplace.json` トップレベルの `$schema`/`version`/`description` と `plugin.json` の `$schema` を受理
+- auto モードの auto-compact 表示を `auto`（小文字、トークン数なし）に変更（誤解を招くトークン値の表示廃止）
+- VSCode: `/usage` がネイティブの Account & Usage ダイアログを開く
+- VSCode: 音声ディクテーションが `~/.claude/settings.json` の `language` 設定を尊重
+- **重要バグ修正**:
+  - Esc キーで stdio MCP ツール呼び出し中のサーバー接続全体が閉じる回帰（v2.1.105 起因）
+  - `claude --resume` 起動後の `/rewind` など対話オーバーレイがキー入力に反応しない問題
+  - 非フルスクリーンモードでのターミナルスクロールバック重複（リサイズ・ダイアログ・長セッション）
+  - `DISABLE_TELEMETRY` / `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` が API/Enterprise ユーザーで使用量メトリクステレメトリを抑制しない問題
+  - auto モードでパイプ＋リダイレクト含むマルチラインbashコマンドの "Dangerous rm operation" 誤検知
+  - フルスクリーンモードで長い選択メニューがターミナル下部にクリップされる問題（フォーカス項目を画面に保持）
+  - `find` ツールが大規模ディレクトリツリーで FD 枯渇しホスト全体クラッシュ（macOS/Linux ネイティブビルド）
 
 ## v2.1.119 (2026-04-23)
 

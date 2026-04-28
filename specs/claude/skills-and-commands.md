@@ -1,6 +1,6 @@
 # Claude Code Skills & コマンド仕様書
 
-最終更新: 2026-04-18（巡回更新）
+最終更新: 2026-04-29（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/skills / https://code.claude.com/docs/en/commands / https://code.claude.com/docs/en/sub-agents / https://code.claude.com/docs/en/scheduled-tasks / https://code.claude.com/docs/en/web-scheduled-tasks / https://code.claude.com/docs/en/discover-plugins
 
@@ -82,6 +82,7 @@ my-skill/
 | `$N` | `$ARGUMENTS[N]` の短縮形 |
 | `${CLAUDE_SESSION_ID}` | 現在のセッションID |
 | `${CLAUDE_SKILL_DIR}` | スキルの `SKILL.md` があるディレクトリ |
+| `${CLAUDE_EFFORT}` | 現在の effort level（low/medium/high/xhigh/max）。スキル本文に埋め込み可能（v2.1.120） |
 
 `$ARGUMENTS` がコンテンツに含まれない場合、末尾に `ARGUMENTS: <value>` が追加される。
 
@@ -145,7 +146,7 @@ Claude Code に同梱されるスキル:
 | `/simplify [focus]` | 変更ファイルのコード品質レビューと修正（3エージェント並列） |
 | `/less-permission-prompts` | 読み取り専用 bash/MCP 呼び出しを検出し許可リスト追加を提案（v2.1.111） |
 | `/team-onboarding` | 新メンバー向けのプロジェクトオンボーディング資料生成（v2.1.101） |
-| `/ultrareview` | クラウドベースの包括的コードレビュー。並列チェック・diffstat 表示（v2.1.111、v2.1.113 で改善） |
+| `/ultrareview` | クラウドベースの包括的コードレビュー。並列チェック・diffstat 表示（v2.1.111、v2.1.113 で改善）。CLI でも `claude ultrareview [target]` 非インタラクティブサブコマンドで CI/スクリプトから実行可能（`--json` 対応、終了コード 0/1、v2.1.120） |
 
 ---
 
@@ -209,8 +210,8 @@ Claude Code に同梱されるスキル:
 |:--|:--|
 | `/add-dir <path>` | ワーキングディレクトリ追加 |
 | `/agents` | サブエージェント管理 |
-| `/skills` | スキル一覧 |
-| `/plugin` | プラグイン管理（マーケットプレース、インストール、有効化/無効化） |
+| `/skills` | スキル一覧。長いリストでも type-to-filter 検索ボックスで即座に絞り込み（v2.1.121） |
+| `/plugin` | プラグイン管理（マーケットプレース、インストール、有効化/無効化）。`claude plugin prune` で孤立した自動インストール依存を削除、`plugin uninstall --prune` でカスケード削除（v2.1.121） |
 | `/reload-plugins` | プラグイン変更の即時反映 |
 | `/desktop` (`/app`) | デスクトップアプリでセッション継続 |
 | `/remote-control` (`/rc`) | リモートコントロール有効化 |
