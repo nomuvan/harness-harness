@@ -1,6 +1,6 @@
 # Claude Code 設定仕様書
 
-最終更新: 2026-04-18（巡回更新）
+最終更新: 2026-04-29（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/settings / https://code.claude.com/docs/en/memory
 
@@ -184,6 +184,7 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `disableSkillShellExecution` | スキル・カスタムコマンド・プラグインコマンド内のインラインシェル実行（`` !`cmd` ``）を無効化（v2.1.91） |
 | `forceRemoteSettingsRefresh` | （Managed のみ）リモート設定の取得をfail-closed化。取得失敗時にセッション起動をブロック（v2.1.92） |
 | `prUrlTemplate` | フッターの PR バッジを github.com 以外のカスタムコードレビュー URL に向けるテンプレート（v2.1.119） |
+| `mcpServers.<name>.alwaysLoad` | MCP サーバーのツールを tool-search のディファード化対象から外し常時ロード（v2.1.121） |
 
 ### 2.4 `~/.claude.json` のグローバル設定
 
@@ -361,6 +362,8 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `OTEL_LOG_TOOL_DETAILS` | `1` で OpenTelemetry のカスタム/MCP コマンド名の redact を解除（v2.1.117） |
 | `DISABLE_UPDATES` | 手動 `claude update` 含む全更新パスをブロック（`DISABLE_AUTOUPDATER` より厳格）（v2.1.118） |
 | `CLAUDE_CODE_HIDE_CWD` | 起動ロゴでの作業ディレクトリ表示を隠す（v2.1.119） |
+| `AI_AGENT` | Claude Code がサブプロセスに自動設定。`gh` などのツールが Claude Code 由来トラフィックを識別可能に（v2.1.120） |
+| `OTEL_LOG_USER_PROMPTS` | `1` で OpenTelemetry の `user_system_prompt` 属性を出力（v2.1.121） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 

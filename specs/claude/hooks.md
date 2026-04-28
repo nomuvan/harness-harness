@@ -1,6 +1,6 @@
 # Claude Code Hooks 仕様書
 
-最終更新: 2026-04-05（巡回更新）
+最終更新: 2026-04-29（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/hooks
 
@@ -319,6 +319,19 @@ MCPツールは `mcp__<server>__<tool>` パターンに従う:
     "permissionDecisionReason": "理由",
     "updatedInput": { "command": "npm run safe-lint" },
     "additionalContext": "追加コンテキスト"
+  }
+}
+```
+
+#### PostToolUse
+
+ツール出力をフックで書き換える（v2.1.121 以降は MCP 以外の全ツールが対象）:
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "updatedToolOutput": "整形済みの差し替え出力"
   }
 }
 ```

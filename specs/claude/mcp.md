@@ -1,6 +1,6 @@
 # Claude Code MCP 仕様書
 
-最終更新: 2026-04-05（巡回更新）
+最終更新: 2026-04-29（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/mcp
 
@@ -148,6 +148,17 @@ claude mcp reset-project-choices
 | `enableAllProjectMcpServers` | プロジェクト `.mcp.json` の全サーバーを自動承認 |
 | `enabledMcpjsonServers` | 承認するサーバーリスト |
 | `disabledMcpjsonServers` | 拒否するサーバーリスト |
+
+### 3.5 サーバーごとの追加オプション
+
+| キー | 説明 |
+|:--|:--|
+| `alwaysLoad` | `true` でそのサーバーのツールを tool-search のディファード化対象から外し常時ロード（v2.1.121） |
+
+### 3.6 接続の堅牢性
+
+- v2.1.121 以降、MCP サーバー起動時に transient error が発生しても最大 3 回まで自動リトライする（従来は接続不能のまま停止）。
+- v2.1.121 で SDK の `mcp_authenticate` が `redirectUri` をサポート（カスタムスキーム / claude.ai connector 用）。
 
 ---
 
