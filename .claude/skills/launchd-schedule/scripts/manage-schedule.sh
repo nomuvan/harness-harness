@@ -275,7 +275,8 @@ list_schedules() {
     fi
 
     local health last_run
-    { read -r health; read -r last_run; } < <(compute_health "$name")
+    # `read` の戻り値が `set -e` を発火させて静かに死ぬのを防ぐ
+    { read -r health || true; read -r last_run || true; } < <(compute_health "$name")
 
     echo ""
     echo "  Name: $name"
