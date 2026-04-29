@@ -1,5 +1,40 @@
 # harness-harness 更新履歴
 
+## 2026-04-30 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.122 / v2.1.123 検出**）
+- Codex CLI: changelog（0.125.0 のまま変更なし）
+- whats-new w18: 未公開（404）
+- スキルエコシステム: 前回 2026-04-25 から 5 日のため Phase 3.5 はスキップ（次回 2026-05-02 以降）
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.123（2026-04-29）
+- **specs/claude/changelog.md** — v2.1.123 を追記
+  - `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` 設定時の OAuth 401 リトライループを修正（単発バグ修正）
+
+#### Claude Code v2.1.122（2026-04-28）
+- **specs/claude/changelog.md** — v2.1.122 を追記
+  - **`ANTHROPIC_BEDROCK_SERVICE_TIER` 環境変数追加**（Bedrock のサービスティア `default` / `flex` / `priority` を選択し `X-Amzn-Bedrock-Service-Tier` ヘッダ送信）
+  - **`/resume` の検索ボックスで PR URL ペースト → 該当セッション検索**（GitHub / GitHub Enterprise / GitLab / Bitbucket）
+  - **`/mcp`**: 同一 URL 手動登録サーバーで隠れた claude.ai connector を表示し、重複削除のヒントを出す
+  - **OpenTelemetry**: `api_request` / `api_error` の数値属性を文字列ではなく数値で出力／`@`-mention 解決の `claude_code.at_mention` イベント追加
+  - rewound タイムライン由来の `/branch` フォーク失敗、Bedrock ARN の `/model` Effort、Vertex AI 構造化出力エラー、`count_tokens` 400、画像リサイズの 2000px 制限不具合などを修正
+- **specs/claude/configuration.md** — 環境変数表に `ANTHROPIC_BEDROCK_SERVICE_TIER` を追加
+
+### スキップ理由
+- **specs/claude/hooks.md / mcp.md / skills-and-commands.md** — v2.1.122 / v2.1.123 では仕様面で言及すべき新規追加なし（バグ修正・OpenTelemetry 微調整中心）
+- **Codex CLI specs** — 0.125.0 から進展なし
+- **kb/skills/*** — 7日ルール内のためスキップ
+
+### 引き続きウォッチ対象
+- whats-new w18 ダイジェスト（v2.1.120-123 をカバー予定、現時点 404）
+- Codex 0.126.0 のリリース
+- スキルエコシステム週次巡回（次回 2026-05-02 以降）
+
+---
+
 ## 2026-04-29 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL

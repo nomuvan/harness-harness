@@ -3,9 +3,35 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-29
+最終更新: 2026-04-30
 
 ---
+
+## v2.1.123 (2026-04-29)
+
+- `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` 設定時の OAuth 認証 401 リトライループを修正
+
+## v2.1.122 (2026-04-28)
+
+- **`ANTHROPIC_BEDROCK_SERVICE_TIER` 環境変数追加**: Bedrock サービスティア（`default` / `flex` / `priority`）を選択し、`X-Amzn-Bedrock-Service-Tier` ヘッダで送信
+- **`/resume` 検索ボックスに PR URL ペースト対応**: その PR を作成したセッションを検索（GitHub / GitHub Enterprise / GitLab / Bitbucket）
+- **`/mcp`**: 同一 URL の手動追加サーバーで隠れた claude.ai connector を表示し、重複削除のヒントを出す
+- **OAuth サインイン後も未認可の MCP サーバー**に表示するメッセージを明確化
+- **OpenTelemetry**: `api_request` / `api_error` の数値属性が文字列ではなく数値として送出されるように
+- **OpenTelemetry**: `@`-mention 解決用に `claude_code.at_mention` ログイベントを追加
+- **重要バグ修正**:
+  - rewound タイムラインのエントリを含むセッションから `/branch` でフォークすると `tool_use ids were found without tool_result blocks` で失敗する問題
+  - Bedrock application inference profile ARN で `/model` の Effort オプションが表示されない、`output_config.effort` が送られない問題
+  - Vertex AI / Bedrock のセッションタイトル生成等の構造化出力で `invalid_request_error: output_config: Extra inputs are not permitted` が返る問題
+  - プロキシゲートウェイ越しの Vertex AI `count_tokens` エンドポイントで 400 エラー
+  - `spinnerTipsOverride.excludeDefault` で時間ベースのスピナーチップが抑制されない問題
+  - nonblocking モードでセッション開始後に接続した MCP サーバーのツールを ToolSearch が見つけられない問題
+  - bash モードでの `!exit` / `!quit` が CLI を終了させてしまう問題（シェルコマンドとして実行されるよう修正）
+  - 新モデル送信画像が 2576px ではなく正しい 2000px 上限にリサイズされるように修正
+  - Remote Control セッションの idle status が秒2回再描画され `tmux -CC` 制御パイプを溢れさせる問題
+  - 古いビュー設定によりアシスタントメッセージが空表示になる問題
+  - `settings.json` 内の hooks エントリが不正な形式でも全体が無効化されないように
+  - Voice mode: Caps Lock にバインドしたキーバインドはターミナルがキーイベントを送らないためエラー表示
 
 ## v2.1.121 (2026-04-28)
 
