@@ -1,6 +1,6 @@
 # OpenAI Codex CLI コマンド仕様
 
-最終更新: 2026-04-22（巡回更新）
+最終更新: 2026-05-01（巡回更新）
 
 ---
 
@@ -42,8 +42,10 @@
 | `/fork` | `/fork` | 現在の会話を新しいスレッドに複製 |
 | `/new` | `/new` | 同じ CLI セッション内で新しい会話を開始 |
 | `/side` | `/side` | サイド会話を開始（作業中の本線を止めずにクイック質問。スラッシュコマンド・シェルプロンプトも使用可） |
+| `/goal` | `/goal [create\|pause\|resume\|clear]` | 永続化されたゴール駆動ワークフローを管理（0.128.0+。ランタイム継続・モデルツール統合あり） |
 | `/clear` | `/clear` | 表示をリセットし、同じセッション内でチャットを再開 |
 | `/compact` | `/compact` | 会話履歴を圧縮してコンテキスト容量を節約 |
+| `/title` | `/title <text>` | アクティブターン中でもセッションタイトルを編集可能（0.128.0+） |
 
 ### 1.5 情報・デバッグ
 
@@ -216,5 +218,6 @@ max_bytes = 1048576        # 最大サイズ（超過時は自動コンパクシ
 | `codex cloud` | クラウドタスク管理（`--env`, `--attempts` オプション） |
 | `codex apply <TASK_ID>` | Codex Cloud タスクの差分を適用 |
 | `codex execpolicy check` | ポリシー評価（プレビュー機能） |
+| `codex update` | CLI 自身を最新版にアップグレード（0.128.0+） |
 
 > 公式ドキュメント: [CLI Reference](https://developers.openai.com/codex/cli/reference) / [CLI Features](https://developers.openai.com/codex/cli/features)
