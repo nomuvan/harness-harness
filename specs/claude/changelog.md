@@ -3,9 +3,47 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-04-30
+最終更新: 2026-05-02
 
 ---
+
+## v2.1.126 (2026-05-01)
+
+- **`/model` ピッカーがゲートウェイの `/v1/models` から取得**: `ANTHROPIC_BASE_URL` が Anthropic 互換ゲートウェイを指す場合、`/model` がそのゲートウェイの利用可能モデル一覧を表示
+- **`claude project purge [path]` 追加**: プロジェクトの Claude Code 状態（トランスクリプト、タスク、ファイル履歴、設定エントリ）を一括削除。`--dry-run`、`-y/--yes`、`-i/--interactive`、`--all` オプション対応
+- **`--dangerously-skip-permissions` の保護解除拡張**: `.claude/`、`.git/`、`.vscode/`、シェル設定ファイル等の従来保護パスへの書き込みプロンプトを抑制（破滅的削除コマンドは引き続き安全網として確認）
+- **`claude auth login` の OAuth コードペースト対応**: ブラウザコールバックが localhost に到達できない環境（WSL2、SSH、コンテナ）で、ターミナルにペーストしたコードを受理
+- **OpenTelemetry**: `claude_code.skill_activated` イベントがユーザー入力スラッシュコマンドでも発火するように。新属性 `invocation_trigger`（`"user-slash"` / `"claude-proactive"` / `"nested-skill"`）を追加
+- **オートモードのスピナー赤色化**: 権限チェックが停滞しているときスピナーが赤くなり、ツール実行中と区別可能に
+- **ホスト管理デプロイ**: `CLAUDE_CODE_PROVIDER_MANAGED_BY_HOST` 設定時でも Bedrock/Vertex/Foundry のアナリティクスが自動無効化されないように
+- **Windows: PowerShell 7 検出範囲拡大**: Microsoft Store からのインストール、PATH 未設定 MSI、`.NET global tool` 経由の PowerShell も検出
+- **Windows: PowerShell をプライマリシェルに**: PowerShell ツール有効時、Bash ではなく PowerShell が主シェルとして扱われる
+- **Read ツール**: ファイル毎のマルウェア評価リマインダーを削除（誤拒否や「これはマルウェアではない」コメンタリーの原因を解消）
+- **重要セキュリティ修正**: `allowManagedDomainsOnly` / `allowManagedReadPathsOnly` が、優先度の高い managed-settings ソースに `sandbox` ブロックがないとき無視される問題
+- **重要バグ修正**:
+  - 2000px 超の画像ペーストでセッションが破壊される問題（ペースト時に縮小、履歴内の超過画像は自動削除しリトライ）
+  - 「OAuth not allowed for organization」エラーで誤ってログイン画面が表示される問題（管理者連絡を案内）
+  - 低速/プロキシ接続、IPv6-only devcontainer、ブラウザコールバックが localhost に到達不能なケースでの OAuth ログインタイムアウト
+  - 並行する認証情報書き込みが有効な OAuth refresh token を稀に消失させる競合
+  - API リトライカウントダウンが「0s」で固まる問題
+  - Mac スリープ復帰直後の「Stream idle timeout」エラー
+  - 長時間モデル思考中にバックグラウンド/リモートセッションが「Stream idle timeout」で誤って中止される問題
+  - 空ターン連発後にアシスタントが思考完了しても出力が表示されないハング
+  - Cursor / VS Code 1.92–1.104 統合ターミナルでのトラックパッド過剰スクロール
+  - needs-auth で停滞した手動 MCP サーバーが claude.ai MCP コネクタを抑制する問題
+  - Windows no-flicker モードで日本語/韓国語/中国語が文字化けする問題
+  - `Ctrl+L` がプロンプト入力をクリアしてしまう問題（readline 同様、画面再描画のみに）
+  - `context: fork` スキルや他サブエージェントの初回ターンで deferred ツール（WebSearch、WebFetch 等）が利用不可
+  - `--channels` 起動の対話セッションでプランモードツールが利用不可
+  - `/plugin` Uninstall 後に "Enabled" と誤表示される問題
+  - リンタが多数ファイルを変更したときのファイル変更リマインダーの総サイズ制限
+  - `/remote-control` リトライが「connecting…」で停滞表示される問題（各リトライ結果を表示）
+  - リモートコントロール初期接続失敗時に通知にエラー理由が含まれない問題
+  - Windows: クリップボード書き込みでコピー内容がプロセスコマンドライン引数経由で EDR/SIEM テレメトリに露出する問題（22KB 超の選択もクリップボードに到達）
+  - PowerShell ツール: 単独 `--`（例 `git diff -- file`）が `--%` パース停止トークンと誤認される問題
+  - Agent SDK: 並列ツール呼び出しバッチでモデルが不正なツール名を出した際のハング
+
+> 注: v2.1.124 / v2.1.125 はステーブル未リリース（バージョンスキップ）。v2.1.123 → v2.1.126 へ。
 
 ## v2.1.123 (2026-04-29)
 
