@@ -1,5 +1,44 @@
 # harness-harness 更新履歴
 
+## 2026-05-02 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.126 検出 / 2026-05-01**）
+- Codex CLI: GitHub Releases（0.129.0-alpha.2 のみ、ステーブル未公開のため見送り）
+- whats-new w18: 未公開（404 継続）
+- スキルエコシステム: 前回 2026-04-25 から 7 日経過 → Phase 3.5 実施
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.126（2026-05-01）
+- **specs/claude/changelog.md** — v2.1.126 を追記。最終更新日を 2026-05-02 に更新
+  - **`/model` ピッカーがゲートウェイの `/v1/models` から取得**（`ANTHROPIC_BASE_URL` が Anthropic 互換ゲートウェイ時）
+  - **`claude project purge [path]` 追加**（プロジェクト状態の一括削除、`--dry-run` / `-y` / `-i` / `--all` 対応）
+  - **`--dangerously-skip-permissions` の保護解除拡張**（`.claude/`、`.git/`、`.vscode/`、シェル設定ファイル等）
+  - **`claude auth login` の OAuth コードペースト対応**（WSL2/SSH/コンテナ向け）
+  - **OpenTelemetry**: `claude_code.skill_activated` がユーザー入力スラッシュコマンドでも発火、新属性 `invocation_trigger`
+  - **オートモードのスピナー赤色化**（権限チェック停滞の可視化）
+  - **Windows: PowerShell 7 検出範囲拡大**（Microsoft Store / PATH 未設定 MSI / .NET global tool）
+  - **Windows: PowerShell をプライマリシェルに**（PowerShell ツール有効時、Bash ではなく PowerShell 主シェル）
+  - **重要セキュリティ修正**: `allowManagedDomainsOnly` / `allowManagedReadPathsOnly` が高優先度 managed-settings ソースで無視される問題
+- 注: v2.1.124 / v2.1.125 はステーブル未リリース（バージョンスキップ）
+
+#### Codex CLI（変更なし、ステーブル未公開）
+- 0.129.0-alpha.2（2026-05-01）が GitHub Releases に出ているが、alpha のため specs/codex/changelog.md には未反映
+- ステーブル昇格時に再評価
+
+#### スキルエコシステム（Phase 3.5）
+- **kb/skills/_index.md** — `last_patrol` を 2026-05-02 に、anthropics/skills の Stars を 127K+、skills.sh トップ find-skills を 1.3M installs に更新
+- 顕著な新興スキルなし（find-skills が引き続き圧倒的トップ、Tier 変更不要）
+- agentskills.io 確認プラットフォーム数は 37+ で横ばい
+
+### スキップ理由
+- **specs/claude/configuration.md** — v2.1.126 で OpenTelemetry イベント仕様変更（新属性 `invocation_trigger`）はあるが、本ファイルは設定キー一覧のため詳細イベント仕様は changelog に集約。今回は更新見送り
+- **specs/codex/*** — 0.128.0 以降のステーブル未リリース
+- **kb/skills/recommended.md** — Tier 変更を伴う動きなし
+
+---
+
 ## 2026-05-01 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
