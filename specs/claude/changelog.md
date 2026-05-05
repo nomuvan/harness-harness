@@ -3,9 +3,52 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-02
+最終更新: 2026-05-06
 
 ---
+
+## v2.1.128 (2026-05-04)
+
+- **`/mcp` がツール数を表示**: 接続済みサーバーのツール数を表示し、0 ツールで接続したサーバーを警告マーク
+- **`--plugin-dir` が `.zip` 受理**: ディレクトリに加えて zip プラグインアーカイブも読み込み可能
+- **`--channels` が console (API キー) 認証で利用可能に**: 管理設定を持つ console org は `channelsEnabled: true` で有効化
+- **`/model` ピッカー整理**: Opus 4.7 重複エントリを統合、現行 Opus を「Opus」と表示
+- **サブプロセスへの `OTEL_*` 継承を停止**: Bash/hooks/MCP/LSP サブプロセスが CLI の OTLP エンドポイントを誤って継承しないように
+- **MCP `workspace` が予約サーバー名に**: 同名の既存サーバーは警告とともにスキップ
+- **MCP 再接続時のツール一覧再公開を要約化**: 再接続毎に全ツール名を吐かず、サーバープレフィックスごとに集約
+- **SDK ホスト向け `localSettings` サジェスト**: Bash 権限プロンプトで「Always allow」が `.claude/settings.local.json` に書き込まれるよう永続提案
+- **`EnterWorktree` が local HEAD 起点に**: ドキュメント通り local HEAD から新ブランチを作成（従来は `origin/<default-branch>` 起点で未 push コミットが落ちていた）
+- **オートモード: 分類器エラーにヒント追加**: 評価不能時に retry / `/compact` / `--debug` 起動の提案を表示
+- **`/color` 引数なしでランダム色**: セッション色をランダム選択
+- **重要バグ修正**:
+  - 大入力（>10MB）を `claude -p` に stdin パイプするとクラッシュループする問題
+  - 1M コンテキストモデルで autocompact ウィンドウが小さい場合に実 API 制限到達前に「Prompt is too long」で誤ブロックされる問題
+  - 並列シェルツール呼び出し: read-only コマンド（grep/git diff/ls）が失敗すると兄弟呼び出しまでキャンセルされる問題
+  - サブエージェントの進捗サマリがプロンプトキャッシュを取りこぼし `cache_creation` が約3倍になっていた問題
+  - サブエージェントサマリがトランスクリプト静止中も繰り返し発火し、idle サブエージェントの最悪トークンコストが青天井だった問題
+  - MCP stdio サーバー: `CLAUDE_CODE_SHELL_PREFIX` 設定時に空白/シェルメタ文字入り引数が破損する問題
+  - MCP ツール結果: サーバーが structured content と content blocks の両方を返すと画像が落ちる問題
+  - `/plugin update` が npm ソースプラグインの新バージョンを検出しない問題
+  - `/plugin` Components パネルが `--plugin-dir` 経由ロードのプラグインで「Marketplace 'inline' not found」を表示する問題
+  - `installed_plugins.json` の死んだキャッシュディレクトリエントリが PATH を汚染する問題
+  - Bedrock デフォルトモデルがリージョン適切なプレフィックスではなく `global.*` に解決される問題
+  - 3P プロバイダーで `/fast` が無関係スキルにファジーマッチする問題（「利用不可」を表示するように）
+  - Remote Control: rate limit 時に空の "Opening your options…" 表示（実行可能なアップセル選択肢を表示）
+  - 古い「remote-control is active」ステータスラインが `--resume`/`--continue` 後も残る問題
+  - Kitty 等の OSC 9 通知解釈ターミナルで `/exit` 毎に "4;0;" デスクトップ通知が出る問題
+  - 画像ドラッグ＆ドロップでファイル読み込み失敗時に「Pasting text…」でハングする問題
+  - フルスクリーンモードで折り返し表示の長い URL が各行クリック不可だった問題
+  - フォーカスモードで新プロンプト送信時に直前応答が一瞬暗くなる問題
+  - OSC 8 非対応ターミナルで markdown リンクラベルが失われる問題（`label (url)` 形式で表示）
+  - リスト項目内 fenced code block コピー時の先頭空白混入
+  - `/config` タブナビゲーションがフォーカスを失う問題
+  - vim モード NORMAL: `Space` でカーソル右移動（標準 vi/vim 互換）
+  - ターミナル進捗インジケータ（OSC 9;4）がツール呼び出し間で点滅消失する問題
+  - `/rename` 引数なしで compact 境界終端の resume セッションが失敗する問題
+  - エフォート非対応モデルでバナーに「with X effort」と誤表示する問題
+  - Headless `--output-format stream-json`: `init.plugin_errors` に `--plugin-dir` ロード失敗が含まれるように
+
+> 注: v2.1.127 はステーブル未リリース（バージョンスキップ）。v2.1.126 → v2.1.128 へ。
 
 ## v2.1.126 (2026-05-01)
 
