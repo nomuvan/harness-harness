@@ -1,5 +1,46 @@
 # harness-harness 更新履歴
 
+## 2026-05-06 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.128 検出 / 2026-05-04**）
+- Codex CLI: GitHub Releases（0.129.0-alpha.6 / 2026-05-05、ステーブル未公開のため見送り）
+- whats-new w18: 未公開（404 継続、v2.1.120-128 期間がカバーされていない状態が続く）
+- スキルエコシステム: 前回 2026-05-02 から 4 日経過 → Phase 3.5 スキップ（7 日以内）
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.128（2026-05-04）
+- **specs/claude/changelog.md** — v2.1.128 を追記。最終更新日を 2026-05-06 に更新
+  - **`/mcp` がツール数表示**（0 ツール接続のサーバーを警告マーク）
+  - **`--plugin-dir` が `.zip` 受理**（プラグインアーカイブ直接ロード）
+  - **`--channels` が console API キー認証で動作**（managed settings の `channelsEnabled: true`）
+  - **`/model` ピッカー整理**（Opus 4.7 重複統合、表示を「Opus」に）
+  - **サブプロセスへの `OTEL_*` 継承を停止**（OTLP エンドポイント誤継承を解消）
+  - **MCP `workspace` が予約サーバー名に**
+  - **MCP 再接続のツール再公開を要約化**（サーバープレフィックスごとに集約）
+  - **SDK ホスト向け `localSettings` サジェスト永続化**（Bash 権限の Always allow が `.claude/settings.local.json` へ）
+  - **`EnterWorktree` が local HEAD 起点**（未 push コミット欠落を修正）
+  - **オートモード分類器エラーにヒント追加**
+  - 重要バグ修正多数（>10MB 入力 stdin クラッシュループ、1M コンテキスト autocompact 誤ブロック、並列シェルツールのキャンセル波及、サブエージェントサマリのキャッシュ取りこぼし＆idle 連発、MCP stdio 引数破損 等）
+- 注: v2.1.127 はステーブル未リリース（バージョンスキップ）
+
+#### Codex CLI（変更なし、ステーブル未公開）
+- 0.129.0-alpha.6（2026-05-05）が GitHub Releases に出ているが、alpha のため specs/codex/changelog.md には未反映
+- ステーブル昇格時に再評価
+
+#### スキルエコシステム（Phase 3.5 スキップ）
+- 前回 2026-05-02 から 4 日経過、7 日以内のため Phase 3.5 全体をスキップ
+- 次回巡回（2026-05-09 以降）で再評価
+
+### スキップ理由
+- **specs/claude/configuration.md** — v2.1.128 で MCP `workspace` 予約サーバー名や `--plugin-dir` の zip 受理など個別仕様変更はあるが、いずれも changelog に集約。設定キー一覧自体に新キーの追加はないため見送り
+- **specs/claude/mcp.md** — `workspace` 予約名・再接続時ツール要約は MCP の実装挙動変更で、specs としては「予約サーバー名」「再接続挙動」を別途まとめる価値はあるが、今回は changelog で十分。次回大幅変更があれば統合検討
+- **specs/codex/*** — 0.128.0 以降のステーブル未リリース
+- **kb/skills/*** — 7 日以内のため Phase 3.5 スキップ
+
+---
+
 ## 2026-05-02 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
