@@ -185,6 +185,7 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `forceRemoteSettingsRefresh` | （Managed のみ）リモート設定の取得をfail-closed化。取得失敗時にセッション起動をブロック（v2.1.92） |
 | `prUrlTemplate` | フッターの PR バッジを github.com 以外のカスタムコードレビュー URL に向けるテンプレート（v2.1.119） |
 | `mcpServers.<name>.alwaysLoad` | MCP サーバーのツールを tool-search のディファード化対象から外し常時ロード（v2.1.121） |
+| `skillOverrides` | スキル単位の表示制御。`off`（モデルと `/` から非表示）/ `user-invocable-only`（モデルから非表示）/ `name-only`（説明を圧縮）。v2.1.129 で実装が修正され機能するように |
 
 ### 2.4 `~/.claude.json` のグローバル設定
 
@@ -365,6 +366,9 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `AI_AGENT` | Claude Code がサブプロセスに自動設定。`gh` などのツールが Claude Code 由来トラフィックを識別可能に（v2.1.120） |
 | `OTEL_LOG_USER_PROMPTS` | `1` で OpenTelemetry の `user_system_prompt` 属性を出力（v2.1.121） |
 | `ANTHROPIC_BEDROCK_SERVICE_TIER` | Bedrock サービスティア（`default` / `flex` / `priority`）を選択し `X-Amzn-Bedrock-Service-Tier` ヘッダで送信（v2.1.122） |
+| `CLAUDE_CODE_FORCE_SYNC_OUTPUT` | `1` で同期出力を強制有効化。自動検出が外す端末（Emacs `eat` 等）向け（v2.1.129） |
+| `CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE` | Homebrew/WinGet インストールで設定時、バックグラウンドでアップグレードを実行し再起動プロンプトを表示（v2.1.129） |
+| `CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY` | `1` で `ANTHROPIC_BASE_URL` ゲートウェイの `/v1/models` 探索を有効化。v2.1.129 でオプトイン化（v2.1.126〜v2.1.128 は自動） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 

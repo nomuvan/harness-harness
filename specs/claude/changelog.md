@@ -3,9 +3,45 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-06
+最終更新: 2026-05-07
 
 ---
+
+## v2.1.131 (2026-05-06)
+
+- **VS Code 拡張: Windows でアクティブ化失敗を修正**: バンドル SDK のハードコードされたビルドパス（`createRequire` polyfill バグ）が原因
+- **Mantle エンドポイント認証修正**: `x-api-key` ヘッダ欠落の問題を修正
+
+## v2.1.129 (2026-05-06)
+
+- **`--plugin-url <url>` 追加**: URL から `.zip` プラグインアーカイブを取得して当該セッションに読み込む
+- **`CLAUDE_CODE_FORCE_SYNC_OUTPUT=1` 追加**: 自動検出が外す端末（例: Emacs `eat`）で同期出力を強制有効化
+- **`CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE` 追加**: Homebrew/WinGet インストールでバックグラウンドアップグレード→再起動プロンプトを実行
+- **プラグインマニフェスト**: `themes` と `monitors` は `"experimental": { ... }` 配下宣言が推奨に変更。トップレベル宣言は `claude plugin validate` で警告
+- **ゲートウェイ `/v1/models` 探索がオプトイン化**: `CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1` で有効化（v2.1.126〜v2.1.128 は自動）
+- **`Ctrl+R` 履歴ピッカーのデフォルトを全プロジェクト横断検索に戻す**: pre-2.1.124 の挙動。`Ctrl+S` で現プロジェクト/セッションに絞り込み
+- **3P デプロイメントでスピナーチップから 1P 案内を除去**: Bedrock/Vertex/Foundry/`ANTHROPIC_BASE_URL` ゲートウェイ利用時
+- **`skillOverrides` 設定が機能するように修正**: `off` でモデルと `/` から非表示、`user-invocable-only` でモデルから非表示、`name-only` で説明を圧縮
+- **`claude_code.pull_request.count` OTel メトリック**: シェルコマンドだけでなく MCP ツール経由 PR/MR 作成もカウント
+- **ポリシー拒否エラーメッセージに API Request ID 付与**: サポートデバッグ容易化
+- **重要バグ修正**:
+  - 認識できない 400 ステータスコードで生 JSON が表示される問題（実エラーメッセージを表示）
+  - `/clear` 後に端末タブタイトルがリセットされない問題
+  - `/rename` のセッションタイトルチップが権限ダイアログ表示中に消える問題
+  - サブエージェント実行中にプロンプト下のエージェントパネルが隠れる問題（v2.1.122 リグレッション）
+  - 外部エディタハンドオフ（Ctrl+G）でプロンプト上の会話履歴が空白化する問題
+  - `/context` がレンダリング ASCII グリッドを会話に投入し約 1.6k トークン浪費する問題
+  - `/agents` Library のリスト矢印キー操作で選択項目がビューポート外に出る問題
+  - `/branch` 成功メッセージに新ブランチセッション ID（`/resume` 用）が含まれていない問題
+  - 太字ヘッダー内の keycap/ZWJ/skin-tone 絵文字が末尾文字を欠落する問題（フルスクリーンモード）
+  - エンタープライズ/チームユーザーの保存 OAuth 資格情報に `user:inference` スコープが欠落していると server-managed settings ポリシーが適用されない問題
+  - スリープ復帰後の OAuth リフレッシュ競合で全実行中セッションがログアウトされ得る問題
+  - 1 時間プロンプトキャッシュ TTL が黙って 5 分にダウングレードされる問題
+  - `/clear` やコンパクション後に `/effort`/`/model` を変更するとキャッシュミス警告が誤発出する問題
+  - `Bash(mkdir *)`、`Bash(touch *)` 等の許可ルールがプロジェクト内パスで尊重されない問題
+  - `deniedMcpServers` の `*://` スキームワイルドカードが大文字小文字混在ホスト名にマッチしない問題
+  - voice モード `--debug` で無害な WebSocket 警告がエラーログ化する問題
+  - [VSCode] `/clear` が会話コンテキストとトランスクリプト表示をクリアしない問題
 
 ## v2.1.128 (2026-05-04)
 

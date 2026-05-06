@@ -1,5 +1,43 @@
 # harness-harness 更新履歴
 
+## 2026-05-07 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.129 / 2026-05-06、v2.1.131 / 2026-05-06 検出**）
+- Codex CLI: GitHub Releases（0.129.0-alpha.9 / 2026-05-06、ステーブル未公開のため見送り）
+- whats-new w18: 未公開（404 継続）
+- スキルエコシステム: 前回 2026-05-02 から 5 日経過 → Phase 3.5 スキップ（7 日以内）
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.129（2026-05-06）
+- **specs/claude/changelog.md** — v2.1.129 を追記
+  - **`--plugin-url <url>` 追加**: URL から `.zip` プラグインアーカイブを取得
+  - **`CLAUDE_CODE_FORCE_SYNC_OUTPUT=1` 追加**: 同期出力を強制有効化（Emacs `eat` 等向け）
+  - **`CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE` 追加**: Homebrew/WinGet で BG アップグレード→再起動プロンプト
+  - **プラグインマニフェスト**: `themes`/`monitors` は `experimental` 配下が推奨に
+  - **ゲートウェイ `/v1/models` 探索オプトイン化**: `CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1`（v2.1.126〜128 は自動）
+  - **`Ctrl+R` 履歴ピッカー全プロジェクト検索デフォルトに復帰**（pre-2.1.124 挙動）
+  - **3P デプロイメントでスピナーチップから 1P 案内除去**
+  - **`skillOverrides` 設定の修正**: 実装が機能するように（`off`/`user-invocable-only`/`name-only`）
+  - **`claude_code.pull_request.count` OTel メトリック**: MCP ツール経由 PR 作成もカウント
+  - **ポリシー拒否エラーに API Request ID 付与**
+  - 重要バグ修正多数（400 エラー誤表示、`/clear` 後タブタイトル、`/agents` 矢印キー、`/branch` セッション ID 欠落、OAuth リフレッシュ競合、1h プロンプトキャッシュ TTL ダウングレード、`Bash(mkdir *)` 等の許可ルール、VSCode `/clear` 等）
+- **specs/claude/configuration.md** — `skillOverrides` 設定キーと新環境変数 3 件を追加
+- **specs/claude/skills-and-commands.md** — `--plugin-url` フラグを追加
+
+#### Claude Code v2.1.131（2026-05-06）
+- **specs/claude/changelog.md** — v2.1.131 を追記
+  - VS Code 拡張: Windows でアクティブ化失敗を修正（`createRequire` polyfill バグ）
+  - Mantle エンドポイント認証修正（`x-api-key` ヘッダ欠落）
+- 注: v2.1.130 はステーブル未リリース（バージョンスキップ）
+
+#### Codex CLI（変更なし、ステーブル未公開）
+- 0.129.0-alpha.9（2026-05-06）が GitHub Releases に出ているが、alpha のため specs/codex/changelog.md には未反映
+- ステーブル昇格時に再評価
+
+---
+
 ## 2026-05-06 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
