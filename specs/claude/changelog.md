@@ -3,9 +3,39 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-07
+最終更新: 2026-05-08
 
 ---
+
+## v2.1.132 (2026-05-06)
+
+- **`CLAUDE_CODE_SESSION_ID` 環境変数を Bash ツールサブプロセスに追加**: hooks に渡される `session_id` と一致
+- **`CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1` 環境変数追加**: フルスクリーン alternate-screen レンダラーをオプトアウトし、会話を端末のネイティブスクロールバックに残す
+- **Ctrl+V 画像ペースト中に「Pasting…」フッターヒント**: クリップボードから読み取り中の状態表示
+- **重要バグ修正**:
+  - 外部 SIGINT（IDE 停止ボタン、`kill -INT`）で graceful shutdown が実行されない問題（端末モード復元と `--resume` ヒント表示が動作）
+  - ネイティブビルドでセッション中に端末を閉じる/SSH 切断時の uncaught exception
+  - `--resume` がツールエラー truncation で絵文字が分割された際 `no low surrogate in string` で失敗する問題（破損済みセッションは読込時に sanitize）
+  - `-p --continue`/`--resume` でプランモードセッション再開時に `--permission-mode` フラグが無視される問題、および同一セッション内 `ExitPlanMode` 後にプランモードが再適用されない問題
+  - フルスクリーンモードでラップトップスリープ復帰や Ctrl+Z/`fg` 後に次のキー入力/ストリーム出力まで画面が空白化する問題
+  - Indic 連結子や ZWJ 絵文字が行を跨いでラップする際、Ctrl+E/A/K/U/矢印キーでカーソルが grapheme 中間に着地する問題
+  - vim オペレーターが decomposed (NFD) アクセント文字を含むテキストを破損する問題
+  - `/` で始まるテキストペーストで入力が無音で飲まれる/未知コマンド応答が発火する問題
+  - フォーカスイベント/マウストラッキングレポートが bracketed paste に混ざるとプロンプトに stray escape sequence がダンプされる問題
+  - Cursor / VS Code 1.92–1.104 でマウスホイールスクロールが速すぎる問題（上流 xterm.js バグ）
+  - JetBrains IDE 2025.2 端末でスクロールホイール処理（誤った矢印キー、逆方向、暴走加速）の問題
+  - `/usage` の Ctrl+S スクリーンショットコピーが Linux/X11 でハングする問題
+  - `/terminal-setup` が Windows Terminal で矛盾するエラーを表示する問題（Shift+Enter はネイティブサポート）
+  - `/effort` ピッカーが `CLAUDE_CODE_EFFORT_LEVEL` 環境変数オーバーライドを反映しない問題
+  - `/status` が一部ユーザーで誤ったデフォルトモデルを表示する問題
+  - スラッシュコマンド autocomplete ポップアップが約 3〜5 件で頭打ちになり端末高さに合わせてスケールしない問題
+  - ステータスライン `context_window` トークン数が現在のコンテキスト使用量ではなくセッション累計を反映していた問題
+  - macOS 端末（iTerm2、Terminal.app デフォルト）で「Option as Meta」未有効時に Alt+T（thinking トグル）が動作しない問題
+  - Windows で `claude agents` バックグラウンドセッション再開後にキーボード入力が反応しない問題
+  - stdio MCP サーバーが非プロトコルデータを stdout に書き込むと unbounded メモリ成長（10GB+ RSS）する問題
+  - 接続成功するが `tools/list` で失敗する MCP サーバーが無音で 0 ツール表示される問題（1 回リトライ後 `/mcp` で「connected · tools fetch failed」表示）
+  - 認証されていない claude.ai MCP コネクタが「failed」と表示される問題（「needs auth」表示に修正）、および headless `-p` モードが非一時的 4xx 接続失敗をリトライする問題
+  - Bedrock / Vertex で `ENABLE_PROMPT_CACHING_1H` 設定時に 400 エラーが発生する問題
 
 ## v2.1.131 (2026-05-06)
 

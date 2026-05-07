@@ -1,5 +1,34 @@
 # harness-harness 更新履歴
 
+## 2026-05-08 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.132 / 2026-05-06 検出**。前回巡回時点で未確認）
+- Codex CLI: GitHub Releases（**0.129.0 / 2026-05-07 ステーブル昇格** — 前回 alpha のみだったが今日 stable 公開）
+- whats-new w18: 未公開（404 継続）
+- スキルエコシステム: 前回 2026-05-02 から 6 日経過 → Phase 3.5 スキップ（7 日以内）
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.132（2026-05-06）
+- **specs/claude/changelog.md** — v2.1.132 を追記（新規エントリ）
+  - **`CLAUDE_CODE_SESSION_ID`**: Bash サブプロセスに自動設定。hooks の `session_id` と一致
+  - **`CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1`**: フルスクリーンレンダラーをオプトアウト
+  - **「Pasting…」フッターヒント**: Ctrl+V 画像ペースト中の状態表示
+  - 重要バグ修正多数（外部 SIGINT graceful shutdown、`--resume` 絵文字 truncation、プランモード再開時の `--permission-mode` 無視、Cursor/VS Code/JetBrains マウススクロール、stdio MCP メモリリーク 10GB+、Bedrock/Vertex 1h プロンプトキャッシュ 400 エラー等）
+- **specs/claude/configuration.md** — 環境変数 2 件を追加（`CLAUDE_CODE_SESSION_ID`、`CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN`）
+
+#### Codex CLI 0.129.0（2026-05-07）
+- **specs/codex/changelog.md** — 0.129.0 を追記（新規エントリ）
+  - **TUI Vim モーダル編集**: `/vim` コマンド対応
+  - **ワークフロー再開ピッカー刷新**
+  - **Raw scrollback モード** / **ワークスペース対応 `/diff`** / **ステータスラインのテーマ対応**
+  - **プラグイン管理拡張**（ワークスペース共有、アクセス制御等）
+  - **実験的 Goals 機能**: 検出可能化と一時停止状態の永続化
+  - **Linux サンドボックス強化**: スタンドアロン `bwrap` フォールバック、Bubblewrap 0.11.2 vendoring
+
+---
+
 ## 2026-05-07 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
