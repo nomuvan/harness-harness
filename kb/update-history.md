@@ -1,5 +1,34 @@
 # harness-harness 更新履歴
 
+## 2026-05-09 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.133 / 2026-05-07 検出**）
+- Codex CLI: GitHub Releases（0.130.0-alpha.7 / 2026-05-08 — alpha のみのため見送り）
+- whats-new w18: 未公開（404 継続。w13-w17 のみ llms.txt に掲載）
+- スキルエコシステム: 前回 2026-05-02 から 7 日経過 → Phase 3.5 実施
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.133（2026-05-07）
+- **specs/claude/changelog.md** — v2.1.133 を追記
+- **specs/claude/configuration.md** — 設定キー 4 件を追加
+  - `worktree.baseRef`（`fresh` | `head`）: ワークツリーのベース参照を選択。デフォルトが `fresh`（=`origin/<default>`）に戻り、v2.1.128 以降の `HEAD` 挙動から変更
+  - `sandbox.bwrapPath` / `sandbox.socatPath`（Linux/WSL Managed 設定）: バイナリのカスタムパス指定
+  - `parentSettingsBehavior`（admin tier）: SDK `managedSettings` のポリシーマージ制御
+- **specs/claude/hooks.md** — hooks 入力 JSON に `effort.level` フィールドを追加。`$CLAUDE_EFFORT` 環境変数も hooks コマンドと Bash サブプロセスから参照可能と明記
+- 重要バグ修正: 並列セッション 401 デッドエンド、MCP OAuth フローの proxy 尊重、Remote Control 中断、サブエージェントのスキル発見等
+
+#### Codex CLI（変更なし）
+- 0.130.0-alpha.7 が 2026-05-08 公開されたが alpha のため specs 反映は見送り
+
+#### スキルエコシステム（Phase 3.5 実施）
+- **kb/skills/_index.md** — `last_patrol` を 2026-05-09 に更新。anthropics/skills を 127K→130K stars、agentskills.io を 37+→38+ platforms、find-skills 1.3M→1.4M installs へ追随
+- **kb/skills/recommended.md** — find-skills の installs 表記を 1.4M に更新
+- 推薦スキル昇格/降格は今回なし。leaderboard 上位構成（vercel-labs、anthropics、microsoft Azure）は不変
+
+---
+
 ## 2026-05-08 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
