@@ -253,6 +253,16 @@ MCPツールは `mcp__<server>__<tool>` パターンに従う:
 
 - `worktree`: ワークツリー内で実行中の場合、そのパス
 
+v2.1.133 以降、すべてのイベントの入力 JSON に effort level も含まれる:
+
+```json
+{
+  "effort": { "level": "low" | "medium" | "high" }
+}
+```
+
+加えて、hooks のコマンドおよび Bash ツールサブプロセスから `$CLAUDE_EFFORT` 環境変数で同じ値が参照可能。
+
 ### 6.2 イベント固有の入力フィールド
 
 | イベント | 追加入力フィールド |

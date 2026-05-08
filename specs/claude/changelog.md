@@ -3,9 +3,31 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-08
+最終更新: 2026-05-09
 
 ---
+
+## v2.1.133 (2026-05-07)
+
+- **`worktree.baseRef` 設定追加** (`fresh` | `head`): `--worktree`、`EnterWorktree`、エージェント隔離ワークツリーが `origin/<default>` から切るか、ローカル `HEAD` から切るかを選択可能に
+  - **重要**: デフォルト `fresh` により `EnterWorktree` のベースが `origin/<default>` に戻る（v2.1.128 以降は `HEAD` だった）。未push コミットを新ワークツリーに引き継ぎたい場合は `worktree.baseRef: "head"` を設定
+- **`sandbox.bwrapPath` / `sandbox.socatPath` Managed 設定追加**（Linux/WSL）: bubblewrap と socat バイナリのカスタムパス指定
+- **`parentSettingsBehavior` 設定（admin tier）追加** (`'first-wins' | 'merge'`): 管理者が SDK `managedSettings`（parent tier）をポリシーマージ対象に含めるかを制御
+- **Hooks で effort level 取得可能に**: JSON 入力に `effort.level` フィールドが追加され、`$CLAUDE_EFFORT` 環境変数も hooks と Bash ツールサブプロセスから参照可能
+- フォーカスモードの挙動改善
+- メモリ圧迫時に warm-spare バックグラウンドワーカーを解放してメモリ使用量を改善
+- **重要バグ修正**:
+  - リフレッシュトークン競合で共有資格情報が消去され、並列セッションが全て 401 で死ぬ問題
+  - ドライブルート（`C:\`）/ POSIX `/` をスコープにした `Edit`/`Write` 許可ルールが誤マッチして毎回プロンプトが出る問題
+  - 履歴/セッションログのファイルロックがクロックスキューや遅いディスクで侵害された際の uncaught rejection (`ECOMPROMISED`)
+  - 会話 compaction 中に Esc を押すと「Error compacting conversation」誤通知が出る問題
+  - MCP OAuth フロー全体（discovery、dynamic client registration、token exchange、token refresh）で `HTTP(S)_PROXY` / `NO_PROXY` / mTLS が尊重されない問題
+  - `--add-dir` / SDK `additionalDirectories` で渡したマップ済みネットワークドライブで Read/Write/Edit が拒否される問題
+  - claude.ai からの Remote Control 停止/中断がローカル Esc と同じ完全なキャンセルにならず、スタックしたツール/プロンプトを中断後にキューメッセージが進まない問題
+  - 単一セッションの `/effort` 変更が他の並列セッションに波及する問題、および IDE からの effort 変更が無音でドロップされる関連問題
+  - サブエージェントが Skill ツール経由でプロジェクト/ユーザー/プラグインスキルを発見できない問題
+  - VSCode 拡張: 拡張ビルドが Claude バイナリをバンドルしない場合に `claudeCode.claudeProcessWrapper` が「Unsupported platform」で失敗する問題
+- `claude --help` に `--remote-control` を表示（既存の `--remote-control-session-name-prefix` と並列）
 
 ## v2.1.132 (2026-05-06)
 
