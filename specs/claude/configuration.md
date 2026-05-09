@@ -1,6 +1,6 @@
 # Claude Code 設定仕様書
 
-最終更新: 2026-04-29（巡回更新）
+最終更新: 2026-05-10（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/settings / https://code.claude.com/docs/en/memory
 
@@ -126,7 +126,7 @@ CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 claude --add-dir ../shared-config
 | `availableModels` | 選択可能モデル制限 |
 | `modelOverrides` | モデルIDマッピング |
 | `effortLevel` | エフォートレベル (`low` / `medium` / `high`) |
-| `autoMode` | Auto Modeの分類器設定。`environment`, `allow`, `soft_deny` 配列で構成。共有プロジェクト設定からは読み込まれない。v2.1.118 で `"$defaults"` を配列に含めることで組み込みルールを置換せず追加可能 |
+| `autoMode` | Auto Modeの分類器設定。`environment`, `allow`, `soft_deny`, `hard_deny` 配列で構成。共有プロジェクト設定からは読み込まれない。v2.1.118 で `"$defaults"` を配列に含めることで組み込みルールを置換せず追加可能。v2.1.136 で `hard_deny` 追加: ユーザー意図や allow 例外に関わらず無条件にマッチアクションをブロック |
 | `disableAutoMode` | `"disable"` で Auto Mode の有効化を阻止。`Shift+Tab` サイクルから除外し `--permission-mode auto` を拒否 |
 | `useAutoModeDuringPlan` | プランモードで Auto Mode セマンティクスを使用（デフォルト: `true`）。共有プロジェクト設定からは読み込まれない |
 | `defaultShell` | `!` コマンドのデフォルトシェル。`"bash"`（デフォルト）または `"powershell"`（Windows、`CLAUDE_CODE_USE_POWERSHELL_TOOL=1` 必要） |
@@ -375,6 +375,7 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY` | `1` で `ANTHROPIC_BASE_URL` ゲートウェイの `/v1/models` 探索を有効化。v2.1.129 でオプトイン化（v2.1.126〜v2.1.128 は自動） |
 | `CLAUDE_CODE_SESSION_ID` | Claude Code が Bash ツールサブプロセスに自動設定する現在のセッション ID。hooks に渡される `session_id` と一致（v2.1.132） |
 | `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN` | `1` でフルスクリーン alternate-screen レンダラーをオプトアウトし、会話を端末のネイティブスクロールバックに残す（v2.1.132） |
+| `CLAUDE_CODE_ENABLE_FEEDBACK_SURVEY_FOR_OTEL` | OpenTelemetry 経由でセッション品質サーベイ応答を収集する企業向けに、無効化されているセッションフィードバックサーベイを再有効化（v2.1.136） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 

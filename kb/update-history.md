@@ -1,5 +1,42 @@
 # harness-harness 更新履歴
 
+## 2026-05-10 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.136 / 2026-05-08、v2.1.137 / 2026-05-09、v2.1.138 / 2026-05-09 検出**）
+- Codex CLI: GitHub Releases（**0.130.0 / 2026-05-08 ステーブル昇格** — 前回 alpha のみだったが今回 stable 公開）
+- whats-new w19: 公開済み（v2.1.128–v2.1.136 をカバー、5月4–8日の週次ダイジェスト）
+- スキルエコシステム: 前回 2026-05-09 から 1 日経過 → Phase 3.5 スキップ（7 日以内）
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.136（2026-05-08）— 主要変更
+- **specs/claude/changelog.md** — v2.1.136 / v2.1.137 / v2.1.138 を追記
+- **specs/claude/configuration.md**:
+  - `autoMode.hard_deny` 追加: ユーザー意図や allow 例外に関わらず無条件にマッチアクションをブロック
+  - `CLAUDE_CODE_ENABLE_FEEDBACK_SURVEY_FOR_OTEL` 環境変数を追加（OpenTelemetry 経由のセッション品質サーベイ再有効化）
+- 重要バグ修正多数: MCP サーバーが `/clear` で消失する問題、並列クレデンシャル書き込みのログインループ、複数 MCP OAuth リフレッシュトークンの消失、`@` ファイルピッカーの 100 件超対応、`AskUserQuestion` 配列回答ドロップ、`CronList` 出力欠落、wide markdown table・CJK・bracketed paste のレンダリング不整合等
+- プラグインマーケットプレース削除キー: `r`（リトライと衝突）→ `d` に変更（破壊的変更）
+
+#### Claude Code v2.1.137 / v2.1.138（2026-05-09）
+- v2.1.137: VSCode Windows でのアクティベート失敗修正
+- v2.1.138: 内部修正のみ
+
+#### Codex CLI 0.130.0（2026-05-08）— ステーブル昇格
+- **specs/codex/changelog.md** — 0.130.0 を追記（前回 alpha のみだった）
+- 主要変更:
+  - `codex remote-control` コマンド追加（ヘッドレス・リモート制御 app-server エントリポイント）
+  - プラグイン詳細にバンドル hooks 表示、共有でリンクメタデータと discoverability コントロール公開
+  - App-server: 大規模スレッドの unloaded/summary/full ターン項目ビューでページング対応
+  - Bedrock auth が `aws login` profile credentials を利用可能
+  - `view_image` がマルチ環境で選択環境経由でファイル解決
+- 重要バグ修正: ライブスレッドの設定再読込、`apply_patch` 部分失敗のターン差分保持、ThreadStore 経由のサマリ・resume・fork 改善、Windows サンドボックスでデスクトップランタイムバイナリキャッシュアクセス
+
+#### スキルエコシステム（Phase 3.5 スキップ）
+- 前回巡回 2026-05-09 から 1 日のため今回はスキップ
+
+---
+
 ## 2026-05-09 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
