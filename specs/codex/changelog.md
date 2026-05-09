@@ -3,9 +3,28 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://developers.openai.com/codex/changelog
 
-最終更新: 2026-05-08
+最終更新: 2026-05-10
 
 ---
+
+## CLI 0.130.0 (2026-05-08)
+
+- **`codex remote-control` コマンド追加**: ヘッドレス・リモート制御可能な app-server を起動するシンプルなエントリポイント
+- **プラグイン共有・詳細表示の拡張**: プラグイン詳細にバンドル済み hooks を表示。プラグイン共有でリンクメタデータと discoverability コントロールを公開
+- **App-server: 大規模スレッドのページング対応**: unloaded / summary / full ターン項目ビューで巨大スレッドを段階ロード
+- **Bedrock auth が `aws login` プロファイル credentials を利用可能に**: AWS console-login credentials を直接使用
+- **`view_image` がマルチ環境セッションで選択環境経由でファイルを解決**
+- **重要バグ修正**:
+  - ライブ app-server スレッドが再起動なしで設定変更を取り込むように
+  - `apply_patch` の部分失敗（ファイル変更済みでも失敗）でターン差分が正確に保たれるように
+  - `ThreadStore` 経由のスレッドサマリ・リネーム・resume・fork 経路改善（ローカル rollout パスがないスレッドを含む）
+  - リモートコンパクション v2 ストリームで `response.processed` を発行、API キー compact リクエストでの `service_tier` 送信回避
+  - Windows サンドボックスでサンドボックスユーザーがデスクトップランタイムバイナリキャッシュにアクセス可能に
+  - `codex exec` 起動バナーから陳腐化した「research preview」文言を削除
+- **OpenTelemetry 拡張**: トレースメタデータの設定可能化、レビュー/フィードバックアナリティクス強化
+- **依存関係衛生**: GitHub Action の完全修飾ピン、Dependabot 7日クールダウン、`cargo-shear` 1.11.2 アップグレード
+
+> 注: 0.126.0 / 0.127.0 / 0.130.0 はステーブル前段で多数の alpha が出たが、`-alpha` を含まないタグが付与されたのは 0.128.0 → 0.130.0 のジャンプで、stable ラインは 0.128.0 → 0.129.0 → 0.130.0 と進行している。
 
 ## CLI 0.129.0 (2026-05-07)
 
