@@ -3,9 +3,45 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-10
+最終更新: 2026-05-13
 
 ---
+
+## v2.1.139 (2026-05-11)
+
+- **Agent View (Research Preview) 追加**: `claude agents` で実行中・ユーザー入力待ち・完了済みの全 Claude Code セッションを一画面で確認。公式: https://code.claude.com/docs/en/agent-view
+- **`/goal` コマンド追加**: 完了条件を設定すると、達成まで複数ターンに渡り Claude が継続動作。インタラクティブ / `-p` / Remote Control で利用可。経過時間・ターン数・消費トークンをライブオーバーレイ表示
+- **`/scroll-speed` コマンド追加**: マウスホイールスクロール速度をライブプレビュー付きで調整
+- **`claude plugin details <name>` 追加**: プラグインのコンポーネント一覧とセッション毎の予測トークンコストを表示
+- **Transcript View ナビゲーション拡張**: `?` でショートカット一覧、`{`/`}` でユーザープロンプト間ジャンプ、`v` でパネルトグル
+- **Hook `args: string[]` 配列フォーム（exec form）追加**: shell 解釈なしで直接コマンドを起動。パスプレースホルダーのクォート不要に
+- **`PostToolUse` Hook `continueOnBlock` オプション追加**: 拒否理由を Claude に戻してターン継続（従来はブロック）
+- **MCP stdio サーバーに `CLAUDE_PROJECT_DIR` を環境変数として渡す**: hooks と同じ挙動。プラグイン設定の commands で `${CLAUDE_PROJECT_DIR}` を参照可能に
+- **Compaction プロンプト強化**: 会話圧縮中にユーザーのセンシティブな指示を保持するようモデルへ依頼
+- **`/mcp` 再接続改善**: 再起動なしで `.mcp.json` 編集を取り込み、再接続失敗時に HTTP ステータスと URL を表示
+- **`/context all` トークン推定**: スキル単位の推定値がモデルのトークナイザーを考慮し、丸めて表示
+- **`claude plugin install <name>@<marketplace>` 強化**: マーケットプレース自動リフレッシュとリトライを行い、見つからないと報告する前に再試行
+- **API キー認証時の機能制限**: `ANTHROPIC_API_KEY` / `apiKeyHelper` / `ANTHROPIC_AUTH_TOKEN` 設定時、Remote Control・`/schedule`・claude.ai MCP コネクタ・通知設定を無効化（Claude.ai ログイン併存でも API キーを優先）
+- **設定ホットリロード**: シンボリックリンクされた `~/.claude/settings.json` の編集を検出可能に
+- **Skill 権限ワイルドカード修正**: `Skill(name *)` がプレフィックス一致として正しく動作（`Bash(ls *)` と同じ挙動）
+- **OTEL 拡張**: サブエージェントの API リクエストに `x-claude-code-agent-id` / `x-claude-code-parent-agent-id` ヘッダーを追加。`claude_code.llm_request` スパンに `agent_id` / `parent_agent_id` 属性を追加
+- **VSCode 拡張**: Cmd/Ctrl+Shift+T で直近クローズしたセッションタブを再オープン（`claudeCode.enableReopenClosedSessionShortcut` で設定）
+- **重要バグ修正**:
+  - 期限切れクレデンシャル × `forceRemoteSettingsRefresh` ポリシーで `claude auth login/logout/status` がデッドロックする問題
+  - `autoAllowBashIfSandboxed` が `$VAR`/`$(cmd)` を含むコマンドを自動承認しない問題
+  - Hook が端末書き込みでインタラクティブプロンプトを破壊する問題（hooks は端末アクセスなしで実行に変更）
+  - HTTP/SSE MCP サーバーがプロトコル外データをストリームした際の無制限メモリ増（SSE フレームあたり 16MB に制限）
+  - `/model` ピッカーの "Default" 行が `ANTHROPIC_DEFAULT_OPUS_MODEL` / `ANTHROPIC_DEFAULT_SONNET_MODEL` オーバーライドを反映しない問題
+  - ストリーム終了 5 分後に発生する偽の "stream idle timeout" エラー
+  - MCP サーバー 10 個以上かつキャッシュディレクトリ書き込み不可時の silent `exit 1`
+  - 複数画像のペースト/ドロップで最後の 1 つしか挿入されない問題
+  - ダークテーマでハイパーリンクが読めない濃紺になる問題
+  - Cursor / VS Code 1.92–1.104 でマウスホイールスクロール速度が乱れる問題
+  - 切断済み MCP サーバーのリソースが `@server:` オートコンプリートに残る問題
+  - Grep 結果が Windows ドライブレターパスを相対化しない問題、count モードが単一ファイルパスで誤った総数を報告する問題
+  - スキル引数名に正規表現メタ文字を含むと引数置換が壊れる問題
+  - `--print` モードで `claude_code.active_time.total` OTEL メトリックが発信されない問題
+  - `claude plugin update` がマーケットプレース内のクロスプラグインシンボリックリンクを保持しない問題
 
 ## v2.1.138 (2026-05-09)
 

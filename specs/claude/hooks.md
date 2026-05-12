@@ -1,6 +1,6 @@
 # Claude Code Hooks 仕様書
 
-最終更新: 2026-04-29（巡回更新）
+最終更新: 2026-05-13（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/hooks
 
@@ -86,6 +86,15 @@ CLAUDE.md の指示は助言的だが、Hooks は**決定論的**であり確実
 ```
 
 - `shell`: 使用シェル。`"bash"`（デフォルト）または `"powershell"`
+- `args: string[]`（exec form, v2.1.139+）: シェル解釈なしで直接コマンドを起動。`command` と組み合わせると引数を配列で安全に渡せる。パスプレースホルダーのクォート不要
+
+```json
+{
+  "type": "command",
+  "command": "/usr/bin/python3",
+  "args": ["${CLAUDE_PROJECT_DIR}/scripts/validate.py", "$TOOL_NAME"]
+}
+```
 
 **終了コード**:
 - `0`: 成功（stdout の JSON をパース）
@@ -342,6 +351,19 @@ v2.1.133 以降、すべてのイベントの入力 JSON に effort level も含
   "hookSpecificOutput": {
     "hookEventName": "PostToolUse",
     "updatedToolOutput": "整形済みの差し替え出力"
+  }
+}
+```
+
+`continueOnBlock`（v2.1.139+）: PostToolUse フックがブロック判定を出した際、拒否理由を Claude に戻してターンを継続させる（従来はターン停止）。
+
+```json
+{
+  "decision": "block",
+  "reason": "Lint エラー: 未使用変数あり",
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "continueOnBlock": true
   }
 }
 ```
