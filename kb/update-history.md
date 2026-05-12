@@ -1,5 +1,49 @@
 # harness-harness 更新履歴
 
+## 2026-05-13 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.139 / 2026-05-11 検出** — 大型リリース）
+- Codex CLI: GitHub Releases（0.130.0 stable のまま、0.131.0-alpha.9 まで出ているが stable 昇格なし）
+- whats-new w18: 公開済み（前回 404 だった — Apr 27 – May 1 / v2.1.120–126 をカバー）
+- whats-new w20: 未公開（404）
+- スキルエコシステム: 前回 2026-05-09 から 4 日経過 → Phase 3.5 スキップ（7 日以内）
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.139（2026-05-11）— 大型機能追加リリース
+- **specs/claude/changelog.md** — v2.1.139 エントリ追記
+- **specs/claude/hooks.md**:
+  - 3.1 Command ハンドラに `args: string[]`（exec form）追記
+  - 6.4 PostToolUse に `continueOnBlock` を追記
+- **specs/claude/mcp.md**:
+  - 10. 環境変数表に `CLAUDE_PROJECT_DIR`（stdio MCP サーバー向け）を追記
+- 主要新機能:
+  - **Agent View (Research Preview)**: `claude agents` で全セッション統合表示
+  - **`/goal` コマンド**: 完了条件達成までターン継続。`-p`/Remote Control 対応
+  - **`/scroll-speed`**: マウスホイール速度ライブ調整
+  - **`claude plugin details <name>`**: コンポーネント一覧とトークンコスト推定
+  - **Transcript View**: `?`/`{`/`}`/`v` でナビゲーション
+  - **Hook `args: string[]` exec form**: シェル解釈なしでコマンド起動
+  - **PostToolUse `continueOnBlock`**: ブロック後もターン継続可
+  - **MCP stdio に `CLAUDE_PROJECT_DIR`**: hooks と同じ環境変数を渡す
+  - **API キー認証時の機能制限**: Remote Control / `/schedule` / claude.ai MCP コネクタ / 通知を無効化
+  - **設定ホットリロード**: シンボリックリンク `~/.claude/settings.json` 編集検出
+  - **Skill 権限ワイルドカード**: `Skill(name *)` がプレフィックス一致に修正
+- 重要バグ修正: クレデンシャル × `forceRemoteSettingsRefresh` デッドロック、`autoAllowBashIfSandboxed` のシェル展開、Hook 端末書き込みによるプロンプト破壊、HTTP/SSE MCP メモリ無制限増、`/model` ピッカーのデフォルト表示、stream idle timeout 偽エラー、複数画像ペースト等
+
+#### Codex CLI（変更なし）
+- 0.130.0 stable のまま。0.131.0 は alpha.9 まで進行中だが stable 昇格なし。次回巡回でフォロー
+
+#### whats-new w18 公開
+- 前回 404 だった Week 18（Apr 27 – May 1）が公開（出版が w17 → w19 と飛んだ後にバックフィル）
+- カバー範囲は v2.1.120-126（既に changelog 反映済み）。仕様更新不要
+
+#### スキルエコシステム（Phase 3.5 スキップ）
+- 前回 2026-05-09 から 4 日のため今回はスキップ
+
+---
+
 ## 2026-05-10 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
