@@ -1,5 +1,33 @@
 # harness-harness 更新履歴
 
+## 2026-05-14 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.140 / 2026-05-12 検出** — バグ修正中心のマイナーリリース）
+- Codex CLI: GitHub Releases（0.130.0 stable のまま。0.131.0-alpha.9 は alpha 継続、stable 昇格なし）
+- whats-new w20: 未公開（404、週末公開待ち）
+- スキルエコシステム: 前回 2026-05-09 から 5 日経過 → Phase 3.5 スキップ（7 日以内）
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.140（2026-05-12）— バグ修正中心
+- **specs/claude/changelog.md** — v2.1.140 エントリ追記
+- 主な変更:
+  - **Agent `subagent_type` マッチが大文字小文字・区切り非依存**: `"Code Reviewer"` → `code-reviewer` 自動解決
+  - **`/goal` ハング修正**: `disableAllHooks` / `allowManagedHooksOnly` 有効時のメッセージ表示改善
+  - **設定ホットリロード**: シンボリックリンク設定の変更イベント誤帰属修正（spurious `ConfigChange` hook 抑制）
+  - **`claude --bg` 安定化**: connection dropped 修正・起動猶予延長
+  - **Loop スケジューリング**: バックグラウンドタスクの冗長 wakeup 削減
+  - **プラグイン警告**: `plugin.json` 設定で暗黙的に skills/ 等が無視される際の警告
+  - **Read ツール**: `offset` 文字列バリデーション緩和
+  - **Windows**: `where.exe` 再起動による停止修正
+- 大半は内部修正・UI 微調整。specs の hooks / mcp / agent-teams 等への構造的変更なし
+
+#### Codex CLI（変更なし）
+- 0.130.0 stable のまま。0.131.0-alpha.9 が 2026-05-12 公開済みだが alpha 継続。次回巡回でフォロー
+
+---
+
 ## 2026-05-13 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
