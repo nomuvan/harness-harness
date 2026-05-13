@@ -3,9 +3,24 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-13
+最終更新: 2026-05-14
 
 ---
+
+## v2.1.140 (2026-05-12)
+
+- **Agent ツール `subagent_type` マッチが大文字小文字・区切り文字非依存に**: `"Code Reviewer"` が `code-reviewer` に正しく解決されるようになり、メイン会話とサブエージェント仕様間の表記揺れを許容
+- **`/goal` 改善**: `disableAllHooks` / `allowManagedHooksOnly` が有効な時にハングする問題を修正し、明確なメッセージを表示
+- **設定ホットリロード**: シンボリックリンクされた設定ファイル編集の変更イベント誤帰属を修正（spurious な `ConfigChange` hook 発火を抑制）
+- **`claude --bg` 安定化**: "connection dropped mid-request" で失敗する問題を修正。エンタープライズエンドポイントセキュリティ環境での起動猶予を延長
+- **リモート管理設定**: 401 応答時にトークン強制リフレッシュで一度リトライ
+- **Managed Settings 永続化**: `extraKnownMarketplaces` の auto-update ポリシーを `known_marketplaces.json` に永続化
+- **プラグイン警告**: `plugin.json` 設定でデフォルトのコンポーネントフォルダ（skills/ 等）が暗黙的に無視される際に警告を出力
+- **Loop スケジューリング最適化**: バックグラウンドタスクの冗長な wakeup を削減
+- **Read ツール**: `offset` が空白パディング・`+` 接頭辞付き文字列の場合のバリデーション失敗を修正
+- **Windows イベントループ**: 不在実行ファイルチェックが同期 `where.exe` 再起動を発火させて停止する問題を修正
+- **エージェントカラーパレット更新**
+- ターミナルカーソル位置・プラグイン更新・サブエージェントカラー等のマイナーUI修正
 
 ## v2.1.139 (2026-05-11)
 
