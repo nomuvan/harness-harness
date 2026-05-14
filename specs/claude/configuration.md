@@ -376,6 +376,8 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `CLAUDE_CODE_SESSION_ID` | Claude Code が Bash ツールサブプロセスに自動設定する現在のセッション ID。hooks に渡される `session_id` と一致（v2.1.132） |
 | `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN` | `1` でフルスクリーン alternate-screen レンダラーをオプトアウトし、会話を端末のネイティブスクロールバックに残す（v2.1.132） |
 | `CLAUDE_CODE_ENABLE_FEEDBACK_SURVEY_FOR_OTEL` | OpenTelemetry 経由でセッション品質サーベイ応答を収集する企業向けに、無効化されているセッションフィードバックサーベイを再有効化（v2.1.136） |
+| `CLAUDE_CODE_PLUGIN_PREFER_HTTPS` | `1` で GitHub プラグインソースを SSH ではなく HTTPS でクローン。SSH 鍵未設定環境向け（v2.1.141） |
+| `ANTHROPIC_WORKSPACE_ID` | workload identity federation で発行トークンを特定ワークスペースにスコープ。federation ルールが複数ワークスペースをカバーする場合に必須（v2.1.141） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 

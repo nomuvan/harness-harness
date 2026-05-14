@@ -1,5 +1,36 @@
 # harness-harness 更新履歴
 
+## 2026-05-15 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.141 / 2026-05-13 検出** — 機能追加 + バグ修正）
+- Codex CLI: GitHub Releases（0.130.0 stable のまま。0.131.0-alpha.16 が 2026-05-14 公開、alpha 継続）
+- whats-new w20: 未公開（404、週末公開待ち）
+- スキルエコシステム: 前回 2026-05-09 から 6 日経過 → Phase 3.5 スキップ（7 日以内）
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.141（2026-05-13）— Hook 機能拡張 + 環境変数追加
+
+- **specs/claude/changelog.md** — v2.1.141 エントリ追記
+- **specs/claude/hooks.md** — JSON 出力フォーマットに `terminalSequence` フィールド追加（v2.1.141+）
+- **specs/claude/configuration.md** — 環境変数表に以下を追加:
+  - `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`: GitHub プラグインソースを HTTPS クローン
+  - `ANTHROPIC_WORKSPACE_ID`: workload identity federation のワークスペーススコープ
+- 主な変更:
+  - **Hook `terminalSequence` 出力**: 制御端末なし hook からデスクトップ通知・ウィンドウタイトル・ベル発行
+  - **`claude agents --cwd <path>`**: セッションリストを指定ディレクトリにスコープ
+  - **`/feedback` 拡張**: 24h/7d セッションを含められる
+  - **Rewind「Summarize up to here」**: 過去コンテキスト圧縮
+  - **`/bg` バックグラウンドエージェント**: permission mode 維持
+  - 多数のバグ修正（権限ダイアログ、autocompact 閾値、vim Ctrl+C、Bedrock auth、MCP 403 表示、Remote Control 401 ループ、light-ansi テーマ等）
+
+#### Codex CLI（stable 変更なし）
+
+- 0.130.0 stable のまま。0.131.0-alpha.16 が 2026-05-14 公開（alpha.9 → alpha.16 と進行）。stable 昇格は次回以降フォロー
+
+---
+
 ## 2026-05-14 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
