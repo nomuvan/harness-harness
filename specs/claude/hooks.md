@@ -313,6 +313,7 @@ v2.1.133 以降、すべてのイベントの入力 JSON に effort level も含
   "systemMessage": "warning",
   "decision": "block|allow|deny",
   "reason": "explanation",
+  "terminalSequence": "\u0007",
   "hookSpecificOutput": {
     "hookEventName": "EventName",
     "additionalContext": "string",
@@ -325,6 +326,8 @@ v2.1.133 以降、すべてのイベントの入力 JSON に effort level も含
   }
 }
 ```
+
+`terminalSequence`（v2.1.141+）: 制御端末を持たない hook からデスクトップ通知・ウィンドウタイトル・ベル等の端末シーケンスを発行できる。例: `"\u0007"`（ベル）、`"\u001b]0;title\u0007"`（ウィンドウタイトル設定）。バックグラウンド hooks や HTTP hooks から端末 UX を制御する用途に有効。
 
 ### 6.4 主要イベントの出力詳細
 

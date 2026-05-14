@@ -3,9 +3,41 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-14
+最終更新: 2026-05-15
 
 ---
+
+## v2.1.141 (2026-05-13)
+
+- **Hook JSON 出力に `terminalSequence` フィールド追加**: 制御端末なしでデスクトップ通知・ウィンドウタイトル・ベル等の端末シーケンスを発行可能に（バックグラウンド hooks 等で活用）
+- **`CLAUDE_CODE_PLUGIN_PREFER_HTTPS` 環境変数追加**: GitHub プラグインソースを SSH ではなく HTTPS でクローン。SSH 鍵未設定環境向け
+- **`ANTHROPIC_WORKSPACE_ID` 環境変数追加**: workload identity federation で発行トークンを特定ワークスペースにスコープ。federation ルールが複数ワークスペースをカバーする場合に有効
+- **`claude agents --cwd <path>` 追加**: セッションリストをディレクトリでスコープ
+- **`/feedback` 拡張**: 直近 24 時間または 7 日間のセッションを含められるように（現セッションを跨ぐ問題向け）
+- **Rewind メニュー「Summarize up to here」追加**: 直近ターンを保持しつつ過去コンテキストを圧縮
+- **Auto モード権限ダイアログ改善**: `permissions.ask` ルールが原因でプロンプトが出た場合に理由を明示
+- **IDE 連携復元**: ファイル編集 permission プロンプトの「IDE で diff を見る」オプションが復活
+- **バックグラウンドエージェント**: `/bg` / `←←` で起動したバックグラウンドエージェントが現在の permission mode を維持（従来は default に戻っていた）
+- **`claude agents` 改善**: バックグラウンドシェルが残っているエージェントが Working ではなく Completed に移動
+- **スピナーフィードバック改善**: 長い思考期間中、10 秒後にスピナーがアンバー色に温まり継続を示唆
+- **重要バグ修正**:
+  - Bedrock/Vertex/Foundry/gateway で `ANTHROPIC_SMALL_FAST_MODEL` 未設定時にバックグラウンドサイドクエリが Haiku ID 送信で失敗する問題（メインループモデルにフォールバック）
+  - Windows で `claude daemon status` / `/doctor` がデーモンパイプキーファイルロック時に opaque failure する問題
+  - `EnterWorktree` で作業ディレクトリ切り替え後、hooks が存在しない `transcript_path` を受け取る問題
+  - `/model` 変更が他並列セッションの autocompact 閾値を黙って変更する問題
+  - 権限プロンプト中のモード変更が新設定で許可されたツールでもプロンプトを自動 dismiss しない問題
+  - 権限プロンプト中の Enter が入力ボックスにも送信される問題
+  - markdown テーブルのセルラッピング時に縦型 key-value フォールバックする問題（v2.1.136 リグレッション）
+  - vim INSERT/VISUAL モード中の Ctrl+C が turn を中断しない問題
+  - 代替 `chat:submit` キーバインド（`meta+enter` 等）が `enter` 再バインド時に効かない問題
+  - `spinnerVerbs` 設定が turn-completion メッセージで尊重されない問題
+  - light-ansi テーマで diff コンテキスト行が白で不可視になる問題
+  - Bedrock の `awsCredentialExport` が ambient AWS credentials 解決時にスキップされ、クロスアカウントアクセス auth が失敗する問題
+  - SDK で Linux glibc/musl 両プラットフォームパッケージインストール時に "native binary not found" エラー
+  - MCP 関連: HTTP/SSE サーバー 403 が "failed" 表示（"needs auth" が正しい）、POSIX shell パラメータ展開（`${var%pattern}`）が未設定変数として誤検出、`.mcp.json` 経由の MCP サーバーが 0 表示
+  - Remote Control: 401 後のループ再 enroll を停止、worker session token rotation 時の 401 修正
+- VSCode 拡張: マイクが silence しか拾わない時の "No audio detected" 表示、WSLg 向け `sox libsox-fmt-pulse` 案内
+- daemon: `←` から残った空 idle バックグラウンドセッションを 5 分後に自動退避
 
 ## v2.1.140 (2026-05-12)
 
