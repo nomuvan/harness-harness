@@ -3,9 +3,39 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-15
+最終更新: 2026-05-16
 
 ---
+
+## v2.1.142 (2026-05-14)
+
+- **`claude agents` 新フラグ追加**: dispatch されるバックグラウンドセッションの設定を制御可能に
+  - `--add-dir`, `--settings`, `--mcp-config`, `--plugin-dir`, `--permission-mode`, `--model`, `--effort`, `--dangerously-skip-permissions`
+- **Fast mode デフォルトモデル変更**: Opus 4.6 → **Opus 4.7**。Opus 4.6 に固定したい場合は `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE=1` を設定
+- **プラグインの単一スキル化対応**: ルートレベルに `SKILL.md` を置き `skills/` サブディレクトリがないプラグインは、単一のスキルとして直接サーフェスされるように
+- **`/plugin` 詳細ペインに LSP サーバー表示**: `claude plugin details` でもプラグインが提供する LSP サーバー一覧を確認可能
+- **`/web-setup` 安全装置**: 既存の GitHub App 接続を置き換える前に警告
+- **重要バグ修正**:
+  - `MCP_TOOL_TIMEOUT` がリモート HTTP/SSE MCP サーバーの per-request fetch timeout に反映されず、設定値に関わらず 60 秒で打ち切られる問題
+  - バックグラウンドセッションが既存 git worktree を認識せず Edit がブロックされ EnterWorktree も重複作成を拒否する問題
+  - macOS スリープ/ウェイク後にバックグラウンドセッションが消失しデーモン再接続が失敗する問題（clock jump 検出に変更）
+  - バイナリアップグレード（`brew upgrade` 等）後にデーモンがクリーン終了せず、dispatch されたエージェントが crash-loop する問題
+  - Claude-in-Chrome 拡張接続時に共有タブがないとバックグラウンドエージェントが crash-loop する問題
+  - `claude agents` セッションのリンククリックがアタッチ中もヘッドレスブラウザシムを使ってしまう問題
+  - `claude agents` の "v to open in editor" がシェルの `$EDITOR`/`$VISUAL` ではなくデーモンのデフォルトエディタを使う問題
+  - Windows でネットワークドライブを作業ディレクトリにすると `claude agents` がデッドロックする問題（起動中 Ctrl+C も効くように）
+  - Apple Terminal 等 256色のみの端末から `claude agents` セッションにアタッチ時の背景色ブリード
+  - `claude --bg --dangerously-skip-permissions` が retire/wake を跨いで永続化しない問題
+  - 最初のメッセージがリンクの場合にセッションタイトルが URL から導出される問題
+  - リモートクライアントからの冗長な `set_model` リクエストが transcript に重複 `/model` を注入する問題
+  - `skills: ["./"]` を使うプラグインで誤った "path escapes plugin directory" エラー
+  - プラグインキャッシュクリーンアップがインストールメタデータ不在時にアクティブプラグインバージョンを削除する問題
+  - `/plugin` browse ペインで新規公開プラグインが "0 installs" 表示
+  - プラグインアドバイザリが `plugin.json` のデフォルトフォルダを shadow するキーを全て表示しない問題
+- **改善**:
+  - リアクティブコンパクション: 初回 summarize がオリジナルリクエストのオーバーフローサイズから始まり、ニアフルコンテキストでの無駄なリトライを回避
+  - Hook 設定エラー改善: `SessionStart`/`Setup`/`SubagentStart` に prompt/agent タイプの hook を設定すると "use a command-type hook instead" エラーを明示
+- 利用ポリシー違反メッセージから古い `/model claude-sonnet-4-20250514` 提案を削除
 
 ## v2.1.141 (2026-05-13)
 

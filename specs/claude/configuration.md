@@ -1,6 +1,6 @@
 # Claude Code 設定仕様書
 
-最終更新: 2026-05-10（巡回更新）
+最終更新: 2026-05-16（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/settings / https://code.claude.com/docs/en/memory
 
@@ -378,6 +378,7 @@ Claude が自動的にセッション間の学習を蓄積する仕組み。v2.1
 | `CLAUDE_CODE_ENABLE_FEEDBACK_SURVEY_FOR_OTEL` | OpenTelemetry 経由でセッション品質サーベイ応答を収集する企業向けに、無効化されているセッションフィードバックサーベイを再有効化（v2.1.136） |
 | `CLAUDE_CODE_PLUGIN_PREFER_HTTPS` | `1` で GitHub プラグインソースを SSH ではなく HTTPS でクローン。SSH 鍵未設定環境向け（v2.1.141） |
 | `ANTHROPIC_WORKSPACE_ID` | workload identity federation で発行トークンを特定ワークスペースにスコープ。federation ルールが複数ワークスペースをカバーする場合に必須（v2.1.141） |
+| `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE` | `1` で Fast mode を Opus 4.6 に固定。v2.1.142 以降、Fast mode デフォルトは Opus 4.7（v2.1.142） |
 
 完全な環境変数リファレンス: https://code.claude.com/docs/en/env-vars
 
