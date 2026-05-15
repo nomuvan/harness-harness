@@ -1,6 +1,6 @@
 # Claude Code Skills & コマンド仕様書
 
-最終更新: 2026-04-29（巡回更新）
+最終更新: 2026-05-16（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/skills / https://code.claude.com/docs/en/commands / https://code.claude.com/docs/en/sub-agents / https://code.claude.com/docs/en/scheduled-tasks / https://code.claude.com/docs/en/web-scheduled-tasks / https://code.claude.com/docs/en/discover-plugins
 
@@ -20,6 +20,7 @@ Skills は Claude の能力を拡張する仕組み。`SKILL.md` ファイルに
 | Personal | `~/.claude/skills/<skill-name>/SKILL.md` | 全プロジェクト |
 | Project | `.claude/skills/<skill-name>/SKILL.md` | 当該プロジェクトのみ |
 | Plugin | `<plugin>/skills/<skill-name>/SKILL.md` | プラグイン有効時 |
+| Plugin (単一スキル) | `<plugin>/SKILL.md` （`skills/` サブディレクトリなし） | プラグイン全体が単一スキルとしてサーフェスされる（v2.1.142） |
 
 名前が重複する場合の優先度: Enterprise > Personal > Project。Plugin スキルは `plugin-name:skill-name` 名前空間で衝突しない。
 

@@ -1,5 +1,45 @@
 # harness-harness 更新履歴
 
+## 2026-05-16 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.142 / 2026-05-14 検出** — 機能追加 + バグ修正）
+- Codex CLI: GitHub Releases（0.130.0 stable のまま。0.131.0-alpha.19 が 2026-05-15 公開、alpha 継続）
+- whats-new w20: 未公開（404、Sat 2026-05-16 時点）
+- スキルエコシステム: 前回 2026-05-09 から 7 日経過 → 軽巡回実施
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.142（2026-05-14）— `claude agents` 拡張 + Fast mode = Opus 4.7
+
+- **specs/claude/changelog.md** — v2.1.142 エントリ追記
+- **specs/claude/configuration.md** — 環境変数表に `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE` を追加（Fast mode を Opus 4.6 に固定）
+- **specs/claude/skills-and-commands.md** — プラグイン配置表に「単一スキル形式」(`<plugin>/SKILL.md`) 追記
+- 主な変更:
+  - **`claude agents` 新フラグ**: `--add-dir`, `--settings`, `--mcp-config`, `--plugin-dir`, `--permission-mode`, `--model`, `--effort`, `--dangerously-skip-permissions` で dispatch 設定可能
+  - **Fast mode デフォルト**: Opus 4.6 → **Opus 4.7**（`CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE=1` で旧版固定）
+  - **プラグイン単一スキル化**: ルートレベル `SKILL.md` のみのプラグインを単一スキルとして直接サーフェス
+  - `/plugin` 詳細ペインに LSP サーバー表示
+  - `/web-setup` が既存 GitHub App 接続を置き換える前に警告
+  - 多数のバグ修正（`MCP_TOOL_TIMEOUT` リモート反映、macOS sleep/wake デーモン、`brew upgrade` 後 crash-loop、Windows ネットワークドライブデッドロック、リアクティブコンパクション改善等）
+
+#### Codex CLI（stable 変更なし）
+
+- 0.130.0 stable のまま。0.131.0-alpha.19 が 2026-05-15 公開（alpha.16 → alpha.19 と進行）。stable 昇格は次回以降フォロー
+
+#### スキルエコシステム（軽巡回）
+
+- **kb/skills/_index.md** — last_patrol を 2026-05-16 に更新
+  - anthropics/skills: 130K → **135K** stars
+  - skills.sh: find-skills が 1.4M → **1.5M** installs
+  - Tier 昇格・降格に値する新規スキルなし
+
+### 影響なし
+- mapping/: Claude/Codex 互換性に影響する変更なし
+- スキルカテゴリ構造、agentskills.io 仕様: 変更なし
+
+---
+
 ## 2026-05-15 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
