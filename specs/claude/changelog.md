@@ -3,9 +3,48 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-16
+最終更新: 2026-05-18
 
 ---
+
+## v2.1.143 (2026-05-15)
+
+- **プラグイン依存関係の強制**: `claude plugin disable` が他の有効プラグインの依存先を無効化しようとすると拒否し、コピペ可能な disable-chain ヒントを表示。`claude plugin enable` は推移的依存を強制有効化
+- **`/plugin` マーケットプレイス: 推定コンテキストコスト表示**: マーケットプレイス browse ペインに projected context cost（ターン当たり・呼び出し当たりのトークン推定）を追加
+- **`worktree.bgIsolation: "none"` 設定追加**: バックグラウンドセッションが `EnterWorktree` なしで作業コピーを直接編集可能に。worktree が現実的でないリポジトリ向け
+- **PowerShell ツール改善**:
+  - PowerShell ツール実行時に `-ExecutionPolicy Bypass` を渡すように。`CLAUDE_CODE_POWERSHELL_RESPECT_EXECUTION_POLICY=1` でオプトアウト
+  - Windows の Bedrock/Vertex/Foundry ユーザーでも PowerShell ツールがデフォルト有効に。`CLAUDE_CODE_USE_POWERSHELL_TOOL=0` でオプトアウト
+- **バックグラウンドセッション**: アイドルからのウェイク後にモデルと effort レベルを維持
+- **`claude agents` 新フラグ拡張**:
+  - `--add-dir`, `--settings`, `--mcp-config`, `--plugin-dir` が view 自体および view から dispatch されるバックグラウンドセッションに適用
+  - `--permission-mode`, `--model`, `--effort`, `--dangerously-skip-permissions` で view から dispatch されるセッションのデフォルトを指定可能
+  - view から起動されるバックグラウンドセッションが `permissions.defaultMode` を尊重（従来は auto モードに上書きされていた）
+- **Shift+Tab で auto モードもサイクル対象に**: アタッチ中のエージェントセッションで Shift+Tab のサイクルに auto モードが含まれるように
+- **重要バグ修正**:
+  - `.credentials.json` の `scopes` 値が非配列で破損していると CLI 起動がハング/OAuth トークン更新がサイレント失敗する問題
+  - Windows Terminal/WSL で `claude agents` の右クリックペーストが効かない問題
+  - ブロックを繰り返す stop hook が無限ループする問題（8 連続ブロックでターン終了。`CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` で上限調整可）
+  - Claude がイテレーション間で idle のとき Esc/Ctrl+C が保留中の `/loop` ウェイクをキャンセルしない問題
+  - バックグラウンドシェルや delegated subagent 実行中に `/goal` evaluator が発火する問題
+  - settings.json の `env` で `NO_COLOR`/`FORCE_COLOR` 指定すると Claude Code 自身の UI 色まで剥がされる問題（サブプロセスにのみ適用されるように修正）
+  - エージェント view がセッション一覧時に Windows で PowerShell プロセスを繰り返し spawn する問題
+  - `/bg` を引数なしで実行すると fork セッションに "continue" が送られる問題（fork は入力待ちに）
+  - `--agent <name>` がプラグイン提供エージェントを `plugin:` プレフィックスなしでは見つけられない問題
+  - エージェント view からセッションを削除しても transcript ファイルが残る問題
+  - Windows Terminal アタッチ中のバックグラウンドセッションでスクロール時の stale fragment レンダリング
+  - host sleep / macOS App Nap 後のバックグラウンドエージェントで worker-stall 誤検知ストーム
+  - 5xx エラーメッセージが設定済みゲートウェイ/クラウドプロバイダ名ではなく `status.claude.com` を指す問題
+  - macOS で `~/Documents`, `~/Desktop`, `~/Downloads` 配下のファイルがバックグラウンドジョブセッションから「Operation not permitted」になる問題（Full Disk Access 付与済みでも）
+  - `/bg` および ← detach で `--mcp-config`, `--settings`, `--add-dir`, `--plugin-dir`, `--strict-mcp-config` が引き継がれず、再 spawn 後に MCP/設定を失う問題
+  - 同様に `--fallback-model` が引き継がれず、オーバーロード時にフォールバックできず hard-fail する問題
+  - 同様に `--allow-dangerously-skip-permissions` が引き継がれず、fork worker の Shift+Tab サイクルから bypass mode が消える問題
+  - `~/.local/bin/claude` launcher が欠落/非実行可能のとき、バックグラウンドデーモンの spawn が現在実行中のバイナリにフォールバックしない問題
+  - `claude agents --allow-dangerously-skip-permissions` が dispatch セッションを bypass モードにデフォルト設定してしまう問題（permission サイクルに available にするだけのはずだった）
+  - `claude agents` でレスポンスストリーミング中に ← を押すとエージェントリストが入力に応答しなくなる問題
+  - `claude --bg --dangerously-skip-permissions` が retire→wake を跨いで永続化しない問題
+  - Bedrock/Vertex/Foundry/gateway で `ANTHROPIC_SMALL_FAST_MODEL` 未設定時にバックグラウンドサイドクエリが Haiku ID 送信で失敗する問題（メインループモデルにフォールバック。v2.1.141 の修正の追加対応）
+  - Worktree クリーンアップが `git worktree remove` 失敗時に `rm -rf` フォールバックしなくなった（gitignored / in-progress ファイルの喪失を防止）
 
 ## v2.1.142 (2026-05-14)
 
