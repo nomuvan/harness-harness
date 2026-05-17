@@ -1,5 +1,48 @@
 # harness-harness 更新履歴
 
+## 2026-05-18 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.143 / 2026-05-15 検出** — プラグイン依存強制 + worktree.bgIsolation + PowerShell 改善 + 多数のバグ修正）
+- Codex CLI: GitHub Releases（0.130.0 stable のまま。alpha トラックは 0.131.0-alpha.16 → alpha.22 と進行、2026-05-15）
+- whats-new w20: **未公開**（Mon 2026-05-18 時点でも 404）
+- スキルエコシステム: 前回 2026-05-16 から 2 日 → 7 日以内のため Phase 3.5 スキップ
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.143（2026-05-15）— プラグイン依存強制 + worktree.bgIsolation + PowerShell
+
+- **specs/claude/changelog.md** — v2.1.143 エントリ追記、最終更新日を 2026-05-18 に
+- **specs/claude/configuration.md**:
+  - 設定キー表に `worktree.bgIsolation` を追加（`"none"` でバックグラウンドセッションが作業コピー直接編集）
+  - 環境変数表に 3 件追加: `CLAUDE_CODE_POWERSHELL_RESPECT_EXECUTION_POLICY` / `CLAUDE_CODE_USE_POWERSHELL_TOOL` / `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP`
+- **specs/claude/skills-and-commands.md** — `/plugin` 行に projected context cost 表示を追記、`claude plugin enable/disable` の依存関係強制を新規追加
+- **specs/claude/hooks.md** — Stop hook セクションに「8 連続ブロックで自動終了 + `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` 上限調整可」を追記
+- 主な変更:
+  - **プラグイン依存関係の強制**: `claude plugin disable` は依存先を拒否 + disable-chain ヒント。`enable` は推移的依存を強制有効化
+  - **`worktree.bgIsolation: "none"`**: バックグラウンドセッションが `EnterWorktree` なしで作業コピー直接編集
+  - **PowerShell ツール改善**: `-ExecutionPolicy Bypass` がデフォルトで付与、Windows の Bedrock/Vertex/Foundry でデフォルト有効化
+  - **`/plugin` projected context cost**: マーケットプレース browse ペインにトークン推定表示
+  - **stop hook 安全装置**: 8 連続ブロックでターン終了
+  - **`/bg` / ← detach の引数永続化**: `--mcp-config`, `--settings`, `--add-dir`, `--plugin-dir`, `--strict-mcp-config`, `--fallback-model`, `--allow-dangerously-skip-permissions` がバックグラウンド化後も保持されるように
+  - **macOS Documents/Desktop/Downloads アクセス修正**: Full Disk Access 付与済みでも「Operation not permitted」になる問題を解消
+  - **Shift+Tab に auto モード追加**: アタッチ中のエージェントセッションでのサイクル対象に
+  - Worktree クリーンアップが `git worktree remove` 失敗時に `rm -rf` フォールバックを廃止（ファイル喪失防止）
+
+#### Codex CLI（stable 変更なし）
+
+- 0.130.0 stable のまま。alpha は alpha.16 → alpha.22（2026-05-15）と進行。stable 昇格は次回以降フォロー
+
+#### スキルエコシステム
+
+- 前回巡回 2026-05-16 から 7 日以内のため Phase 3.5 スキップ
+
+### 影響なし
+- mapping/: Claude/Codex 互換性に影響する変更なし
+- agent-teams.md: `claude agents` view（CLI ダッシュボード）は Agent Teams 機能と別物。changelog エントリで吸収済み
+
+---
+
 ## 2026-05-16 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL

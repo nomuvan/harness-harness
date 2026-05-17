@@ -382,6 +382,8 @@ v2.1.133 以降、すべてのイベントの入力 JSON に effort level も含
 }
 ```
 
+**v2.1.143+ のブロック上限**: ブロックを繰り返す stop hook が無限ループする問題への安全装置として、**8 連続ブロックでターンが警告とともに自動終了** するように。上限は環境変数 `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` で変更可能。
+
 #### SessionStart
 
 環境変数の永続化に `CLAUDE_ENV_FILE` を使用:
