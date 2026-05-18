@@ -3,9 +3,45 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://developers.openai.com/codex/changelog
 
-最終更新: 2026-05-10
+最終更新: 2026-05-19
 
 ---
+
+## CLI 0.131.0 (2026-05-18)
+
+- **`codex doctor` コマンド追加**: runtime, auth, terminal, network, config, ローカル状態を横断するサポート向け診断ツール
+- **`codex remote-control` の daemon 化**: daemon ライフサイクル管理、ランタイム enable/disable API、ステータス読み取り、registry-backed 環境を追加
+- **プラグインマーケットプレース CLI 追加**: `codex plugin` 配下にマーケットプレース操作コマンドが追加。バージョン対応の share、share checkout、共有ワークスペースの discoverability 区分も導入
+- **プラグイン Hooks がデフォルト有効化**: 旧来の opt-in から default-enabled に変更
+- **統一 `@` メンション**: ファイル / ディレクトリ / プラグイン / スキルを単一ピッカーで検索（app-server プラグインメタデータ駆動）
+- **TUI 表示の刷新**:
+  - サービスティアのスラッシュコマンドがデータ駆動に
+  - ステータスラインに blended token count・権限・承認モードを表示
+  - 有効ワークスペースルートを exec/summary 表示に追加
+  - レスポンシブ Markdown テーブルレンダリング
+- **Python SDK が `openai-codex` / `openai_codex` にリネーム**: ピン留め runtime-generated types、並行ターンルーティング、承認モード API、app-server 統合ハーネスを追加
+- **`/goal edit` コマンド追加**: 既存ゴール内容を TUI から編集可能に
+- **`--dangerously-bypass-hook-trust` CLI フラグ追加**: hook trust フローを意図的にバイパス（CI 等向け）
+- **`--profile-v2` レイヤー化プロファイル設定**: 複数 TOML を重ねるプロファイル v2。旧 `[profiles]` 併用時は明示拒否
+- **strict config parsing**: 設定スキーマ外フィールドの厳格チェック
+- **Network proxy feature flag**: ネットワークプロキシ機能の段階的ロールアウト用フラグ
+- **Windows hook command overrides**: Windows 上で hook コマンドをプラットフォーム別に差し替え可能
+- **Multi-environment `apply_patch` 選択**: 複数環境に跨る apply_patch のターゲット指定
+- **Windows サンドボックス強化**: deny-read parity、scoped write root SID、firewall policy が無効な場合の elevated setup 失敗
+- **権限永続化の堅牢化**: escalation 中の managed deny-read 維持、workspace-roots と danger-full-access の正規化
+- **SQLite/状態起動の安全化**: 破壊的バージョンバンプ廃止、state db オープン失敗時の fail-closed、復旧パス追加
+- **`git` 周り改善**: 連結 worktree でルート repo hooks を使用、helper コマンドで repo hook/fsmonitor 設定を無視、login OAuth のローカルコールバック binding、再ログイン時の旧トークン失効
+- **ambient terminal pets** (`tui.pets`): TUI にデコラティブなペットを表示（実験的）
+- **削除・非推奨**:
+  - `/collab` スラッシュコマンドを削除
+  - 組み込み MCP を廃止（プラグイン経由で利用）
+  - `experimental_use_freeform_apply_patch` / `windows_wsl_setup_acknowledged` / `tools.view_image` / `Feature::CodexGitCommit` 等の設定を削除
+  - レガシー after-tool-use hooks を削除
+  - Issue labeler を非推奨化
+- **主要バグ修正**:
+  - TUI: URL 周囲のテキスト wrap、ライトモード選択のコントラスト、tmux 内 Shift+Enter、`/review` MCP 起動表示、`/side` の Esc 抑止
+  - exec-server: Windows での `taskkill` 出力抑制、transport timeout 延長
+  - 設定: TUI keymap で `minus` を許容
 
 ## CLI 0.130.0 (2026-05-08)
 

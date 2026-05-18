@@ -1,6 +1,6 @@
 # OpenAI Codex CLI コマンド仕様
 
-最終更新: 2026-05-01（巡回更新）
+最終更新: 2026-05-19（巡回更新）
 
 ---
 
@@ -26,6 +26,7 @@
 | `/review` | `/review` | ワーキングツリーの変更をレビュー分析（ベースブランチ差分、未コミット変更、特定コミット等のプリセット） |
 | `/copy` | `/copy` | 最新の Codex 出力をクリップボードにコピー |
 | `/mention` | `/mention <path>` | 特定のファイルやフォルダを会話に添付 |
+| `@` mention | `@<query>` | ファイル / ディレクトリ / プラグイン / スキルを単一ピッカーで検索（0.131.0+ で統合） |
 
 ### 1.3 権限・セキュリティ
 
@@ -42,7 +43,7 @@
 | `/fork` | `/fork` | 現在の会話を新しいスレッドに複製 |
 | `/new` | `/new` | 同じ CLI セッション内で新しい会話を開始 |
 | `/side` | `/side` | サイド会話を開始（作業中の本線を止めずにクイック質問。スラッシュコマンド・シェルプロンプトも使用可） |
-| `/goal` | `/goal [create\|pause\|resume\|clear]` | 永続化されたゴール駆動ワークフローを管理（0.128.0+。ランタイム継続・モデルツール統合あり） |
+| `/goal` | `/goal [create\|pause\|resume\|clear\|edit]` | 永続化されたゴール駆動ワークフローを管理（0.128.0+。ランタイム継続・モデルツール統合あり。`edit` は 0.131.0+） |
 | `/clear` | `/clear` | 表示をリセットし、同じセッション内でチャットを再開 |
 | `/compact` | `/compact` | 会話履歴を圧縮してコンテキスト容量を節約 |
 | `/title` | `/title <text>` | アクティブターン中でもセッションタイトルを編集可能（0.128.0+） |
@@ -115,6 +116,8 @@ codex -q "タスクの説明"
 | `--image, -i <path>` | 画像ファイルを添付 |
 | `--full-auto` | 低摩擦モード（on-request 承認） |
 | `--yolo` | 承認・サンドボックスを完全バイパス（非推奨） |
+| `--dangerously-bypass-hook-trust` | hook trust フローを明示的にバイパス（CI 等向け、0.131.0+） |
+| `--profile-v2 <name>` | レイヤー化プロファイル v2 を使用（複数 TOML を重ね合わせ。旧 `[profiles]` 併用時は拒否、0.131.0+） |
 | `--enable / --disable <feature>` | 機能フラグの有効化/無効化 |
 | `--no-alt-screen` | TUI の代替画面モードを無効化 |
 | `--oss` | ローカル OSS モデルプロバイダー（Ollama）を使用 |
@@ -219,5 +222,8 @@ max_bytes = 1048576        # 最大サイズ（超過時は自動コンパクシ
 | `codex apply <TASK_ID>` | Codex Cloud タスクの差分を適用 |
 | `codex execpolicy check` | ポリシー評価（プレビュー機能） |
 | `codex update` | CLI 自身を最新版にアップグレード（0.128.0+） |
+| `codex doctor` | runtime / auth / terminal / network / config / ローカル状態を横断する診断（0.131.0+） |
+| `codex remote-control` | リモート制御可能な app-server を起動（0.130.0+）。0.131.0 で daemon ライフサイクル管理・ランタイム enable/disable API・registry-backed 環境を追加 |
+| `codex plugin marketplace ...` | プラグインマーケットプレース操作 CLI（0.131.0+）。share / share checkout / version 対応 |
 
 > 公式ドキュメント: [CLI Reference](https://developers.openai.com/codex/cli/reference) / [CLI Features](https://developers.openai.com/codex/cli/features)

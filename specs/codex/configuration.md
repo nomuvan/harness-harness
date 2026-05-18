@@ -1,6 +1,6 @@
 # OpenAI Codex CLI 設定仕様
 
-最終更新: 2026-03-23（巡回更新）
+最終更新: 2026-05-19（巡回更新）
 
 ---
 
@@ -77,8 +77,12 @@ unified_exec = true                      # PTY実行（stable、Windows除く）
 undo = false                             # Undo 機能
 web_search = true                        # Web 検索
 skill_mcp_dependency_install = true      # スキル依存MCPサーバーの自動インストール（stable）
-codex_hooks = false                      # Hooks システム（実験的、デフォルト無効）
+codex_hooks = true                       # Hooks システム（0.124.0+ デフォルト有効）
+plugin_hooks = true                      # プラグインバンドル hooks（0.131.0+ デフォルト有効）
+network_proxy = false                    # ネットワークプロキシ（0.131.0+ 段階的ロールアウト）
 ```
+
+> 0.131.0+: 設定スキーマ外フィールドは **strict config parsing** により拒否される。旧来 unknown フィールドが警告だった挙動から変更されている点に注意。
 
 #### Agent 管理
 
@@ -197,6 +201,21 @@ model = "gpt-5.4"
 approval_policy = "never"
 sandbox_mode = "workspace-write"
 ```
+
+### 3.3 profile-v2（レイヤー化プロファイル, 0.131.0+）
+
+複数の TOML ファイルを重ね合わせて適用するレイヤー化プロファイル。CLI フラグ `--profile-v2 <name>` で有効化。
+
+```
+~/.codex/profiles.d/
+├── 10-base.toml
+├── 20-fast.toml
+└── 30-autonomous.toml
+```
+
+- 数値プレフィックスで重ね順を制御（小さい順に適用、大きい順が優先）
+- 旧来の `[profiles]` テーブルと **併用すると拒否される**（明示的に v1 / v2 を切り替える）
+- 主用途: チーム共有プロファイル（ベース）+ 個人オーバーレイ（チューニング）の階層管理
 
 ### 3.2 使用方法
 
@@ -470,3 +489,22 @@ Codex の Hooks は `command` ハンドラのみをサポートする。
 | `0` | 成功。処理を続行 |
 | `2` | ブロック（`UserPromptSubmit` のみ）。プロンプト送信をキャンセル |
 | その他 | エラーとして扱われる |
+
+### 7.6 Windows hook command overrides（0.131.0+）
+
+プラットフォーム別に hook の `command` を差し替え可能。Windows でのみ別コマンドを実行する場合に使用:
+
+```toml
+[[hooks]]
+event = "SessionStart"
+command = "bash scripts/preflight.sh"
+command_windows = "powershell -ExecutionPolicy Bypass -File scripts/preflight.ps1"
+```
+
+### 7.7 Hook trust の意図的バイパス（0.131.0+）
+
+CI 等で hook trust 確認をスキップしたい場合は CLI フラグ `--dangerously-bypass-hook-trust` を使用。インタラクティブな信頼確認をスキップするため、信頼された CI 環境以外では使用しないこと。
+
+### 7.8 プラグイン Hooks（0.131.0+ デフォルト有効）
+
+プラグインがバンドルする hooks が、明示的に opt-out しない限りデフォルトで有効化される。プラグインインストール時に hook 一覧が UI に表示され、信頼判断に利用される。

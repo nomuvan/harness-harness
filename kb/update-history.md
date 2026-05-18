@@ -1,5 +1,57 @@
 # harness-harness 更新履歴
 
+## 2026-05-19 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**変更なし** — v2.1.143 が依然最新。w20 digest 未公開）
+- Codex CLI: GitHub Releases（**0.131.0 stable リリース 2026-05-18** — 大型機能追加多数）
+- スキルエコシステム: 前回 2026-05-16 から 3 日 → 7 日以内のため Phase 3.5 スキップ
+
+### 検出された変更と更新内容
+
+#### Codex CLI 0.131.0（2026-05-18）— 大型リリース
+
+- **specs/codex/changelog.md** — 0.131.0 エントリ追記、最終更新日を 2026-05-19 に
+- **specs/codex/commands.md**:
+  - `/goal` に `edit` サブコマンド追加
+  - `@` 統合メンション（ファイル / ディレクトリ / プラグイン / スキル）追加
+  - グローバルフラグに `--dangerously-bypass-hook-trust` / `--profile-v2` 追加
+  - その他サブコマンド表に `codex doctor` / `codex remote-control`（漏れていた）/ `codex plugin marketplace ...` を追加
+- **specs/codex/configuration.md**:
+  - `[features]` 表を更新: `codex_hooks = true` (default)、新規 `plugin_hooks` / `network_proxy` 追加
+  - strict config parsing への変更を注記
+  - 新セクション「3.3 profile-v2（レイヤー化プロファイル）」追加
+  - Hooks セクションに「7.6 Windows hook command overrides」「7.7 Hook trust の意図的バイパス」「7.8 プラグイン Hooks（デフォルト有効）」追加
+- 主な機能:
+  - **`codex doctor`**: 診断 CLI（runtime / auth / terminal / network / config / state を横断）
+  - **`codex remote-control` の daemon 化**: ライフサイクル管理、ランタイム enable/disable API、registry-backed 環境
+  - **プラグインマーケットプレース CLI**: share / share checkout / version 対応
+  - **プラグイン Hooks デフォルト有効化**
+  - **統一 `@` メンション**: ファイル / ディレクトリ / プラグイン / スキルを単一ピッカーで検索
+  - **TUI 強化**: blended token count、権限/承認モード表示、レスポンシブ Markdown table、effective workspace roots
+  - **Python SDK リネーム** `openai-codex` / `openai_codex` + 承認モード API
+  - **`--profile-v2`** レイヤー化プロファイル
+  - **strict config parsing**
+  - **`--dangerously-bypass-hook-trust`**
+  - **Windows hook command overrides**
+  - **削除**: `/collab`、組み込み MCP、`experimental_use_freeform_apply_patch`、`windows_wsl_setup_acknowledged`、`tools.view_image`、レガシー after-tool-use hooks、Issue labeler 非推奨化
+
+#### Claude Code（変更なし）
+
+- v2.1.143 が依然最新。次バージョン未公開
+- whats-new w20 digest 未公開（Tue 2026-05-19 時点でも 404）
+
+#### スキルエコシステム
+
+- 前回巡回 2026-05-16 から 7 日以内のため Phase 3.5 スキップ
+
+### 影響なし
+
+- mapping/: `codex doctor` / `codex remote-control` は Claude 側に対応コマンドなし。マッピング対象外
+- templates/: profile-v2 はテンプレート化対象ではない（個別プロジェクトの判断に委ねる）
+
+---
+
 ## 2026-05-18 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL
