@@ -176,7 +176,7 @@ Claude Code に同梱されるスキル:
 | `/config` (`/settings`) | 設定インターフェース表示 |
 | `/permissions` (`/allowed-tools`) | 権限設定 |
 | `/fast [on\|off]` | Fastモードトグル |
-| `/model [model]` | モデル変更 |
+| `/model [model]` | モデル変更（v2.1.144 から現在セッションにのみ適用。新規セッションのデフォルト変更はピッカーで `d` キー） |
 | `/effort [level]` | エフォートレベル設定 |
 | `/memory` | CLAUDE.md/オートメモリ管理 |
 | `/hooks` | フック設定表示 |
@@ -187,7 +187,7 @@ Claude Code に同梱されるスキル:
 | `/cost` | `/usage` のトークン使用量タブを開くショートカット |
 | `/stats` | `/usage` の日次使用量・セッション履歴タブを開くショートカット |
 | `/insights` | セッション分析レポート（プロジェクト領域、操作パターン、摩擦点） |
-| `/extra-usage` | 追加使用量情報（v2.1.113 で Remote Control クライアントからも利用可能に） |
+| `/usage-credits` | 追加使用量情報（v2.1.113 で Remote Control クライアントからも利用可能に。v2.1.144 で `/extra-usage` から改名、旧名もエイリアスとして残存） |
 | `/tui` | フリッカーフリー・フルスクリーン描画の切り替え（v2.1.110） |
 | `/focus` | フォーカスモード切替（v2.1.110。brief・focus モードは v2.1.101 で改善） |
 

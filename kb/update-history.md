@@ -1,5 +1,25 @@
 # harness-harness 更新履歴
 
+## 2026-05-20 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.144 リリース 2026-05-19** — `/resume` bg対応 + 現セッション専用 `/model` + `/usage-credits` リネーム + 多数のバグ修正）
+- Claude Code: whats-new/2026-w20 が公開（v2.1.139-v2.1.142 カバー）
+- Codex CLI: GitHub Releases（**変更なし** — 0.131.0 が依然最新）
+- スキルエコシステム: 前回 2026-05-16 から 4 日 → 7 日以内のため Phase 3.5 スキップ
+
+### 検出された変更と更新内容
+- `specs/claude/changelog.md` — v2.1.144 エントリ追加、最終更新日を 2026-05-20 に更新
+- `specs/claude/skills-and-commands.md` — `/extra-usage` → `/usage-credits` リネーム反映、`/model` の現セッション専用化（v2.1.144）を注記
+- `.patrol-cache/url-metadata.json` — 巡回キャッシュ更新（v2.1.144、w20 公開、w21 未公開）
+
+### 注記
+- v2.1.144 は主にバグ修正リリース。設定（settings）・フック（hooks）まわりに新項目はなく、configuration.md / hooks.md は変更不要
+- w20 digest は v2.1.139-v2.1.142 を扱うため、v2.1.143 と並行して 5/19 に公開された形。本巡回では digest 内容は changelog 既存記載で十分カバー済み
+- mapping/ への影響なし（v2.1.144 の機能は Codex 互換性に影響しないバグ修正中心）
+
+---
+
 ## 2026-05-19 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL

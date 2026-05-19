@@ -3,9 +3,52 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-18
+最終更新: 2026-05-20
 
 ---
+
+## v2.1.144 (2026-05-19)
+
+- **`/resume` がバックグラウンドセッションに対応**: `claude --bg` や agent view から起動したセッションも、インタラクティブセッションと並んで `bg` タグ付きで `/resume` ピッカーに表示される
+- **`/model` のスコープが現在セッション限定に**: `/model` で選んだモデルは現セッションにだけ適用される。新規セッションのデフォルトを変更するにはモデルピッカーで `d` を押す
+- **「extra usage」→「usage credits」リネーム**: CLI コピーが usage credits に統一。`/extra-usage` は `/usage-credits` に改名（旧名もエイリアスとして残存）
+- **`/plugin` browse/discover ペインに最終更新日表示**: マーケットプレイス画面で各プラグインの last-updated 日付が確認できる
+- **バックグラウンドサブエージェント通知に経過時間**: 完了通知に "Agent completed · 3h 2m 5s" のように所要時間を表示
+- **起動ハング修正**: `api.anthropic.com` が到達不能（captive portal / firewall / VPN）なときに最大 75 秒固まる問題を修正。side-channel API 呼び出しに 15 秒タイムアウトを導入
+- **MCP 重要バグ修正**:
+  - paginated な `tools/list` レスポンスが先頭ページのみ返されてツールが silently 欠落する問題
+  - SVG など未対応 MIME タイプの画像が会話を破壊する問題（ディスク保存してツール結果から参照する形式に）
+- **プラグイン関連バグ修正**:
+  - 自分の settings で有効化したプラグインが新規マシンで初回ロード後に "not cached" エラーを返す問題
+  - プロジェクト `.claude/settings.json` のみで有効化されたプラグインに `claude plugin install` ヒントが表示されるように
+  - `claude mcp list` が `.mcp.json` をパースできないとき（例：VS Code 形式の `"servers"` キー）silently 0 サーバーと報告していた問題（設定エラーを表示するように）
+- **ターミナル描画修正**:
+  - window-resize イベントを取りこぼした後の garbled output。Ctrl+L 不要で次フレームで自己修復
+  - 超長セッションでの progressive display corruption（stale/garbled glyphs。リサイズ/再起動でしか直らなかった）
+  - VS Code 上でのスピナーアニメーション色数を削減し描画グリッチ低減
+- **ファイル操作の堅牢化**:
+  - 画像拡張子だが実体が画像でないファイル（HTML を .png 保存等）読み込み時に会話が unrecoverable になる問題（テキストにフォールバック）
+  - `head` / `tail` のファイル閲覧が read-before-edit チェックを満たすように
+  - `egrep`/`fgrep`/`git grep`/`git diff` の "no matches"（exit 1）をコマンド失敗と報告しないように
+- **バックグラウンドセッション関連の多数の修正**:
+  - macOS で Full Disk Access 保護フォルダ配下のプロジェクトを使うと「exit 1 before init」でクラッシュ（v2.1.143 リグレッション）
+  - `/branch` が worktree 投入後やバックグラウンドセッションで "No conversation to branch" 失敗
+  - スクロール（PgUp/PgDn・マウスホイール・Ctrl+O トランスクリプト）が Windows でアタッチ中に効かない問題
+  - アタッチ中のバックグラウンドセッション ターミナル close 時のクラッシュ
+  - `! <cmd>` 実行セッションでアタッチ中に Ctrl+C が効かない問題
+  - agent view のシェルコマンド行が完了後も Working に残り、Enter で再実行されてしまう問題
+  - Windows で `claude agents` の ← 後にリストが入力非応答になる問題
+  - `/bg` と ← detach で `/add-dir` 追加ディレクトリが保持されない問題
+  - `claude respawn <id>` が停止中バックグラウンドセッションを「running」と表示する問題
+  - `claude logs <id>` や agent view からのセッション再開がバックグラウンドサービス無反応時にハング（10s タイムアウト＋復旧ヒント）
+- **モデル選択関連バグ修正**:
+  - IDE モデルピッカーや `applyFlagSettings` 経由でのモデル変更が起動後に適用されない問題
+  - resume 後のセッションが他セッションの `/model` 選択を引き継いでしまう問題
+  - Bedrock/Vertex ユーザーが `/model` ピッカーから "Opus (1M context)" を選べない問題（v2.1.129 リグレッション）
+- **AskUserQuestion**: notes フィールドで Esc を押すとターンが中断されていた問題（回答選択に戻るように）
+- **`/doctor`**: コマンド hook の `command` 欄欠落時に exec 形式の例を表示。スキル一覧の truncation を起動時通知ではなく `/doctor` 内に集約
+- **SDK / Headless**: MCP pre-wait が startup と並行実行されるようになり、遅い MCP サーバーで最大 2 秒高速化
+- **その他細かい修正**: `/feedback` survey 後の follow-up ヒント文面改善、background side-query が ANTHROPIC_BASE_URL/Bedrock Mantle で Haiku 未使用問題、background daemon spawn の launcher 欠落フォールバック、攻撃的な stream stall 時の一度限り再試行、リモートセッションログイン時の `forceLoginMethod`/`forceLoginOrgUUID` 関連修正、`spinnerVerbs` がポストターン文言を上書きしないように
 
 ## v2.1.143 (2026-05-15)
 
