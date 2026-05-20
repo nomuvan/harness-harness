@@ -1,6 +1,6 @@
 # Claude Code Hooks 仕様書
 
-最終更新: 2026-05-13（巡回更新）
+最終更新: 2026-05-21（巡回更新）
 
 公式ドキュメント: https://code.claude.com/docs/en/hooks
 
@@ -283,11 +283,11 @@ v2.1.133 以降、すべてのイベントの入力 JSON に effort level も含
 | `PostToolUse` | `tool_name`, `tool_input`, `tool_response`, `tool_use_id`, `duration_ms`（v2.1.119+。権限プロンプトと PreToolUse 時間を除いたツール実行時間） |
 | `PostToolUseFailure` | `tool_name`, `tool_input`, `tool_use_id`, `error`, `is_interrupt`, `duration_ms`（v2.1.119+） |
 | `PermissionDenied` | `tool_name`, `tool_input`, `tool_use_id`, `reason` |
-| `Stop` | `stop_hook_active`, `last_assistant_message` |
+| `Stop` | `stop_hook_active`, `last_assistant_message`, `background_tasks`, `session_crons`（v2.1.145+） |
 | `StopFailure` | `error`, `error_details`, `last_assistant_message` |
 | `Notification` | `message`, `title`, `notification_type` |
 | `SubagentStart` | `agent_id`, `agent_type` |
-| `SubagentStop` | `stop_hook_active`, `agent_id`, `agent_type`, `agent_transcript_path`, `last_assistant_message` |
+| `SubagentStop` | `stop_hook_active`, `agent_id`, `agent_type`, `agent_transcript_path`, `last_assistant_message`, `background_tasks`, `session_crons`（v2.1.145+） |
 | `InstructionsLoaded` | `file_path`, `memory_type`, `load_reason`, `globs`(opt), `trigger_file_path`(opt), `parent_file_path`(opt) |
 | `CwdChanged` | `cwd` |
 | `FileChanged` | `file_path`, `change_type` (`created`/`modified`/`deleted`) |
