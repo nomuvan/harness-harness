@@ -1,5 +1,33 @@
 # harness-harness 更新履歴
 
+## 2026-05-21 — 公式ドキュメント巡回（差分のみ）
+
+### 巡回対象URL
+- Claude Code: changelog（**v2.1.145 リリース 2026-05-19** — 前回巡回時にはまだ追記されていなかった。`claude agents --json` + OTEL agent_id/parent_agent_id + Stop/SubagentStop に `background_tasks`/`session_crons` 追加 + 権限プロンプトバイパスのセキュリティ修正 等）
+- Claude Code: llms.txt（w21 digest 依然未公開）
+- Codex CLI: GitHub Releases（**0.132.0 stable リリース 2026-05-20** — Python SDK 認証一級化 + `codex exec resume --output-schema` + Goal 継続ループ停止条件 + Windows インストール強化）
+- スキルエコシステム: 前回 2026-05-16 から 5 日 → 7 日以内のため Phase 3.5 スキップ
+
+### 検出された変更と更新内容
+
+#### Claude Code v2.1.145
+- **specs/claude/changelog.md** — v2.1.145 エントリ追記、最終更新日を 2026-05-21 に
+- **specs/claude/hooks.md** — Stop / SubagentStop の JSON 入力フィールドに `background_tasks` / `session_crons`（v2.1.145+）を追記
+- **specs/claude/skills-and-commands.md** — `/plugin` Discover/Browse の事前プレビュー機能（v2.1.145）を追記
+
+#### Codex CLI 0.132.0
+- **specs/codex/changelog.md** — 0.132.0 エントリ追記、最終更新日を 2026-05-21 に
+
+#### キャッシュ
+- **.patrol-cache/url-metadata.json** — 巡回キャッシュ更新（v2.1.145 / 0.132.0 / w21 依然未公開）
+
+### 注記
+- v2.1.145 のセキュリティ修正（Bash の裸の変数代入による権限プロンプトバイパス）は重要。ハーネス側で `PreToolUse` フックを使ったコマンド検査を行っている場合は、新挙動と整合しているか確認推奨
+- Codex 0.132.0 は Python SDK 中心のリリースで、CLI コマンド/設定スキーマの変更は最小限。configuration.md / commands.md は変更不要
+- mapping/ への影響なし（互換性に影響するシンタクス変更は今回なし）
+
+---
+
 ## 2026-05-20 — 公式ドキュメント巡回（差分のみ）
 
 ### 巡回対象URL

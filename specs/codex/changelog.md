@@ -3,9 +3,25 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://developers.openai.com/codex/changelog
 
-最終更新: 2026-05-19
+最終更新: 2026-05-21
 
 ---
+
+## CLI 0.132.0 (2026-05-20)
+
+- **Python SDK の認証一級化**: API キーログイン、ChatGPT ブラウザ/デバイスコードフロー、アカウント検査、ログアウト API を SDK 内蔵
+- **Python turn API の使い勝手向上**: 入力に素の文字列を直接渡せる。handle-based runs は `TurnResult`（collected items、タイミング、usage data）を返却
+- **`codex exec resume --output-schema` 対応**: resume 後の自動化でセッションコンテキストを維持しつつ構造化 JSON 出力を強制可能
+- **TUI 起動高速化**: ターミナル capability 探査をバッチ化し、最初の対話フレーム表示までの待ち時間を短縮
+- **Remote executor 登録に標準 Codex auth を使用可能**: 別の registry credential フロー不要に
+- **App-server で画像詳細度の保持**: ローカル画像のオリジナル解像度をユーザー入力と image-producing tool を通じて維持
+- **Goal 継続ループの停止条件追加**: usage limits や繰り返しブロッカーに当たった時点でループ継続を停止（トークン無駄消費の防止）。完了レスポンスの usage 表現も自然に
+- **セッションピッカー改善**: リネームされたスレッドは `name (thread-id)` 形式で resume ヒントに表示。検索ボックスにペースト可能
+- **マルチセッション TUI 信頼性向上**: 進行中の MCP 呼び出しが replay 中も active 表示維持、elicitation reply が要求元スレッドへ正しくルーティング
+- **リモートセッション堅牢化**: websocket keepalive、diff パスを `/tmp/...` プレフィックスではなく repo 相対で表示
+- **Windows インストール強化**: `codex doctor` が npm-managed install を正しく検出、MSVC リリースバイナリが別途 VC++ ランタイム DLL に依存しないように
+- **TUI 仕上げ**: 終了時の即時シャットダウンフィードバック、非 OpenAI プロバイダで ChatGPT usage リンクを非表示、side-thread resume 後に Fast tier クリア状態が復活しないように
+- **メモリ要約のバージョニング**: stored format が古い場合に再生成。長寿命メモリコンテキストをよりリーンに
 
 ## CLI 0.131.0 (2026-05-18)
 

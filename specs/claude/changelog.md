@@ -3,9 +3,30 @@
 公式changelogを端的にまとめたもの。マイナーバグ修正は省略。
 公式: https://code.claude.com/docs/en/changelog
 
-最終更新: 2026-05-20
+最終更新: 2026-05-21
 
 ---
+
+## v2.1.145 (2026-05-19)
+
+- **`claude agents --json` 追加**: ライブセッション一覧を JSON で出力。tmux-resurrect / ステータスバー / セッションピッカー等の自動化向け
+- **OTEL: `agent_id` / `parent_agent_id` 属性追加**: `claude_code.tool` スパンにエージェント識別子を付加。バックグラウンドサブエージェントスパンが dispatch 元の Agent ツールスパン配下にネストするようトレース親子関係を修正
+- **ステータスライン JSON 入力に GitHub repo/PR 情報**: 検出時に GitHub リポジトリと PR 情報を含めて渡す
+- **`/plugin` Discover/Browse 画面の事前プレビュー**: インストール前にプラグインが提供する commands / agents / skills / hooks / MCP/LSP サーバーを一覧表示
+- **`claude agents` ターミナルタブタイトルに awaiting-input 件数**: alt-tab 中の別ウィンドウでもエージェントの注意要求が分かる
+- **スラッシュコマンド/@-メンション候補のマウス対応**: フルスクリーンモードでホバー＆クリックに応答
+- **Stop / SubagentStop hook 入力拡張**: `background_tasks` と `session_crons` フィールドを追加
+- **権限プロンプトバイパスのセキュリティ修正**: Bash コマンド内で許可リストにない環境変数への裸の代入が自動承認されていた問題を修正
+- **MCP prompt スラッシュコマンドのエラー改善**: 必須引数欠落時に raw な server validation エラーではなく、不足引数名と期待される使い方を表示
+- **ターミナル描画修正**: リサイズや再フォーカス後にキー入力までスピナーと経過時間表示がフリーズする問題
+- **Windows PowerShell 5.1 修正**: クロスプロジェクト resume ヒントが `;` をコマンドセパレータとして使うように
+- **agent view リペインの voice push-to-talk 修正**
+- **タスクリストの並び順修正**: 複数タスクを同時作成すると順序がランダムになっていた問題
+- **`/review` の GraphQL 修正**: deprecated な `projectCards` クエリを使用しており Classic Projects のリポで失敗していた問題
+- **`claude plugin validate` の検出強化**: `skills:` エントリがディレクトリではなくファイルを指している場合にフラグし、親ディレクトリを示すヒントを表示
+- **`context: fork` スキルの無限ループ修正**: 実行されず自己再呼び出しを繰り返す問題
+- **Read tool の堅牢化**: 全体読み取りがトークン上限を超えた場合に hard error ではなく "PARTIAL view" 通知付きで先頭ページを返す
+- **その他**: Anthropic マーケットプレース二重インストール banner の修正、`gh pr create` 等実行後のフッター PR バッジ即時更新、Agent Teams で非ASCII名チームメイトの API ヘッダエンコーディング修正
 
 ## v2.1.144 (2026-05-19)
 
